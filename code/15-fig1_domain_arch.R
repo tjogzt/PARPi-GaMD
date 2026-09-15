@@ -54,7 +54,7 @@ p_a <- ggplot() +
                     panel.grid.major.y = element_blank())
 
 # ---- Panel B: S1/S2 System Schematic ----
-# GaMD雙體系示意
+# GaMD dual-system schematic
 sys_data <- data.frame(
   x = c(1, 1, 2, 2),
   y = c(2, 1, 2, 1),

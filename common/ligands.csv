@@ -1,0 +1,11 @@
+ligand,label,class,color,lty,shape,trap_potency
+APO,APO,APO,grey40,dotted,17,
+AZD5305,AZD5305,Unknown,darkorange,dashed,15,
+olaparib,Olaparib,Type_II,#E41A1C,solid,16,1.0
+talazoparib,Talazoparib,Type_II,#FF7F00,solid,16,100
+veliparib,Veliparib,Type_III,#377EB8,solid,17,0.02
+niraparib,Niraparib,Type_III,#4DAF4A,solid,17,65
+rucaparib,Rucaparib,Type_III,#984EA3,solid,17,0.8
+fluzoparib,Fluzoparib,Extension,#C23531,dashed,18,
+pamiparib,Pamiparib,Extension,#3D6BA8,dashed,15,
+senaparib,Senaparib,Extension,#9D2933,dashed,8,

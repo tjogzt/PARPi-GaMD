@@ -7,10 +7,13 @@ import MDAnalysis as mda
 import numpy as np
 from pathlib import Path
 import warnings
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from common.paths import data_root
 warnings.filterwarnings("ignore")
 
-DATA = Path("/Volumes/tjogzt4T/PARPi_data")
-OUT = Path("/Volumes/tjogzt4T/PARPi_data/md_analysis")
+DATA = data_root()
+OUT = data_root() / "md_analysis"
 OUT.mkdir(parents=True, exist_ok=True)
 APO_TOP = DATA / "sys2_APO" / "sys2_APO.prmtop"
 

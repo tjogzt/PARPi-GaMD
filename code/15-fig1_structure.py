@@ -6,6 +6,7 @@ Final production script: PARP1 structural panels with PIL text overlay.
 - Output: RGB PNG, 600 DPI, white background, publication-ready
 """
 import subprocess, os
+from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 os.makedirs("results/figures", exist_ok=True)
@@ -77,27 +78,27 @@ for name, script in pymol_scenes.items():
     
     print(f"PyMOL rendering Panel {name}...")
     r = subprocess.run(["pymol", "-cq", spath], capture_output=True, text=True, timeout=90,
-                       cwd="/Users/taozhu/clacky_workspace/PARPi_design")
+                       cwd=str(Path(__file__).resolve().parents[1]))
     
     out = f"{raw_dir}/{name}_raw.png"
     if os.path.exists(out):
         img = Image.open(out)
-        print(f"  ✓ {img.size[0]}×{img.size[1]} px")
+        print(f"  OK {img.size[0]}x{img.size[1]} px")
     else:
         # Check for crash, try lower res
         if "out of memory" in r.stdout.lower() or "EEK" in r.stdout.lower():
-            print(f"  ⚠ OOM, retrying at lower resolution...")
+            print(f"  WARN OOM, retrying at lower resolution...")
             script_low = script + "\nray 1200, 900\n" + f"png {raw_dir}/{name}_raw.png, dpi=600\nquit\n"
             with open(f"/tmp/pymol_{name}_low.pml", "w") as f:
                 f.write(script_low)
             subprocess.run(["pymol", "-cq", f"/tmp/pymol_{name}_low.pml"], 
                           capture_output=True, timeout=90,
-                          cwd="/Users/taozhu/clacky_workspace/PARPi_design")
+                          cwd=str(Path(__file__).resolve().parents[1]))
             if os.path.exists(out):
                 img = Image.open(out)
-                print(f"  ✓ (reduced) {img.size[0]}×{img.size[1]} px")
+                print(f"  OK (reduced) {img.size[0]}x{img.size[1]} px")
             else:
-                print(f"  ✗ FAILED")
+                print(f"  FAILED")
 
 # ====== PHASE 2: PIL — text overlay + white bg conversion ======
 

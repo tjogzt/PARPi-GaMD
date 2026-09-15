@@ -1,0 +1,11 @@
+"ligand","label","class","n_points","rc_min","pmf_range","rc_range"
+"APO","APO (no ligand)","APO",31,23.5,42.4985895882366,3.00000000000004
+"AZD5305","AZD5305 (blind)","Unknown",31,22.8,28.1879423334875,3.00000000000004
+"olaparib","Olaparib (Type II)","Type_II",33,23.3,68.8807354510918,3.20000000000005
+"talazoparib","Talazoparib (Type II)","Type_II",39,23.7,30.4094036139146,3.80000000000005
+"veliparib","Veliparib (Type III)","Type_III",36,22.4,101.051517562577,3.50000000000005
+"niraparib","Niraparib (Type III)","Type_III",26,25.1,51.6115176640968,2.50000000000004
+"rucaparib","Rucaparib (Type III)","Type_III",28,22.2,53.410090564278,2.70000000000004
+"fluzoparib","Fluzoparib (ext.)","Extension",36,25.2,53.9990257760058,3.50000000000005
+"pamiparib","Pamiparib (ext.)","Extension",28,23.4,48.6948675343395,2.70000000000004
+"senaparib","Senaparib (ext.)","Extension",28,24.9,52.1879913492686,2.70000000000004

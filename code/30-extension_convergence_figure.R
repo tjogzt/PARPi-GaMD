@@ -1,8 +1,14 @@
 #!/usr/bin/env Rscript
-# 扩展组 S1 收敛曲线 (SI 图): 累计 well depth vs 时间
+# 30-extension_convergence_figure.R — extension S1 convergence curves (SI figure)
+#
+# Purpose:   Plot the cumulative well depth vs production time for the three
+#            extension inhibitors (fluzoparib, pamiparib, senaparib).
+# Inputs:    results/analysis/extension_s1_convergence.csv
+# Outputs:   results/figures/Fig_SI_Extension_Convergence.pdf
+# Depends:   ggplot2
 library(ggplot2)
 
-d <- read.csv("/Users/taozhu/clacky_workspace/PARPi_design/results/analysis/extension_s1_convergence.csv")
+d <- read.csv("results/analysis/extension_s1_convergence.csv")
 d$ligand <- factor(d$ligand, levels = c("fluzoparib", "pamiparib", "senaparib"),
                    labels = c("Fluzoparib", "Pamiparib", "Senaparib"))
 cols <- c("Fluzoparib" = "#C23531", "Pamiparib" = "#3D6BA8", "Senaparib" = "#9D2933")
@@ -21,6 +27,6 @@ p <- ggplot(d, aes(x = time_ns, y = well_depth, color = ligand)) +
         panel.grid.minor = element_blank(),
         text = element_text(family = "Arial"))
 
-ggsave("/Users/taozhu/clacky_workspace/PARPi_design/results/figures/Fig_SI_Extension_Convergence.pdf",
+ggsave("results/figures/Fig_SI_Extension_Convergence.pdf",
        p, width = 90, height = 62, units = "mm", device = cairo_pdf)
 cat("Saved: Fig_SI_Extension_Convergence.pdf\n")

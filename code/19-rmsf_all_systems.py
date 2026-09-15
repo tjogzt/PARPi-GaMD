@@ -12,9 +12,14 @@ import MDAnalysis as mda
 import numpy as np
 from pathlib import Path
 import warnings
-warnings.filterwarnings("ignore")
+import sys
+warnings.filterwarnings('ignore')
 
-DATA = Path("/Volumes/tjogzt4T/PARPi_data")
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from common.kabsch import kabsch_rmsd
+from common.paths import data_root
+
+DATA = data_root()
 OUT = Path("results/analysis")
 OUT.mkdir(parents=True, exist_ok=True)
 APO_TOP = DATA / "sys2_APO" / "sys2_APO.prmtop"
@@ -47,20 +52,7 @@ print(f"Systems to process: {len(systems)}")
 for name in systems:
     print(f"  {name}")
 
-# Align function (Kabsch)
-def kabsch_align(mobile_coords, ref_coords):
-    """Align mobile to reference, return (RMSD, aligned_coords)."""
-    ref_c = ref_coords - ref_coords.mean(axis=0)
-    mob_c = mobile_coords - mobile_coords.mean(axis=0)
-    C = mob_c.T @ ref_c
-    V, S, Wt = np.linalg.svd(C)
-    rot = Wt.T @ V.T
-    if np.linalg.det(rot) < 0:
-        S[-1] *= -1
-        rot = Wt.T @ np.diag(S) @ V.T
-    aligned = mob_c @ rot
-    rmsd_val = np.sqrt(np.mean((aligned - ref_c)**2))
-    return rmsd_val, aligned + ref_coords.mean(axis=0)
+# Align function: common/kabsch.kabsch_rmsd (imported above)
 
 # Process each system
 for sys_name, (top_path, dcd_path) in systems.items():
@@ -98,7 +90,7 @@ for sys_name, (top_path, dcd_path) in systems.items():
 
     print(f"  Computing RMSD + accumulating for RMSF...")
     for i, ts in enumerate(u.trajectory):
-        rmsd_val, aligned = kabsch_align(ca_all.positions.copy(), ref_coords)
+        rmsd_val, aligned = kabsch_rmsd(ca_all.positions.copy(), ref_coords)
         rmsd_all[i] = rmsd_val
         sum_pos += aligned
         sum_pos2 += aligned ** 2

@@ -19,11 +19,27 @@ library(tidyverse)
 library(patchwork)
 
 # ---- Config ----
-DATA    <- "/Volumes/tjogzt4T/PARPi_data"
+data_root <- function() {
+  r <- Sys.getenv("DATA_ROOT", unset = "")
+  if (!nzchar(r)) stop("Set DATA_ROOT env var to the trajectory data directory")
+  r
+}
+DATA    <- data_root()
 OUT_DIR <- file.path("results", "hbond_protein_dna")
 dir.create(OUT_DIR, showWarnings = FALSE, recursive = TRUE)
 
-CPPTRAJ <- "/opt/anaconda3/bin/cpptraj"
+# cpptraj: prefer the environment override, then PATH lookup
+cpptraj_exe <- Sys.getenv("CPPTRAJ", unset = "")
+if (nzchar(cpptraj_exe)) {
+  CPPTRAJ <- cpptraj_exe
+} else {
+  found <- Sys.which("cpptraj")
+  if (nzchar(found)) {
+    CPPTRAJ <- unname(found)
+  } else {
+    stop("cpptraj not found. Install AmberTools or set CPPTRAJ=/path/to/cpptraj")
+  }
+}
 
 PRMTOP  <- file.path(DATA, "sys2_APO", "sys2_APO.prmtop")
 

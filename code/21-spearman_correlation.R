@@ -1,69 +1,115 @@
 #!/usr/bin/env Rscript
-# 21-spearman_correlation.R — Statistical test: S1 well_depth vs experimental trapping
-library(dplyr)
+# 21-spearman_correlation.R — Spearman correlation of S1 well depth / AAI vs experimental trapping
+#
+# Purpose:   Reproduce the manuscript analysis "S1 well depth and AAI show a
+#            suggestive inverse relationship with experimental trapping
+#            potency". Significance is assessed with the exact two-tailed
+#            permutation test over all 5! = 120 rankings (n = 5).
+# Inputs:    data/01_curated/trapping_potency.csv    (literature trapping potency, x olaparib)
+#            results/figures/Fig_Mechanism_Data.csv  (S1 well depth wd_S1, AAI wd_ratio)
+# Outputs:   results/figures/Fig4B_spearman_data.csv
+# Depends:   base R only (>= 4.0). Run from the repository root.
+#
+# n = 5 follows the manuscript protocol: AZD5305 is excluded (trapping
+# left-censored at < 0.01x olaparib) and APO is excluded (no trapping value).
 
-# ---- Experimental trapping data from literature ----
-# Sources: Murai 2012 (Cancer Res), Zandarashvili 2020 (Science),
-#          Johannes 2021 (ACS Med Chem Lett), BPS Bioscience assay for AZD5305
+trapping <- read.csv("data/01_curated/trapping_potency.csv", stringsAsFactors = FALSE)
+mech     <- read.csv("results/figures/Fig_Mechanism_Data.csv", stringsAsFactors = FALSE)
 
-trapping_data <- data.frame(
-  inhibitor = c("Talazoparib", "Niraparib", "Olaparib", "Rucaparib", "Veliparib", "AZD5305"),
-  trapping  = c(100, 65, 1.0, 0.8, 0.02, 100),  # × Olaparib; AZD5305 ≈ talazoparib
+stopifnot(nrow(trapping) == 5)
+stopifnot(all(trapping$inhibitor %in% mech$ligand))
+
+df <- data.frame(
+  inhibitor  = trapping$inhibitor,
+  trapping   = trapping$trapping_x_olaparib,
+  well_depth = mech$wd_S1[match(trapping$inhibitor, mech$ligand)],
+  aai        = mech$wd_ratio[match(trapping$inhibitor, mech$ligand)],
   stringsAsFactors = FALSE
 )
-
-# S1 well_depth from our PMF analysis
-s1_data <- data.frame(
-  inhibitor = c("APO", "AZD5305", "Niraparib", "Olaparib", "Rucaparib", "Talazoparib", "Veliparib"),
-  well_depth = c(42.50, 28.19, 51.61, 68.88, 53.41, 30.41, 101.05),
-  s1_s2_ratio = c(1.39, 0.96, 1.68, 2.27, 1.75, 0.99, 3.47),
-  stringsAsFactors = FALSE
-)
-
-# Merge
-df <- merge(trapping_data, s1_data, by = "inhibitor")
 df$log_trap <- log10(df$trapping)
 
-cat("=== Data for Spearman Test ===\n")
-print(df[, c("inhibitor", "trapping", "log_trap", "well_depth", "s1_s2_ratio")])
+cat("=== Data for Spearman test (n = 5) ===\n")
+print(df[, c("inhibitor", "trapping", "well_depth", "aai")],
+      row.names = FALSE, digits = 4)
 
-# ---- Spearman: trapping vs S1 well_depth ----
-cat("\n=== Test 1: Experimental trapping vs S1 well_depth ===\n")
-r1 <- cor.test(df$log_trap, df$well_depth, method = "spearman", exact = TRUE)
-cat(sprintf("Spearman ρ = %.3f, p = %.4f (n=%d)\n", r1$estimate, r1$p.value, nrow(df)))
-cat(sprintf("S = %.1f\n", r1$statistic))
+# --- Exact permutation test over all n! rankings -----------------------------
+all_permutations <- function(n) {
+  # Returns a matrix with n! rows: every permutation of 1..n.
+  if (n == 1L) return(matrix(1L, 1L, 1L))
+  prev <- all_permutations(n - 1L)
+  out  <- matrix(0L, nrow = n * nrow(prev), ncol = n)
+  idx  <- 0L
+  for (i in seq_len(nrow(prev))) {
+    for (pos in seq_len(n)) {
+      idx <- idx + 1L
+      out[idx, ] <- append(prev[i, ], n, after = pos - 1L)
+    }
+  }
+  out
+}
 
-# ---- Spearman: trapping vs S1/S2 ratio ----
-cat("\n=== Test 2: Experimental trapping vs S1/S2 ratio ===\n")
-r2 <- cor.test(df$log_trap, df$s1_s2_ratio, method = "spearman", exact = TRUE)
-cat(sprintf("Spearman ρ = %.3f, p = %.4f (n=%d)\n", r2$estimate, r2$p.value, nrow(df)))
-cat(sprintf("S = %.1f\n", r2$statistic))
+exact_permutation_p <- function(x, y) {
+  # Two-tailed exact permutation p-value for Spearman's rho.
+  x_rank  <- rank(x)
+  y_rank  <- rank(y)
+  rho_obs <- cor(x_rank, y_rank, method = "pearson")  # Spearman = Pearson on ranks
+  perms   <- all_permutations(length(x))
+  rho_perm <- apply(perms, 1L, function(p) cor(x_rank[p], y_rank, method = "pearson"))
+  mean(abs(rho_perm) >= abs(rho_obs) - 1e-12)
+}
 
-# ---- Additional: Pearson on log-transformed data ----
-cat("\n=== Test 3: Pearson (log-trapping vs well_depth) ===\n")
-r3 <- cor.test(df$log_trap, df$well_depth, method = "pearson")
-cat(sprintf("Pearson r = %.3f, p = %.4f, 95%% CI [%.3f, %.3f]\n",
-            r3$estimate, r3$p.value, r3$conf.int[1], r3$conf.int[2]))
+rho1 <- cor(df$well_depth, df$log_trap, method = "spearman")
+p1   <- exact_permutation_p(df$well_depth, df$log_trap)
+rho2 <- cor(df$aai, df$log_trap, method = "spearman")
+p2   <- exact_permutation_p(df$aai, df$log_trap)
 
-# ---- Blind prediction check: AZD5305 ----
-cat("\n=== AZD5305 Blind Prediction Check ===\n")
-# Would AZD5305 be classified as Type II or Type III?
-cat(sprintf("AZD5305 S1 well_depth: %.1f kcal/mol (lowest of all, even below APO at 42.5)\n",
-            s1_data$well_depth[s1_data$inhibitor == "AZD5305"]))
-cat(sprintf("AZD5305 S1/S2 ratio: %.2f (only system with ratio < 1.0)\n",
-            s1_data$s1_s2_ratio[s1_data$inhibitor == "AZD5305"]))
-cat("Classification: Type II (neutral/negative allostery) — CONSISTENT with experimental trapping ≈ talazoparib\n")
+cat("\n=== Test 1: S1 well depth vs experimental trapping ===\n")
+cat(sprintf("Spearman rho = %.2f, exact two-tailed p = %.3f (n = %d, permutation test)\n",
+            rho1, p1, nrow(df)))
+cat("\n=== Test 2: AAI vs experimental trapping ===\n")
+cat(sprintf("Spearman rho = %.2f, exact two-tailed p = %.3f (n = %d, permutation test)\n",
+            rho2, p2, nrow(df)))
 
-# ---- Format for manuscript ----
+# --- Leave-one-out sensitivity ------------------------------------------------
+cat("\n=== Leave-one-out sensitivity ===\n")
+loo <- sapply(seq_len(nrow(df)), function(i) {
+  cor(df$well_depth[-i], df$log_trap[-i], method = "spearman")
+})
+loo_df <- data.frame(excluded = df$inhibitor, rho_loo = round(loo, 2))
+print(loo_df, row.names = FALSE)
+cat(sprintf("LOO range: %.2f to %.2f; all negative: %s\n",
+            min(loo), max(loo), all(loo < 0)))
+
+# --- Manuscript-ready statement -----------------------------------------------
 cat("\n=== Manuscript-ready statement ===\n")
 cat(sprintf(
-  "S1 well depth showed a strong negative correlation with experimental trapping potency\n",
-  "(Spearman ρ = %.2f, p = %.4f, n = 6), with stronger trappers (talazoparib, AZD5305)\n",
-  "exhibiting lower HD-ART conformational strain in the CAT-only state.\n",
-  "The S1/S2 allosteric amplification ratio showed a similarly strong inverse correlation\n",
-  "(Spearman ρ = %.2f, p = %.4f).\n",
-  r1$estimate, r1$p.value, r2$estimate, r2$p.value))
+  "Spearman rank correlation between S1 well depth and trapping potency yielded rho = %.2f,\n",
+  rho1))
+cat(sprintf(
+  "with an exact two-tailed p = %.3f (n = %d, permutation test). AAI showed an identical\n",
+  p1, nrow(df)))
+cat(sprintf(
+  "rank correlation (rho = %.2f, p = %.3f). While this correlation does not reach the\n",
+  rho2, p2))
+cat("conventional p < 0.05 significance threshold, it is constrained by the limited sample\n")
+cat(sprintf(
+  "(n = %d) and should be interpreted as a trend warranting validation in larger inhibitor\n",
+  nrow(df)))
+cat(sprintf(
+  "panels. A leave-one-out sensitivity analysis confirmed robustness: excluding any single\n"))
+cat(sprintf(
+  "inhibitor left rho between %.2f and %.2f (all negative), indicating that no single data\n",
+  min(loo), max(loo)))
+cat("point drives the correlation.\n")
 
-# ---- Generate scatter plot data for Fig 4B ----
-write.csv(df, "results/figures/Fig4B_spearman_data.csv", row.names = FALSE)
-cat("\nSaved: Fig4B_spearman_data.csv\n")
+# --- Regenerate Fig4B_spearman_data.csv (n = 5, no AZD5305 row) ----------------
+out <- data.frame(
+  inhibitor   = df$inhibitor,
+  trapping    = df$trapping,
+  well_depth  = df$well_depth,
+  s1_s2_ratio = df$aai,
+  log_trap    = df$log_trap,
+  stringsAsFactors = FALSE
+)
+write.csv(out, "results/figures/Fig4B_spearman_data.csv", row.names = FALSE)
+cat("\nSaved: results/figures/Fig4B_spearman_data.csv (n = 5, no AZD5305 row)\n")

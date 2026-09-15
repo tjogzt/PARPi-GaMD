@@ -7,6 +7,9 @@ Output: CV file (1 col) + weight file (3 col: dV*beta, 0, dV) for PyReweighting.
 from pathlib import Path
 import numpy as np
 import MDAnalysis as mda
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from common.paths import data_root
 
 kT = 0.596  # kcal/mol at 300K, kT = 0.001987*300
 STRIDE = 100
@@ -59,7 +62,7 @@ def parse_gamd_log(path):
     return boosts
 
 def main():
-    DATA = Path("/Volumes/tjogzt4T/PARPi_data")
+    DATA = data_root()
     OUT = Path("results/analysis")
     OUT.mkdir(parents=True, exist_ok=True)
 

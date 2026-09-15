@@ -7,9 +7,12 @@ protein+DNA+water+ions matching APO prmtop.
 import MDAnalysis as mda
 from pathlib import Path
 import warnings
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from common.paths import data_root
 warnings.filterwarnings("ignore")
 
-DATA = Path("/Volumes/tjogzt4T/PARPi_data")
+DATA = data_root()
 APO_N = 285775
 
 systems = {

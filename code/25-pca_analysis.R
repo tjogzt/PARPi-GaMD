@@ -4,7 +4,7 @@
 # Perform PCA on concatenated CA trajectories, project each system
 # onto common PC space, compute 2D free energy landscapes.
 #
-# Input:  CA DCDs from /Volumes/tjogzt4T/PARPi_data/md_analysis/
+# Input:  CA DCDs from $DATA_ROOT/md_analysis/
 # Output: results/figures/Fig_PCA_Landscape.pdf
 #         results/analysis/pca_projections.csv
 
@@ -15,8 +15,14 @@ library(tidyr)
 library(patchwork)
 
 # ---- Config ----------------------------------------------------------------
+data_root <- function() {
+  r <- Sys.getenv("DATA_ROOT", unset = "")
+  if (!nzchar(r)) stop("Set DATA_ROOT env var to the trajectory data directory")
+  r
+}
+
 data_dir  <- "results/analysis"
-dcd_dir   <- "/Volumes/tjogzt4T/PARPi_data/md_analysis"
+dcd_dir   <- file.path(data_root(), "md_analysis")
 out_dir   <- "results/figures"
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 

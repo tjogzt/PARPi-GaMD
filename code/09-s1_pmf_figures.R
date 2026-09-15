@@ -9,23 +9,15 @@ data_dir  <- "results/analysis"
 out_dir   <- "results/figures"
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
-# System metadata
-sys_meta <- data.frame(
-  ligand   = c("APO", "AZD5305", "olaparib", "talazoparib", "veliparib", "niraparib", "rucaparib",
-               "fluzoparib", "pamiparib", "senaparib"),
-  label    = c("APO (no ligand)", "AZD5305 (blind)", 
-               "Olaparib (Type II)", "Talazoparib (Type II)",
-               "Veliparib (Type III)", "Niraparib (Type III)", 
-               "Rucaparib (Type III)",
-               "Fluzoparib (ext.)", "Pamiparib (ext.)", "Senaparib (ext.)"),
-  class    = c("APO", "Unknown", "Type_II", "Type_II", "Type_III", "Type_III", "Type_III",
-               "Extension", "Extension", "Extension"),
-  color    = c("grey40", "darkorange", "#E41A1C", "#FF7F00", "#377EB8", "#4DAF4A", "#984EA3",
-               "#C23531", "#3D6BA8", "#9D2933"),
-  lty      = c("dotted", "dashed", "solid", "solid", "solid", "solid", "solid",
-               "dashed", "dashed", "dashed"),
-  stringsAsFactors = FALSE
-)
+# ---- System metadata (single source: common/ligands.csv) --------------------
+args <- commandArgs(trailingOnly = FALSE)
+script_dir <- dirname(normalizePath(sub("^--file=", "", args[grep("^--file=", args)[1]])))
+source(file.path(script_dir, "..", "common", "ligands.R"))
+sys_meta <- load_ligands()
+# Display labels for this figure: plain label + class annotation
+label_suffix <- c(APO = "(no ligand)", Unknown = "(blind)",
+                  Type_II = "(Type II)", Type_III = "(Type III)", Extension = "(ext.)")
+sys_meta$label <- paste(sys_meta$label, label_suffix[sys_meta$class])
 
 # ---- Load PMF data ---------------------------------------------------------
 read_xvg <- function(path) {

@@ -1,36 +1,42 @@
 #!/usr/bin/env python3
-"""生成新药 pmf-c3 文件到图脚本所需位置:
-- S1: results/analysis/sys1_<lig>_pmf_c3.xvg (DBE 权重, 200ns)
-- S2: results/analysis/pmf-c3-sys2_<lig>_CV1/CV2_cv.dat.xvg (DFW 权重)
 """
+gen_new_pmf_files.py — generate extension pmf-c3 files for figure scripts
+
+Purpose:   Write the reweighted C3 PMF curves of the extension inhibitors to the
+           locations expected by the figure scripts:
+           - S1: results/analysis/sys1_<lig>_pmf_c3.xvg (DBE weights, 200 ns)
+           - S2: results/analysis/pmf-c3-sys2_<lig>_CV1/CV2_cv.dat.xvg (DFW weights)
+Inputs:    results/analysis/new_drugs/sys1_<lig>_{cv,weights}.dat
+           results/analysis/new_drugs_s2/<lig>/analysis_{CV1,CV2}.dat + analysis_weights_dfw.dat
+Outputs:   xvg files under results/analysis/
+Depends:   numpy; common (pmf, paths)
+"""
+import sys
+import shutil
+from pathlib import Path
+
 import numpy as np
-import subprocess, tempfile, shutil
 
-PW = '/Users/taozhu/clacky_workspace/PARPi_design/tools/PyReweighting/PyReweighting-1D.py'
-A = '/Users/taozhu/clacky_workspace/PARPi_design/results/analysis'
-S1 = f'{A}/new_drugs'
-S2 = f'{A}/new_drugs_s2'
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from common.paths import analysis_dir
+from common.pmf import run_pyrew
 
-def run_pw(cv, w, tag):
-    tmp = tempfile.mkdtemp()
-    np.savetxt(f'{tmp}/cv.dat', cv, fmt='%.4f')
-    np.savetxt(f'{tmp}/weights.dat', w, fmt='%.6f')
-    subprocess.run(['python3', PW, '-input', 'cv.dat', '-T', '300', '-disc', '0.1',
-                    '-Emax', '20', '-cutoff', '2', '-job', 'amdweight_CE',
-                    '-weight', 'weights.dat'], cwd=tmp, capture_output=True)
-    return tmp
+A = analysis_dir()
+S1 = A / "new_drugs"
+S2 = A / "new_drugs_s2"
 
-for d in ['fluzoparib', 'pamiparib', 'senaparib']:
-    # S1 (DBE)
-    cv = np.loadtxt(f'{S1}/sys1_{d}_cv.dat')
-    w = np.loadtxt(f'{S1}/sys1_{d}_weights.dat')
-    tmp = run_pw(cv, w, d)
-    shutil.copy(f'{tmp}/pmf-c3-cv.dat.xvg', f'{A}/sys1_{d}_pmf_c3.xvg')
-    # S2 CV1 + CV2 (DFW)
-    w2 = np.loadtxt(f'{S2}/{d}/analysis_weights_dfw.dat')
-    for cvn in ['CV1', 'CV2']:
-        cv2 = np.loadtxt(f'{S2}/{d}/analysis_{cvn}.dat')
-        tmp2 = run_pw(cv2, w2, f'{d}_{cvn}')
-        shutil.copy(f'{tmp2}/pmf-c3-cv.dat.xvg', f'{A}/pmf-c3-sys2_{d}_{cvn}_cv.dat.xvg')
-    print(f'{d}: S1 + S2 CV1/CV2 pmf-c3 已生成')
-print('DONE')
+for d in ["fluzoparib", "pamiparib", "senaparib"]:
+    # S1 (DBE weights)
+    cv = np.loadtxt(S1 / f"sys1_{d}_cv.dat")
+    w = np.loadtxt(S1 / f"sys1_{d}_weights.dat")
+    r = run_pyrew(cv, w, wfmt="%.6f")
+    shutil.copy(r.tmpdir / "pmf-c3-cv.dat.xvg", A / f"sys1_{d}_pmf_c3.xvg")
+    # S2 CV1 + CV2 (DFW weights)
+    w2 = np.loadtxt(S2 / d / "analysis_weights_dfw.dat")
+    for cvn in ["CV1", "CV2"]:
+        cv2 = np.loadtxt(S2 / d / f"analysis_{cvn}.dat")
+        r2 = run_pyrew(cv2, w2, wfmt="%.6f")
+        shutil.copy(r2.tmpdir / "pmf-c3-cv.dat.xvg",
+                    A / f"pmf-c3-sys2_{d}_{cvn}_cv.dat.xvg")
+    print(f"{d}: S1 + S2 CV1/CV2 pmf-c3 generated")
+print("DONE")

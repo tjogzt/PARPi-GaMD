@@ -1,5 +1,5 @@
 #!/usr/bin/env Rscript
-# 重画 Fig_DCCM_Allostery.pdf — 7 体系 HD×ART DCCM 块热图 (全蛋白超叠, 统一协议)
+# Regenerate Fig_DCCM_Allostery.pdf — 7-system HDxART DCCM block heatmap (whole-protein superposition, unified protocol)
 suppressMessages({library(data.table); library(ggplot2); library(patchwork)})
 
 theme_set(theme_bw(base_size = 8, base_family = "Arial") +

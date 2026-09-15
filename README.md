@@ -1,55 +1,100 @@
-# PARPi-GaMD: Allosteric Encoding of PARP1 Trapping by Inhibitors
+# PARPi-GaMD — dual-system GaMD analysis of PARP1 inhibitor allosteric encoding
 
-Gaussian accelerated molecular dynamics (GaMD) analysis of PARP1--inhibitor systems,
-quantifying how structurally diverse PARP inhibitors occupying the same catalytic
-pocket encode differential allosteric signals through the helical domain (HD).
+Analysis pipeline for the dual-system Gaussian accelerated molecular dynamics
+(GaMD) study of ten PARP1 inhibitors. System S1 (catalytic domain only) isolates
+the allosteric response of the helical domain (HD); system S2 (full PARP1-DNA
+complex) captures the trapping environment. The pipeline quantifies HD-ART well
+depths, the Allosteric Amplification Index (AAI), residue-level RMSF,
+dynamic cross-correlations (DCCM), PCA landscapes, and replicate reproducibility.
 
-## Overview
+## 1. Overview and output mapping
 
-Dual-system design:
-- **S1** — catalytic (CAT) domain alone (~30k atoms); CV = HD--ART COM distance
-- **S2** — full-length PARP1 bound to a DNA double-strand break mimic (~286k atoms);
-  CV1 = protein--DNA COM distance, CV2 = HD--ART COM distance
-
-The **Allosteric Amplification Index (AAI)** = S1 well depth / S2 CV2 well depth
-normalizes the DNA-free allosteric response against the DNA-bound baseline.
-
-### Panel (10 systems)
-
-| Group | Systems |
+| Directory | Role |
 |---|---|
-| Original (7) | talazoparib, olaparib, niraparib, rucaparib, veliparib, AZD5305, APO |
-| Extension (3) | fluzoparib, pamiparib, senaparib |
+| `code/` | Analysis chain: trajectory extraction, PMF reweighting, statistics, figures (numbered 01-30) |
+| `code/archive/` | Superseded or non-reproducible scripts (replacement chain in its README) |
+| `common/` | Shared helpers: `paths.py` (DATA_ROOT), `pmf.py` (PyReweighting), `kabsch.py` (alignment), `ligands.{csv,R,py}` (panel metadata, single source) |
+| `data/` | Curated inputs (`01_curated/`) and replicate PMF data (`replicates/`) |
+| `figures/` | Reproducible figure PDFs and PNG previews |
+| `scripts/` (working tree only) | Build chain: PDB retrieval, ligand preparation, docking, seed-dataset construction |
 
-## Protocol
+Every manuscript number traces to its generating script via
+[`data_manifest.md`](data_manifest.md) (artifact → script line → manuscript
+location → checksum).
 
-- OpenMM (CUDA) + Amber ff14SB/bsc1/GAFF2/TIP3P, 300 K, 2 fs timestep
-- Dual-boost GaMD (lower-dual, σ0 = 6.0 kcal/mol), 10 ns statistics-gathering phase
-- Production: S1 19--31 ns (original) / 200 ns (extension); S2 24--26 ns (original) / 22 ns (extension)
-- Reweighting: PyReweighting cumulant expansion (C1--C3)
-  - S1: dihedral boost energy (DBE) weights
-  - S2: dihedral force-weight (DFW) weights
-- Ligand preparation: Vina docking → RDKit→TRIPOS mol2 (aromatic-bond corrected) → AM1-BCC charges (GAFF2)
-- Zinc-finger model: non-bonded Zn²⁺ (CYM/HID coordinating residues)
+## 2. Citation
 
-## Repository contents
+If you use this code or data, please cite the corresponding manuscript
+(submission details provided at publication) and the underlying software:
+Amber (GaMD), MDAnalysis, PyReweighting, R/ggplot2.
 
+## 3. System requirements
+
+- Python ≥ 3.10 with the packages in `requirements.txt`
+- R ≥ 4.0 with the packages listed in `requirements.txt` (R section)
+- AmberTools (cpptraj) for H-bond analysis (`CPPTRAJ` env var or PATH)
+- PyReweighting (bundled under `tools/PyReweighting/` in the working tree)
+- ~1 TB storage for the raw trajectories (not distributed in this repository)
+
+## 4. Installation
+
+```bash
+git clone <this repository>
+pip install -r requirements.txt        # Python dependencies
+# R: install.packages(c("ggplot2", "dplyr", "tidyr", "patchwork", "tibble",
+#                       "bio3d", "igraph", "ggrepel"))
 ```
-figures/pdf/  — publication figures (26, as referenced by the manuscript/SI)
-figures/png/  — PNG previews of the same figures
-code/         — analysis scripts (R + Python)
-code/pipeline/— system building, equilibration, GaMD deployment, CV extraction
-data/         — result tables (S1 PMF summary, AAI, S2 well depths, replicate data)
-data/new_drugs_s1/ — extension-panel S1 CV + weights (production frames)
-data/new_drugs_s2/ — extension/re-run S2 CV1/CV2 + DFW weights
-```
 
-## Reproducing
+## 5. Datasets
 
-1. Environment: `mamba env create -f code/pipeline/environment_gamd_min.yml`
-   (OpenMM ≥8.1 CUDA + ambertools; no rdkit required for the MD pipeline)
-2. Build: `python code/pipeline/build_system2_tleap.py --receptor <pdb> --ligand <mol2> --out <dir>`
-3. Equilibrate: `python code/pipeline/equilibrate.py --prmtop ... --inpcrd ... --out ... --temp 300`
-4. GaMD config + run: `python code/pipeline/gen_gamd_config.py ... --prod-ns 22` then `gamdRunner xml config.xml`
-5. Extract CVs: `python code/pipeline/extract_s2_cv.py runs_s2 <drug>`
-6. Reweight: `python PyReweighting-1D.py -input cv.dat -T 300 -disc 0.1 -Emax 20 -cutoff 2 -job amdweight_CE -weight weights.dat`
+- `data/replicates/` — histogram-reweighted replicate PMFs
+  (`pmf.npy`/`rc.npy`/`dist_raw.npy`) for talazoparib, veliparib, AZD5305 and
+  EB-47 (receptor 6VKK)
+- `data/01_curated/` — trapping potencies (`trapping_potency.csv`), seed-ligand
+  identities (`seed_ligands.csv`, PubChem-verified), derived descriptor dataset
+  (`trapping_seed_dataset.csv`)
+- Raw trajectories are NOT distributed. Set the environment variable
+  `DATA_ROOT` to the trajectory data directory before running extraction or
+  RMSF/DCCM scripts:
+  ```bash
+  export DATA_ROOT=/path/to/PARPi_data
+  ```
+
+## 6. Pipeline quickstart
+
+1. `scripts/` (working tree): PDB retrieval → receptor/ligand preparation →
+   docking → `build_seed_dataset.py` (curated seed dataset).
+2. GaMD simulation and trajectory extraction on the compute cluster
+   (`code/pipeline/` deploy scripts).
+3. PMF reweighting: `code/gen_new_pmf_files.py`,
+   `code/extract_cv1_wells.py` (C3 CV1/CV2 wells → `cumulant_wells_C3.csv`).
+4. Figures and statistics (run from the repository root):
+   ```bash
+   Rscript code/13-mechanism_figure.R    # Fig_Mechanism_Data.csv (Table 1 chain)
+   Rscript code/21-spearman_correlation.R  # n=5 exact permutation test
+   Rscript code/18-replicate_analysis.R  # replicate Table
+   Rscript code/09-s1_pmf_figures.R      # S1 PMF panels + stats
+   ```
+
+## 7. Regeneration scripts
+
+Analysis scripts are numbered `01`-`30` in `code/`; the numbering is stable and
+old versions are archived rather than renumbered. Scripts read inputs only from
+`results/`, `data/`, `common/`, and `$DATA_ROOT`; they write to `results/`
+(working tree). Deterministic outputs (no unseeded randomness; the ML pipeline
+seeds at 49) mean re-running a script reproduces its outputs byte-for-byte —
+verified for the manuscript-critical chains (see `data_manifest.md`).
+
+## 8. Output description
+
+| Output | Script | Description |
+|---|---|---|
+| `Fig_Mechanism_Data.csv` | `code/13-mechanism_figure.R` | S1/S2 well depths and AAI for all 10 systems |
+| `Fig4B_spearman_data.csv` | `code/21-spearman_correlation.R` | n = 5 correlation data (no AZD5305 row) |
+| `replicate_well_depths.csv` | `code/18-replicate_analysis.R` | per-replicate histogram well depths |
+| `cumulant_wells_C3.csv` | `code/extract_cv1_wells.py` | S2 CV1/CV2 C3-cumulant well depths |
+| `rmsf_recomp/s2_rmsf_dccm_uniform.csv` | `code/recompute_all_s2.py` | domain-aligned RMSF + whole-protein DCCM summary |
+| figure PDFs | `code/0X-*.R`, `code/15-fig1_structure.py` | manuscript/SI figures |
+
+Superseded intermediates were moved to `results/archive/` (working tree) with a
+replacement-chain README; they are not part of this repository.

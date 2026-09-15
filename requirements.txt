@@ -1,0 +1,8 @@
+# Python dependencies (pip install -r requirements.txt)
+numpy>=1.24
+MDAnalysis>=2.4
+Pillow>=9.0
+rdkit>=2023.3        # scripts/build_seed_dataset.py only
+
+# R dependencies (install.packages(...))
+# ggplot2, dplyr, tidyr, patchwork, tibble, bio3d, igraph, ggrepel

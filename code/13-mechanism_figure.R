@@ -31,20 +31,12 @@ theme_7pt <- theme_bw(base_size = 7) +
     strip.background  = element_rect(fill = "grey95")
   )
 
-# ---- System metadata (7 systems) --------------------------------------------
-sys_meta <- data.frame(
-  ligand       = c("APO", "AZD5305", "olaparib", "talazoparib", "veliparib", "niraparib", "rucaparib",
-                   "fluzoparib", "pamiparib", "senaparib"),
-  label        = c("APO", "AZD5305", "Olaparib", "Talazoparib", "Veliparib", "Niraparib", "Rucaparib",
-                   "Fluzoparib", "Pamiparib", "Senaparib"),
-  type         = c("APO", "Unknown", "Type II", "Type II", "Type III", "Type III", "Type III",
-                   "Extension", "Extension", "Extension"),
-  trap_potency = c(NA, NA, 1.0, 100, 0.02, 65, 0.8, NA, NA, NA),  # relative to olaparib
-  color        = c("grey40", "darkorange", "#E41A1C", "#FF7F00", "#377EB8", "#4DAF4A", "#984EA3",
-                   "#C23531", "#3D6BA8", "#9D2933"),
-  shape        = c(17, 15, 16, 16, 17, 17, 17, 18, 15, 8),  # extension: diamond/square/star
-  stringsAsFactors = FALSE
-)
+# ---- System metadata (10 systems; single source: common/ligands.csv) --------
+args <- commandArgs(trailingOnly = FALSE)
+script_dir <- dirname(normalizePath(sub("^--file=", "", args[grep("^--file=", args)[1]])))
+source(file.path(script_dir, "..", "common", "ligands.R"))
+sys_meta <- load_ligands()
+sys_meta$type <- gsub("_", " ", sys_meta$class)  # "Type II" / "Type III"
 
 # ---- Read PMF data ----------------------------------------------------------
 read_xvg <- function(path) {
@@ -211,14 +203,14 @@ cat("\nSaved: Fig_Mechanism_Master.pdf\n")
 
 # ---- Supplementary: standalone 2D scatter for publications -------------------
 p_2d <- ggplot(combined %>% filter(type != "APO"), aes(x = wd_ratio, y = wd_S1)) +
-  # Classification zones
+  # Classification zones (AAI interpretation, not Type membership)
   annotate("rect", xmin = 0.8, xmax = 1.5, ymin = 25, ymax = 40,
            fill = "#FF7F00", alpha = 0.08) +
-  annotate("text", x = 1.15, y = 42, label = "Neutral (Type II)", 
+  annotate("text", x = 1.15, y = 42, label = "AAI ~ 1 (DNA-compatible)",
            size = 2.5, color = "#E41A1C", fontface = "italic") +
   annotate("rect", xmin = 1.5, xmax = 4.0, ymin = 45, ymax = 110,
            fill = "#377EB8", alpha = 0.08) +
-  annotate("text", x = 2.5, y = 108, label = "Pro-release (Type III)",
+  annotate("text", x = 2.5, y = 108, label = "AAI > 1.5 (pro-release amplification)",
            size = 2.5, color = "#377EB8", fontface = "italic") +
   geom_point(aes(color = type, shape = type), size = 4) +
   ggrepel::geom_text_repel(aes(label = label), size = 2.5, max.overlaps = 20,
@@ -232,7 +224,7 @@ p_2d <- ggplot(combined %>% filter(type != "APO"), aes(x = wd_ratio, y = wd_S1))
   geom_vline(xintercept = 1, linetype = "dashed", color = "grey50", linewidth = 0.3) +
   labs(x = "S1/S2 Well Depth Ratio (Allosteric Amplification Index)",
        y = "S1 HD-ART Well Depth (kcal/mol)",
-       title = "Allosteric Mechanism Map of PARP1 Inhibitors") +
+       title = "Allosteric Stratification Map of PARP1 Inhibitors") +
   theme_7pt +
   theme(legend.position = c(0.85, 0.15))
 

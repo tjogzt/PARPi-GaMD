@@ -1,56 +1,53 @@
 #!/usr/bin/env python3
-"""S1 时长一致性分析: 把新药 S1 (200ns) 截取到与旧药一致的时长重算 well depth
-旧药生产时长(帧×1ps): APO 21.5 / AZD5305 25 / olaparib 19 / niraparib 31.2 / rucaparib 31.2 / veliparib 30.8 ns
-新药数据: cv.dat + weights.dat (4001 帧 × 50ps = 200ns)
-截取点: 19 / 22 / 31 ns (覆盖旧药范围) + 全 200ns
 """
+s1_length_sensitivity.py — S1 sampling-length sensitivity analysis
+
+Purpose:   Truncate the extension S1 trajectories (200 ns) to the legacy-panel
+           production lengths and recompute well depths, checking the
+           manuscript's matched-length robustness claim.
+           Legacy production lengths (frames x 1 ps): APO 21.5 / AZD5305 25 /
+           olaparib 19 / niraparib 31.2 / rucaparib 31.2 / veliparib 30.8 ns.
+           Extension data: cv.dat + weights.dat (4001 frames x 50 ps = 200 ns).
+Inputs:    results/analysis/new_drugs/sys1_<drug>_{cv,weights}.dat
+Outputs:   console table
+Depends:   numpy; common (pmf, paths)
+"""
+import sys
+from pathlib import Path
+
 import numpy as np
-import subprocess, os, tempfile
 
-PW = '/Users/taozhu/clacky_workspace/PARPi_design/tools/PyReweighting/PyReweighting-1D.py'
-DATA = '/Users/taozhu/clacky_workspace/PARPi_design/results/analysis/new_drugs'
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from common.paths import analysis_dir
+from common.pmf import run_pyrew
 
-def well_depth_from_pmf(pmf_file):
-    data = []
-    for line in open(pmf_file):
-        line = line.strip()
-        if line and not line.startswith(('#', '@')):
-            p = line.split()
-            data.append([float(p[0]), float(p[1])])
-    pmf = np.array(data)[:, 1]
-    return pmf.max() - pmf.min()
+DATA = analysis_dir() / "new_drugs"
 
-def run_pw(cv, weights, tag, tmpdir):
-    """PyReweighting C1-C3, 返回 c3 well depth"""
-    np.savetxt(f'{tmpdir}/cv.dat', cv, fmt='%.4f')
-    np.savetxt(f'{tmpdir}/weights.dat', weights, fmt='%.4f')
-    r = subprocess.run(
-        ['python3', PW, '-input', 'cv.dat', '-T', '300', '-disc', '0.1',
-         '-Emax', '20', '-cutoff', '2', '-job', 'amdweight_CE', '-weight', 'weights.dat'],
-        cwd=tmpdir, capture_output=True, text=True)
-    c3min = None
-    for line in r.stdout.splitlines():
-        if 'pmf_min-c3' in line:
-            c3min = float(line.split('=')[1])
-    wd = well_depth_from_pmf(f'{tmpdir}/pmf-c3-cv.dat.xvg')
-    return wd, c3min
+drugs = ["fluzoparib", "pamiparib", "senaparib"]
+# Truncation frames (50 ps/frame): 19 ns = 380, 22 ns = 440, 31 ns = 620
+cutoffs = {"19ns": 380, "22ns": 440, "31ns": 620}
 
-drugs = ['fluzoparib', 'pamiparib', 'senaparib']
-# 截取帧数 (50ps/帧): 19ns=380帧, 22ns=440帧, 31ns=620帧
-cutoffs = {'19ns': 380, '22ns': 440, '31ns': 620}
 
-print('=== 新药 S1 well depth: 时长截断敏感性 ===')
-print(f'{"药":<12}{"200ns(全)":>10}' + ''.join([f'{k:>10}' for k in cutoffs]))
+def c3_min_of(stdout):
+    """Parse the PyReweighting pmf_min-c3 value from its stdout."""
+    for line in stdout.splitlines():
+        if "pmf_min-c3" in line:
+            return float(line.split("=")[1])
+    return None
+
+
+print("=== Extension S1 well depth: length-truncation sensitivity ===")
+print(f'{"drug":<12}{"200ns(full)":>10}' + "".join([f"{k:>10}" for k in cutoffs]))
 for d in drugs:
-    cv = np.loadtxt(f'{DATA}/sys1_{d}_cv.dat')
-    w = np.loadtxt(f'{DATA}/sys1_{d}_weights.dat')
-    full_wd, _ = run_pw(cv, w, d, f'{DATA}/{d}')  # 全 200ns (已有结果复核)
-    results = [f'{full_wd:>10.1f}']
+    cv = np.loadtxt(DATA / f"sys1_{d}_cv.dat")
+    w = np.loadtxt(DATA / f"sys1_{d}_weights.dat")
+    full = run_pyrew(cv, w, tmp=str(DATA / d))  # full 200 ns (re-check of cached run)
+    results = [f"{full.c3:>10.1f}"]
     for k, n in cutoffs.items():
-        tmp = tempfile.mkdtemp()
-        wd, _ = run_pw(cv[:n], w[:n], f'{d}_{k}', tmp)
-        results.append(f'{wd:>10.1f}')
-    print(f'{d:<12}' + ''.join(results))
+        r = run_pyrew(cv[:n], w[:n])
+        results.append(f"{r.c3:>10.1f}")
+    print(f"{d:<12}" + "".join(results))
 print()
-print('参考(旧药 C3): veliparib 101.1 / olaparib 68.9 / rucaparib 53.4 / niraparib 51.6 / APO 42.5 / AZD5305 28.2')
-print('(旧药时长 19-31ns; 新药截断后与旧药同协议可比)')
+print("Reference (legacy C3): veliparib 101.1 / olaparib 68.9 / rucaparib 53.4 / "
+      "niraparib 51.6 / APO 42.5 / AZD5305 28.2")
+print("(legacy lengths 19-31 ns; truncated extension runs are protocol-comparable)")

@@ -7,6 +7,9 @@ from __future__ import annotations
 from pathlib import Path
 import numpy as np
 import warnings
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from common.paths import data_root
 warnings.filterwarnings("ignore")
 
 def log(msg: str) -> None:
@@ -37,7 +40,7 @@ def align_and_get_rmsd(mobile, ref_coords, mobile_coords):
 def main():
     import MDAnalysis as mda
 
-    DATA = Path("/Volumes/tjogzt4T/PARPi_data")
+    DATA = data_root()
     OUT = Path("results/analysis")
     OUT.mkdir(parents=True, exist_ok=True)
 

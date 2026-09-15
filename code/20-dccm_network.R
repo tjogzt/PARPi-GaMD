@@ -10,8 +10,14 @@ library(tidyr)
 library(patchwork)
 
 # ---- Config ----------------------------------------------------------------
+data_root <- function() {
+  r <- Sys.getenv("DATA_ROOT", unset = "")
+  if (!nzchar(r)) stop("Set DATA_ROOT env var to the trajectory data directory")
+  r
+}
+
 data_dir  <- "results/analysis"
-dcd_dir   <- "/Volumes/tjogzt4T/PARPi_data/md_analysis"
+dcd_dir   <- file.path(data_root(), "md_analysis")
 out_dir   <- "results/figures"
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 

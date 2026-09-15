@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
-# 重画 Fig_S2_CV1_Retention.pdf — C3 cumulant 管线 CV1 (蛋白-DNA) PMF
-# (Top) 7 体系 PMF 叠加  (Bottom) 井深柱状 (几乎不变 27.5-30.0)
+# Regenerate Fig_S2_CV1_Retention.pdf — C3-cumulant CV1 (protein-DNA) PMF
+# (Top) 7-system PMF overlay  (Bottom) well-depth bars (nearly invariant 27.5-30.0)
 suppressMessages({library(data.table); library(ggplot2); library(patchwork)})
 
 theme_set(theme_bw(base_size = 8, base_family = "Arial") +

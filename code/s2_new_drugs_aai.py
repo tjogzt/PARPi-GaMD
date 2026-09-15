@@ -1,51 +1,53 @@
 #!/usr/bin/env python3
-"""新药 AAI = S1 well depth (C3, DBE 权重, 200ns) / S2 CV2 (C3, DFW 权重)"""
+"""
+s2_new_drugs_aai.py — extension AAI = S1 well depth (C3, DBE) / S2 CV2 (C3, DFW)
+
+Purpose:   Compute the Allosteric Amplification Index of the extension
+           inhibitors from the reweighted C3 well depths.
+Inputs:    results/analysis/new_drugs/sys1_<drug>_{cv,weights}.dat
+           results/analysis/new_drugs_s2/<drug>/analysis_CV2.dat + analysis_weights_dfw.dat
+Outputs:   console table
+Depends:   numpy; common (pmf, paths)
+"""
+import sys
+from pathlib import Path
+
 import numpy as np
-import subprocess, tempfile
 
-PW = '/Users/taozhu/clacky_workspace/PARPi_design/tools/PyReweighting/PyReweighting-1D.py'
-S1DIR = '/Users/taozhu/clacky_workspace/PARPi_design/results/analysis/new_drugs'
-S2DIR = '/Users/taozhu/clacky_workspace/PARPi_design/results/analysis/new_drugs_s2'
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from common.paths import analysis_dir
+from common.pmf import run_pyrew
 
-def wd_from_pmf(f):
-    d = []
-    for line in open(f):
-        line = line.strip()
-        if line and not line.startswith(('#', '@')):
-            p = line.split()
-            d.append([float(p[0]), float(p[1])])
-    return np.array(d)[:, 1].max() - np.array(d)[:, 1].min()
+S1DIR = analysis_dir() / "new_drugs"
+S2DIR = analysis_dir() / "new_drugs_s2"
+
 
 def s1_cumulants(drug):
-    """S1 C1/C2/C3 (DBE 权重, 全 200ns)"""
-    cv = np.loadtxt(f'{S1DIR}/sys1_{drug}_cv.dat')
-    w = np.loadtxt(f'{S1DIR}/sys1_{drug}_weights.dat')
-    tmp = tempfile.mkdtemp()
-    np.savetxt(f'{tmp}/cv.dat', cv, fmt='%.4f')
-    np.savetxt(f'{tmp}/weights.dat', w, fmt='%.4f')
-    subprocess.run(['python3', PW, '-input', 'cv.dat', '-T', '300', '-disc', '0.1',
-                    '-Emax', '20', '-cutoff', '2', '-job', 'amdweight_CE',
-                    '-weight', 'weights.dat'], cwd=tmp, capture_output=True)
-    return [wd_from_pmf(f'{tmp}/pmf-c{i}-cv.dat.xvg') for i in (1, 2, 3)]
+    """S1 C1/C2/C3 (DBE weights, full 200 ns)."""
+    cv = np.loadtxt(S1DIR / f"sys1_{drug}_cv.dat")
+    w = np.loadtxt(S1DIR / f"sys1_{drug}_weights.dat")
+    r = run_pyrew(cv, w)
+    return [r.c1, r.c2, r.c3]
+
 
 def s2_c3(drug):
-    cv = np.loadtxt(f'{S2DIR}/{drug}/analysis_CV2.dat')
-    w = np.loadtxt(f'{S2DIR}/{drug}/analysis_weights_dfw.dat')
-    tmp = tempfile.mkdtemp()
-    np.savetxt(f'{tmp}/cv.dat', cv, fmt='%.4f')
-    np.savetxt(f'{tmp}/weights.dat', w, fmt='%.6f')
-    subprocess.run(['python3', PW, '-input', 'cv.dat', '-T', '300', '-disc', '0.1',
-                    '-Emax', '20', '-cutoff', '2', '-job', 'amdweight_CE',
-                    '-weight', 'weights.dat'], cwd=tmp, capture_output=True)
-    return wd_from_pmf(f'{tmp}/pmf-c3-cv.dat.xvg')
+    """S2 CV2 C3 (DFW weights)."""
+    cv = np.loadtxt(S2DIR / drug / "analysis_CV2.dat")
+    w = np.loadtxt(S2DIR / drug / "analysis_weights_dfw.dat")
+    r = run_pyrew(cv, w, wfmt="%.6f")
+    return r.c3
 
-print(f'{"药":<12}{"S1 C1":>8}{"S1 C2":>8}{"S1 C3":>8}{"S1 均值±SD":>12}{"S2 CV2":>8}{"AAI":>8}{"AAI范围":>12}')
-for d in ['fluzoparib', 'pamiparib', 'senaparib']:
+
+print(f'{"drug":<12}{"S1 C1":>8}{"S1 C2":>8}{"S1 C3":>8}{"S1 C3+-SD":>12}'
+      f'{"S2 CV2":>8}{"AAI":>8}{"AAI+-SD":>10}')
+for d in ["fluzoparib", "pamiparib", "senaparib"]:
     c1, c2, c3 = s1_cumulants(d)
     s2 = s2_c3(d)
-    mean, sd = np.mean([c1, c2, c3]), np.std([c1, c2, c3])
-    aai = mean / s2
-    aai_lo, aai_hi = (mean - sd) / s2, (mean + sd) / s2
-    print(f'{d:<12}{c1:>8.1f}{c2:>8.1f}{c3:>8.1f}{mean:>8.1f}±{sd:.1f}{s2:>8.1f}{aai:>8.2f}{aai_lo:>7.2f}-{aai_hi:.2f}')
+    sd = np.std([c1, c2, c3])
+    aai = c3 / s2              # manuscript convention: C3-based central value
+    aai_sd = sd / s2           # uncertainty propagated from the C1-C3 spread
+    print(f"{d:<12}{c1:>8.1f}{c2:>8.1f}{c3:>8.1f}{c3:>8.1f}+-{sd:.1f}"
+          f"{s2:>8.1f}{aai:>8.2f}{aai_sd:>8.2f}")
 
-print('\n旧体系 AAI (稿件表): tala 0.99 / AZD5305 0.96 / nira 1.68 / ruca 1.75 / ola 2.27 / veli 3.47 / APO 1.39')
+print("\nManuscript AAI (original panel): tala 0.99 / AZD5305 0.99 / nira 1.68 / "
+      "ruca 1.75 / ola 2.27 / veli 3.60 / APO 1.39")

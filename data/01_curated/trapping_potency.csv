@@ -1,0 +1,6 @@
+inhibitor,trapping_x_olaparib,pmid_primary,references,notes
+talazoparib,100,24356813,"Murai 2014 (PMID 24356813); Zandarashvili 2020 (PMID 32241924)","strongest trapper; manuscript Table refs 2,4"
+niraparib,65,23118055,"Murai 2012 (PMID 23118055); Murai 2014 (PMID 24356813)","strongest cellular trapper despite weakest catalytic IC50; refs 1,2"
+olaparib,1.0,23118055,"Murai 2012 (PMID 23118055); Murai 2014 (PMID 24356813); Zandarashvili 2020 (PMID 32241924)","reference compound (1x); refs 1,2,4"
+rucaparib,0.8,24356813,"Murai 2014 (PMID 24356813); Zandarashvili 2020 (PMID 32241924)","refs 2,4"
+veliparib,0.02,23118055,"Murai 2012 (PMID 23118055); Murai 2014 (PMID 24356813)","weakest trapper; refs 1,2"
