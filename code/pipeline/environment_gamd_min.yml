@@ -1,0 +1,13 @@
+name: gamd
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.10
+  - openmm>=8.1
+  - cuda-version=12.4
+  - numpy
+  - scipy
+  - mdtraj
+  - mdanalysis>=2.7
+  - openbabel
