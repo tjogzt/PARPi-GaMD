@@ -126,9 +126,17 @@ for (lig in names(ms_expect)) {
   stopifnot(identical(tab4$reps_1dp[tab4$ligand == lig], ms_expect[[lig]]))
 }
 for (i in seq_len(nrow(tab4))) {
-  cat(sprintf("%-11s %s | raw mean +/- sd: %.2f +/- %.2f\n",
+  cat(sprintf("%-11s %s | raw mean +/- sd: %.2f +/- %.2f | manuscript (1 dp): %.1f +/- %.1f\n",
               tab4$ligand[i], tab4$reps_1dp[i],
-              tab4$mean_raw[i], tab4$sd_raw[i]))
+              tab4$mean_raw[i], tab4$sd_raw[i],
+              round(tab4$mean_raw[i], 1), round(tab4$sd_raw[i], 1)))
+}
+# Manuscript aggregate values = raw mean/SD rounded to 1 dp (asserted hard)
+ms_mean <- c(AZD5305 = 6.8, talazoparib = 23.8, veliparib = 7.1)
+ms_sd   <- c(AZD5305 = 0.6, talazoparib = 0.1,  veliparib = 0.0)
+for (lig in names(ms_mean)) {
+  stopifnot(identical(round(tab4$mean_raw[tab4$ligand == lig], 1), ms_mean[[lig]]))
+  stopifnot(identical(round(tab4$sd_raw[tab4$ligand == lig], 1), ms_sd[[lig]]))
 }
 
 cat("\n=== Cross-Replicate Well Depth Statistics ===\n")
