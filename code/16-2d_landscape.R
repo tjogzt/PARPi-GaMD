@@ -1,6 +1,8 @@
 #!/usr/bin/env Rscript
 # 16-2d_landscape.R — 2D free energy landscapes: talazoparib vs veliparib
 # Uses CV1 (Protein-DNA) × CV2 (HD-ART) from .npy files + reweighting weights
+# Requires RETICULATE_PYTHON pointing at a numpy-enabled Python, e.g.:
+#   RETICULATE_PYTHON=/opt/anaconda3/bin/python3 Rscript code/16-2d_landscape.R
 library(ggplot2)
 library(dplyr)
 library(MASS)  # for kde2d
@@ -87,7 +89,7 @@ p_a <- ggplot(pmf_tala, aes(x = CV1, y = CV2, fill = PMF, z = PMF)) +
   scale_fill_gradientn(colors = c("#2166AC", "#92C5DE", "white", "#F4A582", "#B2182B"),
                        name = "kcal/mol", limits = c(0, 8)) +
   labs(x = "CV1: Protein-DNA Distance (Å)", y = "CV2: HD-ART Distance (Å)",
-       title = "Talazoparib (Type II, 100× trapping)") +
+       title = "Talazoparib (Type II, trapping 100× olaparib)") +
   theme_7pt + coord_fixed()
 
 # ---- Panel B: Veliparib 2D landscape ---------------------------------------
@@ -97,7 +99,7 @@ p_b <- ggplot(pmf_veli, aes(x = CV1, y = CV2, fill = PMF, z = PMF)) +
   scale_fill_gradientn(colors = c("#2166AC", "#92C5DE", "white", "#F4A582", "#B2182B"),
                        name = "kcal/mol", limits = c(0, 8)) +
   labs(x = "CV1: Protein-DNA Distance (Å)", y = "CV2: HD-ART Distance (Å)",
-       title = "Veliparib (Type III, 0.02× trapping)") +
+       title = "Veliparib (Type III, trapping 0.02× olaparib)") +
   theme_7pt + coord_fixed()
 
 # ---- Panel C: Difference map (Talazoparib - Veliparib) ----------------------

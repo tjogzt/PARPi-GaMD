@@ -75,12 +75,12 @@ p_b <- ggplot(sys_data[1:2,], aes(x = x, y = y)) +
   # S1 label
   annotate("text", x = 1, y = 2.3, label = "S1: CAT-only (HD+ART)", 
            size = 3, fontface = "bold", color = "#2166AC") +
-  annotate("text", x = 1, y = 1.95, label = "~30,000 atoms | 7 systems | 100-156 ns\nCV: HD-ART COM distance\nMeasures: allosteric response",
+  annotate("text", x = 1, y = 1.95, label = "~61,500 atoms | 10 systems | 19-200 ns\nCV: HD-ART COM distance\nMeasures: allosteric response",
            size = 2.2, color = "grey30", lineheight = 0.9) +
   # S2 label
   annotate("text", x = 1, y = 1.3, label = "S2: Full PARP1 + DNA break",
            size = 3, fontface = "bold", color = "#B2182B") +
-  annotate("text", x = 1, y = 0.95, label = "~120,000 atoms | 7 systems | 100 ns\nCV1: Protein-DNA COM | CV2: HD-ART COM\nMeasures: complete trapping environment",
+  annotate("text", x = 1, y = 0.95, label = "~286,000 atoms | 10 systems | 22-26 ns\nCV1: Protein-DNA COM | CV2: HD-ART COM\nMeasures: complete trapping environment",
            size = 2.2, color = "grey30", lineheight = 0.9) +
   # Arrow between S1 and S2
   annotate("segment", x = 1, xend = 1, y = 1.5, yend = 0.5,
@@ -97,17 +97,15 @@ p_b <- ggplot(sys_data[1:2,], aes(x = x, y = y)) +
 inhib_data <- data.frame(
   ligand       = factor(c("Talazoparib", "Niraparib", "Olaparib", "Rucaparib", "Veliparib", "AZD5305"),
                         levels = c("Talazoparib", "Niraparib", "Olaparib", "Rucaparib", "Veliparib", "AZD5305")),
-  trap_potency = c(100, 65, 1.0, 0.8, 0.02, 0.01),
+  trap_potency = c(100, 65, 1.0, 0.8, 0.02, 0.01),  # AZD5305: left-censored lower bound
   type         = c("Type II", "Type III", "Type II", "Type III", "Type III", "Unknown"),
-  color        = c("#FF7F00", "#4DAF4A", "#E41A1C", "#984EA3", "#377EB8", "darkorange"),
-  wd_S1        = c(30.4, 51.6, 68.9, 53.4, 101.1, 28.2),
-  aai          = c(0.99, 1.68, 2.27, 1.75, 3.47, 0.96),
+  bar_label    = c("100×", "65×", "1×", "0.8×", "0.02×", "<0.01×"),
   stringsAsFactors = FALSE
 )
 
 p_c <- ggplot(inhib_data, aes(x = ligand, y = trap_potency, fill = type)) +
   geom_bar(stat = "identity", width = 0.7, color = "grey30", linewidth = 0.2) +
-  geom_text(aes(label = sprintf("%.0f×", trap_potency), y = trap_potency + 3),
+  geom_text(aes(label = bar_label, y = trap_potency * 1.5),
             size = 2.5, vjust = 0) +
   scale_fill_manual(values = c("Type II" = "#E41A1C", "Type III" = "#377EB8", "Unknown" = "darkorange"), guide = "none") +
   scale_y_log10(breaks = c(0.01, 0.1, 1, 10, 100), labels = c("0.01", "0.1", "1", "10", "100")) +
@@ -117,9 +115,7 @@ p_c <- ggplot(inhib_data, aes(x = ligand, y = trap_potency, fill = type)) +
 
 # ---- Assemble Fig 1 ----
 fig1 <- (p_a / (p_b | p_c)) +
-  plot_layout(heights = c(1, 1.5)) +
-  plot_annotation(title = "Fig 1: PARP1 Trapping Mechanism — System Architecture",
-                  theme = theme(plot.title = element_text(size = 9, face = "bold", hjust = 0.5)))
+  plot_layout(heights = c(1, 1.5))
 
 cairo_pdf("results/figures/Fig1_System_Architecture.pdf", width = 190/25.4, height = 180/25.4, pointsize = 7)
 print(fig1)

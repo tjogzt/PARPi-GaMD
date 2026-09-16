@@ -153,7 +153,9 @@ p_b <- ggplot(bar_data, aes(x = label, y = well_depth, fill = system)) +
 # x = S1/S2 ratio (allosteric amplification), y = S1 well depth
 p_c <- ggplot(combined, aes(x = wd_ratio, y = wd_S1, color = label, shape = factor(shape))) +
   geom_point(size = 3, stroke = 1) +
-  geom_text(aes(label = label), hjust = -0.15, vjust = 0.5, size = 2.2, show.legend = FALSE) +
+  ggrepel::geom_text_repel(aes(label = label), size = 2.2, show.legend = FALSE,
+                           max.overlaps = Inf, min.segment.length = 0.2,
+                           box.padding = 0.3, force = 2) +
   scale_color_manual(values = setNames(sys_meta$color, sys_meta$label)) +
   scale_shape_manual(values = c("16" = 16, "17" = 17, "15" = 15), guide = "none") +
   geom_vline(xintercept = 1, linetype = "dashed", color = "grey50", linewidth = 0.3) +
@@ -189,11 +191,7 @@ p_d <- ggplot(extreme_df, aes(x = RC, y = PMF_norm, color = label)) +
 
 # ---- Assemble 4-panel master figure -----------------------------------------
 # 2×2 layout
-master <- (p_a | p_b) / (p_c | p_d) +
-  plot_annotation(
-    title = "PARP1 Trapping Mechanism: GaMD Reveals Allosteric Encoding in HD Domain",
-    theme = theme(plot.title = element_text(size = 9, face = "bold", hjust = 0.5))
-  )
+master <- (p_a | p_b) / (p_c | p_d)
 
 cairo_pdf(file.path(out_dir, "Fig_Mechanism_Master.pdf"), width = 190/25.4, height = 190/25.4, pointsize = 7)
 print(master)
@@ -213,8 +211,9 @@ p_2d <- ggplot(combined %>% filter(type != "APO"), aes(x = wd_ratio, y = wd_S1))
   annotate("text", x = 2.5, y = 108, label = "AAI > 1.5 (pro-release amplification)",
            size = 2.5, color = "#377EB8", fontface = "italic") +
   geom_point(aes(color = type, shape = type), size = 4) +
-  ggrepel::geom_text_repel(aes(label = label), size = 2.5, max.overlaps = 20,
-                           min.segment.length = 0.3, box.padding = 0.35) +
+  ggrepel::geom_text_repel(aes(label = label), size = 2.5, max.overlaps = Inf,
+                           min.segment.length = 0.3, box.padding = 0.6,
+                           force = 4, max.iter = 5000) +
   scale_color_manual(values = c("Type II" = "#E41A1C", "Type III" = "#377EB8",
                                 "Extension" = "#C23531", "Unknown" = "darkorange"),
                      name = "Classification") +
@@ -223,8 +222,7 @@ p_2d <- ggplot(combined %>% filter(type != "APO"), aes(x = wd_ratio, y = wd_S1))
                      name = "Classification") +
   geom_vline(xintercept = 1, linetype = "dashed", color = "grey50", linewidth = 0.3) +
   labs(x = "S1/S2 Well Depth Ratio (Allosteric Amplification Index)",
-       y = "S1 HD-ART Well Depth (kcal/mol)",
-       title = "Allosteric Stratification Map of PARP1 Inhibitors") +
+       y = "S1 HD-ART Well Depth (kcal/mol)") +
   theme_7pt +
   theme(legend.position = c(0.85, 0.15))
 

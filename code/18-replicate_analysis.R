@@ -147,7 +147,7 @@ original <- data.frame(
   ligand = c("talazoparib", "olaparib", "niraparib", "rucaparib", "veliparib", "AZD5305", "APO"),
   well_depth_orig = c(30.4, 68.9, 51.6, 53.4, 101.1, 28.2, 42.5),
   wd_sd_orig      = c(0.0, 14.9, 8.0, 7.2, 32.5, 0.7, 5.9),
-  type = c("Type_II", "Type_II", "Type_III", "Type_III", "Type_III", "Unknown", "APO"),
+  type = c("Type II", "Type II", "Type III", "Type III", "Type III", "Unknown", "APO"),
   stringsAsFactors = FALSE
 )
 
@@ -174,7 +174,7 @@ p2 <- ggplot(merged[!is.na(merged$wd_sd) & !is.na(merged$wd_sd_orig), ],
   geom_point(size = 3) +
   geom_text(hjust = -0.15, vjust = 0.5, size = 2.5, show.legend = FALSE) +
   geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "grey50") +
-  scale_color_manual(values = c(Type_II = "#E41A1C", Type_III = "#377EB8", Unknown = "darkorange")) +
+  scale_color_manual(values = c("Type II" = "#E41A1C", "Type III" = "#377EB8", "Unknown" = "darkorange")) +
   labs(x = "SD across C1-C3 cumulant (original)", y = "SD across replicates",
        title = "B  Cross-Trajectory vs Cumulant Uncertainty") +
   theme_7pt

@@ -8,7 +8,8 @@
 # Inputs:    data/01_curated/trapping_potency.csv    (literature trapping potency, x olaparib)
 #            results/figures/Fig_Mechanism_Data.csv  (S1 well depth wd_S1, AAI wd_ratio)
 # Outputs:   results/figures/Fig4B_spearman_data.csv
-# Depends:   base R only (>= 4.0). Run from the repository root.
+#            results/figures/Fig_Trapping_vs_Allostery.pdf (Fig. 3, two panels)
+# Depends:   R >= 4.0; packages: ggplot2, ggrepel, patchwork
 #
 # n = 5 follows the manuscript protocol: AZD5305 is excluded (trapping
 # left-censored at < 0.01x olaparib) and APO is excluded (no trapping value).
@@ -113,3 +114,53 @@ out <- data.frame(
 )
 write.csv(out, "results/figures/Fig4B_spearman_data.csv", row.names = FALSE)
 cat("\nSaved: results/figures/Fig4B_spearman_data.csv (n = 5, no AZD5305 row)\n")
+
+# --- Fig_Trapping_vs_Allostery (manuscript Fig. 3, two panels) ----------------
+library(ggplot2)
+library(ggrepel)
+library(patchwork)
+
+theme_7pt <- theme_bw(base_size = 7) +
+  theme(panel.grid.minor = element_blank(),
+        axis.text = element_text(size = 6),
+        plot.title = element_text(size = 7, face = "bold"),
+        legend.key.size = unit(0.3, "cm"))
+
+df$label <- c(talazoparib = "Talazoparib", niraparib = "Niraparib",
+              olaparib = "Olaparib", rucaparib = "Rucaparib",
+              veliparib = "Veliparib")[df$inhibitor]
+df$class <- ifelse(df$inhibitor %in% c("talazoparib", "olaparib"), "Type II", "Type III")
+
+ann <- sprintf("rho = %.2f\np = %.3f (n = %d)", rho1, p1, nrow(df))
+
+p_a <- ggplot(df, aes(x = trapping, y = well_depth, color = class)) +
+  geom_point(size = 2.5) +
+  geom_text_repel(aes(label = label), size = 2.2, max.overlaps = 10,
+                  min.segment.length = 0.2, box.padding = 0.25) +
+  scale_x_log10(breaks = c(0.01, 0.1, 1, 10, 100),
+                labels = c("0.01", "0.1", "1", "10", "100")) +
+  scale_color_manual(values = c("Type II" = "#E41A1C", "Type III" = "#377EB8")) +
+  annotate("text", x = 0.05, y = 100, label = ann, size = 2.5, hjust = 0) +
+  labs(x = "Trapping Potency (× Olaparib)", y = "S1 HD-ART Well Depth (kcal/mol)",
+       title = "A  S1 Well Depth vs Trapping", color = NULL) +
+  theme_7pt + theme(legend.position = c(0.87, 0.87))
+
+p_b <- ggplot(df, aes(x = aai, y = trapping, color = class)) +
+  geom_point(size = 2.5) +
+  geom_text_repel(aes(label = label), size = 2.2, max.overlaps = 10,
+                  min.segment.length = 0.2, box.padding = 0.25) +
+  scale_y_log10(breaks = c(0.01, 0.1, 1, 10, 100),
+                labels = c("0.01", "0.1", "1", "10", "100")) +
+  scale_color_manual(values = c("Type II" = "#E41A1C", "Type III" = "#377EB8")) +
+  annotate("text", x = 1.05, y = 60, label = ann, size = 2.5, hjust = 0) +
+  xlim(0.8, 4.0) +
+  labs(x = "Allosteric Amplification Index (S1/S2)",
+       y = "Trapping Potency (× Olaparib)",
+       title = "B  AAI vs Trapping", color = NULL) +
+  theme_7pt + theme(legend.position = "none")
+
+cairo_pdf("results/figures/Fig_Trapping_vs_Allostery.pdf",
+          width = 170/25.4, height = 75/25.4, pointsize = 7)
+print(p_a | p_b)
+dev.off()
+cat("Saved: results/figures/Fig_Trapping_vs_Allostery.pdf\n")

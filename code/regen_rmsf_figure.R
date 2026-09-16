@@ -39,7 +39,9 @@ pA <- ggplot(hd_prof, aes(resid, rmsf, color = system)) +
   geom_line(linewidth = 0.45) +
   scale_color_manual(values = cols) +
   labs(x = "HD residue (PARP1)", y = "RMSF (\u00C5)", title = "A  HD per-residue RMSF") +
-  theme(plot.title = element_text(hjust = 0, face = "bold", size = 9))
+  theme(plot.title = element_text(hjust = 0, face = "bold", size = 9),
+        legend.position = "bottom", legend.direction = "horizontal",
+        legend.text = element_text(size = 7))
 
 # (B) domain means
 dom_mean <- rmsf_all[domain %in% c("HD", "ART"),
@@ -50,6 +52,7 @@ pB <- ggplot(dom_mean, aes(system, mean, fill = domain)) +
   geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd),
                 position = position_dodge(0.8), width = 0.3, linewidth = 0.3) +
   scale_fill_manual(values = c(HD = "#C23531", ART = "#3D6BA8")) +
+  scale_y_continuous(breaks = seq(0, 5, 1), labels = function(x) sprintf("%.1f", x)) +
   labs(x = NULL, y = "Mean RMSF (\u00C5)", fill = "Domain",
        title = "B  Subdomain mean RMSF") +
   theme(plot.title = element_text(hjust = 0, face = "bold", size = 9),
