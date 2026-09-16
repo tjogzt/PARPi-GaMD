@@ -120,11 +120,14 @@ library(ggplot2)
 library(ggrepel)
 library(patchwork)
 
-theme_7pt <- theme_bw(base_size = 7) +
-  theme(panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 6),
-        plot.title = element_text(size = 7, face = "bold"),
-        legend.key.size = unit(0.3, "cm"))
+# Shared helpers: theme_7pt (single source).
+args_h <- commandArgs(trailingOnly = FALSE)
+if (length(grep("^--file=", args_h))) {
+  script_dir <- dirname(normalizePath(sub("^--file=", "", args_h[grep("^--file=", args_h)])))
+  source(file.path(script_dir, "..", "common", "helpers.R"))
+} else {
+  source("common/helpers.R")
+}
 
 df$label <- c(talazoparib = "Talazoparib", niraparib = "Niraparib",
               olaparib = "Olaparib", rucaparib = "Rucaparib",
@@ -136,6 +139,7 @@ ann <- sprintf("rho = %.2f\np = %.3f (n = %d)", rho1, p1, nrow(df))
 p_a <- ggplot(df, aes(x = trapping, y = well_depth, color = class)) +
   geom_point(size = 2.5) +
   geom_text_repel(aes(label = label), size = 2.2, max.overlaps = 10,
+                  seed = 49,
                   min.segment.length = 0.2, box.padding = 0.25) +
   scale_x_log10(breaks = c(0.01, 0.1, 1, 10, 100),
                 labels = c("0.01", "0.1", "1", "10", "100")) +
@@ -148,6 +152,7 @@ p_a <- ggplot(df, aes(x = trapping, y = well_depth, color = class)) +
 p_b <- ggplot(df, aes(x = aai, y = trapping, color = class)) +
   geom_point(size = 2.5) +
   geom_text_repel(aes(label = label), size = 2.2, max.overlaps = 10,
+                  seed = 49,
                   min.segment.length = 0.2, box.padding = 0.25) +
   scale_y_log10(breaks = c(0.01, 0.1, 1, 10, 100),
                 labels = c("0.01", "0.1", "1", "10", "100")) +

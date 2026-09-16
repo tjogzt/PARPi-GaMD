@@ -1,5 +1,5 @@
-# 01-s1_pmf_figures.R — S1 PMF comparison figures
-# HD-ART domain distance PMF curves for 6 systems
+# 09-s1_pmf_figures.R — S1 PMF comparison figures
+# HD-ART domain distance PMF curves for 7 systems (APO + 6 inhibitors)
 library(ggplot2)
 library(dplyr)
 library(patchwork)
@@ -49,7 +49,7 @@ for (i in seq_len(nrow(sys_meta))) {
 pmf_all <- bind_rows(all_pmf)
 pmf_all$ligand <- factor(pmf_all$ligand, levels = sys_meta$ligand)
 
-# ---- A. Multi-panel: one PMF per system (2×3) ------------------------------
+# ---- A. Multi-panel: one PMF per system (3×3 grid) -------------------------
 theme_pmf <- theme_bw(base_size = 7) +
   theme(
     panel.grid.minor = element_blank(),

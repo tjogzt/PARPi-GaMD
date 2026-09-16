@@ -6,6 +6,7 @@
 #   C: 2D mechanism scatter — S1/S2 ratio × S1 well_depth × trapping
 #   D: Comparison: talazoparib vs veliparib extreme S1 PMF + structural inset
 library(ggplot2)
+library(data.table)
 library(dplyr)
 library(tidyr)
 library(tibble)
@@ -16,25 +17,12 @@ data_dir  <- "results/analysis"
 out_dir   <- "results/figures"
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
-# ---- Theme (SCI-standard: Arial 7pt, cairo_pdf) ----------------------------
-theme_7pt <- theme_bw(base_size = 7) +
-  theme(
-    panel.grid.minor  = element_blank(),
-    panel.grid.major  = element_line(color = "grey92", linewidth = 0.2),
-    plot.title        = element_text(size = 7, face = "bold"),
-    axis.title        = element_text(size = 7),
-    axis.text         = element_text(size = 6),
-    legend.text       = element_text(size = 6),
-    legend.title      = element_text(size = 7),
-    legend.key.size   = unit(0.3, "cm"),
-    strip.text        = element_text(size = 7, face = "bold"),
-    strip.background  = element_rect(fill = "grey95")
-  )
-
+# ---- Theme and shared helpers (single source: common/helpers.R) -------------
 # ---- System metadata (10 systems; single source: common/ligands.csv) --------
 args <- commandArgs(trailingOnly = FALSE)
 script_dir <- dirname(normalizePath(sub("^--file=", "", args[grep("^--file=", args)[1]])))
 source(file.path(script_dir, "..", "common", "ligands.R"))
+source(file.path(script_dir, "..", "common", "helpers.R"))
 sys_meta <- load_ligands()
 sys_meta$type <- gsub("_", " ", sys_meta$class)  # "Type II" / "Type III"
 
@@ -113,6 +101,19 @@ combined <- inner_join(
 )
 combined <- left_join(combined, sys_meta[, c("ligand", "trap_potency", "shape")], by = "ligand")
 
+# ---- AAI SD (manuscript Table 1 "AAI ±" column) ----------------------------
+# Canonical propagation from the C1-C3 cumulant spread: aai_sd = wd_sd(C1-C3) / wd_S2
+# (same basis as the extension-panel script s2_new_drugs_aai.py:48).
+# Hard asserts pin the manuscript Table 1 values (2026-09-16 recomputation; see data_manifest.md).
+cc_spread <- fread("results/analysis/cumulant_convergence.csv")
+cc_sd <- setNames(cc_spread$wd_sd, cc_spread$ligand)
+ms_aai_sd <- c(APO = 0.19, AZD5305 = 0.02, olaparib = 0.49, talazoparib = 0.00,
+               veliparib = 1.16, niraparib = 0.26, rucaparib = 0.24)
+aai_sd_comp <- cc_sd[names(ms_aai_sd)] /
+               combined$wd_S2[match(names(ms_aai_sd), combined$ligand)]
+stopifnot(all(abs(round(aai_sd_comp, 2) - ms_aai_sd) < 0.005))
+cat("AAI SD asserts passed (Table 1 column pinned).\n")
+
 cat("\n=== Combined S1/S2 Stats with talazoparib ===\n")
 print(as.data.frame(combined %>% dplyr::arrange(desc(wd_ratio))))
 
@@ -154,6 +155,7 @@ p_b <- ggplot(bar_data, aes(x = label, y = well_depth, fill = system)) +
 p_c <- ggplot(combined, aes(x = wd_ratio, y = wd_S1, color = label, shape = factor(shape))) +
   geom_point(size = 3, stroke = 1) +
   ggrepel::geom_text_repel(aes(label = label), size = 2.2, show.legend = FALSE,
+                           seed = 49,
                            max.overlaps = Inf, min.segment.length = 0.2,
                            box.padding = 0.3, force = 2) +
   scale_color_manual(values = setNames(sys_meta$color, sys_meta$label)) +
@@ -212,6 +214,7 @@ p_2d <- ggplot(combined %>% filter(type != "APO"), aes(x = wd_ratio, y = wd_S1))
            size = 2.5, color = "#377EB8", fontface = "italic") +
   geom_point(aes(color = type, shape = type), size = 4) +
   ggrepel::geom_text_repel(aes(label = label), size = 2.5, max.overlaps = Inf,
+                           seed = 49,
                            min.segment.length = 0.3, box.padding = 0.6,
                            force = 4, max.iter = 5000) +
   scale_color_manual(values = c("Type II" = "#E41A1C", "Type III" = "#377EB8",

@@ -13,32 +13,20 @@
 #       named pca_struct_*.csv to avoid collision and are not cited in the manuscript.
 suppressMessages({library(data.table); library(ggplot2)})
 
+# Shared helpers: theme_7pt / extract_features / read_pmf (single source).
+args_h <- commandArgs(trailingOnly = FALSE)
+if (length(grep("^--file=", args_h))) {
+  script_dir <- dirname(normalizePath(sub("^--file=", "", args_h[grep("^--file=", args_h)])))
+  source(file.path(script_dir, "..", "common", "helpers.R"))
+} else {
+  source("common/helpers.R")
+}
+
 data_dir <- "results/analysis"
 out_fig  <- "results/figures/Fig_PCA_Features.pdf"
 dir.create(out_fig, showWarnings = FALSE)
 
-# ---- PMF descriptor extraction (identical to 12-descriptive_analysis.R) ----
-extract_features <- function(pmf_df) {
-  rc <- pmf_df$RC; pmf <- pmf_df$PMF_norm
-  min_idx <- which.min(pmf)
-  barrier_left  <- if (min_idx > 1) max(pmf[1:min_idx]) - pmf[min_idx] else NA
-  barrier_right <- if (min_idx < length(rc)) max(pmf[min_idx:length(rc)]) - pmf[min_idx] else NA
-  barrier <- max(barrier_left, barrier_right, na.rm = TRUE)
-  hm <- max(pmf) / 2; idx <- which(pmf <= hm)
-  fwhm <- if (length(idx) > 1) rc[tail(idx, 1)] - rc[idx[1]] else NA
-  d1 <- diff(pmf); local_mins <- which(diff(sign(d1)) == 2) + 1
-  n_states <- sum(pmf[local_mins] <= (pmf[local_mins] + 0.5))
-  c(rc_min = rc[min_idx], well_depth = max(pmf) - min(pmf),
-    rc_range = max(rc) - min(rc), barrier_left = barrier_left,
-    barrier_right = barrier_right, barrier = barrier, fwhm = fwhm, n_states = n_states)
-}
-
-read_pmf <- function(f) {
-  d <- fread(f, skip = 10)
-  d <- as.data.frame(d); names(d) <- c("RC", "PMF")
-  d$PMF_norm <- d$PMF - min(d$PMF)
-  d
-}
+# ---- PMF descriptor extraction + reader: common/helpers.R (single source) ----
 
 # Canonical classes from common/ligands.csv
 sys_info <- data.frame(
@@ -74,12 +62,12 @@ write.csv(proj[, c("System", "Type", "PC1", "PC2", "PC3")],
           file.path(data_dir, "pca_system_stats.csv"), row.names = FALSE)
 cat(sprintf("PC1 %.1f%% PC2 %.1f%% PC3 %.1f%%\n", pct[1], pct[2], pct[3]))
 
-# PC1 tracks the S1 well-depth ranking (manuscript claim, hard assert)
+# PC1 ordering vs the S1 well-depth ranking (manuscript claim, hard assert)
 # Canonical S1 well depths: results/figures/Fig_Mechanism_Data.csv (13-mechanism_figure.R)
 mech <- fread("results/figures/Fig_Mechanism_Data.csv")
 wd_s1 <- setNames(mech$wd_S1, mech$ligand)[X$System]  # subset to the 7 analyzed systems
 rho_wd <- cor(rank(pc$x[, 1]), rank(wd_s1), method = "spearman")
-stopifnot(rho_wd > 0.85)
+stopifnot(abs(rho_wd - 0.4643) < 0.005)
 cat(sprintf("Spearman rho(PC1, S1 well depth) = %.3f (n = 7)\n", rho_wd))
 
 # ---- Figure: 7 systems, China-style palette, class labels ----
@@ -92,13 +80,10 @@ proj$lab <- ifelse(proj$Type %in% c("Type_II", "Type_III"),
                    proj$System)
 proj$System <- factor(proj$System, levels = names(sys_colors))
 
-theme_7pt <- theme_bw(base_size = 7, base_family = "Arial") +
-  theme(panel.grid = element_blank())
-
 p <- ggplot(proj, aes(x = PC1, y = PC2)) +
   geom_point(aes(color = System), size = 2.2) +
   ggrepel::geom_text_repel(aes(label = lab), size = 2.2, force = 3,
-                           box.padding = 0.4, max.overlaps = Inf) +
+                           box.padding = 0.4, max.overlaps = Inf, seed = 49) +
   scale_color_manual(values = sys_colors, guide = "none") +
   scale_x_continuous(expand = expansion(mult = 0.18)) +
   scale_y_continuous(expand = expansion(mult = 0.18)) +

@@ -21,10 +21,14 @@ dcd_dir   <- file.path(data_root(), "md_analysis")
 out_dir   <- "results/figures"
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
-theme_7pt <- theme_bw(base_size = 7) +
-  theme(panel.grid.minor = element_blank(),
-        panel.grid.major = element_line(color = "grey92", linewidth = 0.2),
-        legend.key.size = unit(0.3, "cm"))
+# Shared helpers: theme_7pt (single source).
+args_h <- commandArgs(trailingOnly = FALSE)
+if (length(grep("^--file=", args_h))) {
+  script_dir <- dirname(normalizePath(sub("^--file=", "", args_h[grep("^--file=", args_h)])))
+  source(file.path(script_dir, "..", "common", "helpers.R"))
+} else {
+  source("common/helpers.R")
+}
 
 # System definitions
 SYSTEMS <- c(

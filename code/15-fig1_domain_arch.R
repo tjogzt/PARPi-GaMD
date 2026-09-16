@@ -7,10 +7,14 @@ library(patchwork)
 
 dir.create("results/figures", showWarnings = FALSE, recursive = TRUE)
 
-theme_7pt <- theme_bw(base_size = 7) +
-  theme(panel.grid.minor = element_blank(),
-        plot.title = element_text(size = 7, face = "bold"),
-        axis.text = element_text(size = 6))
+# Shared helpers: theme_7pt (single source).
+args_h <- commandArgs(trailingOnly = FALSE)
+if (length(grep("^--file=", args_h))) {
+  script_dir <- dirname(normalizePath(sub("^--file=", "", args_h[grep("^--file=", args_h)])))
+  source(file.path(script_dir, "..", "common", "helpers.R"))
+} else {
+  source("common/helpers.R")
+}
 
 # ---- Panel A: Domain Architecture Schematic ----
 domain_data <- data.frame(

@@ -125,7 +125,7 @@ make_scatter <- function(x_col, y_col, x_lab, y_lab, title_str) {
   
   ggplot(sub, aes_string(x = x_col, y = y_col)) +
     geom_point(aes(color = name), size = 2.5) +
-    geom_text_repel(aes(label = name), size = 2, max.overlaps = 6) +
+    geom_text_repel(aes(label = name), size = 2, max.overlaps = 6, seed = 49) +
     geom_smooth(method = "lm", se = TRUE, linewidth = 0.5, color = "grey50", alpha = 0.3) +
     scale_color_manual(values = c(
       "Talazoparib" = "#377EB8", "Olaparib" = "#4DAF4A",

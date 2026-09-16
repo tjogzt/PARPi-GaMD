@@ -8,9 +8,14 @@
 # This script is the reproducible figure layer (CSV -> figure).
 suppressMessages({library(data.table); library(ggplot2)})
 
-theme_7pt <- theme_bw(base_size = 7, base_family = "Arial") +
-  theme(panel.grid = element_blank(), legend.key.size = unit(0.3, "cm"),
-        legend.position = "bottom")
+# Shared helpers: theme_7pt (single source).
+args_h <- commandArgs(trailingOnly = FALSE)
+if (length(grep("^--file=", args_h))) {
+  script_dir <- dirname(normalizePath(sub("^--file=", "", args_h[grep("^--file=", args_h)])))
+  source(file.path(script_dir, "..", "common", "helpers.R"))
+} else {
+  source("common/helpers.R")
+}
 
 cv <- fread("results/tables/pmf_convergence.csv")
 stopifnot(all(c("inhibitor", "replicate", "ns", "well_depth") %in% names(cv)))
@@ -46,7 +51,8 @@ p <- ggplot(cv, aes(x = ns, y = well_depth)) +
   scale_color_manual(values = inib_colors, name = NULL) +
   scale_fill_manual(values = inib_colors, guide = "none") +
   labs(x = "Cumulative production time (ns)", y = "S1 Well Depth (kcal/mol)") +
-  theme_7pt
+  theme_7pt +
+  theme(legend.position = "bottom")
 
 cairo_pdf("results/figures/Fig_SI_PMF_Convergence.pdf", width = 4.5, height = 3.4, pointsize = 7)
 print(p)

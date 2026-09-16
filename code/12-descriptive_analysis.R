@@ -6,9 +6,14 @@ library(tidyr)
 library(tibble)
 library(patchwork)
 
-theme_7pt <- theme_bw(base_size = 7) +
-  theme(panel.grid.minor = element_blank(), legend.key.size = unit(0.3, "cm"),
-        legend.text = element_text(size = 6), strip.text = element_text(size = 7, face = "bold"))
+# Shared helpers: theme_7pt / extract_features / read_pmf (single source).
+args_h <- commandArgs(trailingOnly = FALSE)
+if (length(grep("^--file=", args_h))) {
+  script_dir <- dirname(normalizePath(sub("^--file=", "", args_h[grep("^--file=", args_h)])))
+  source(file.path(script_dir, "..", "common", "helpers.R"))
+} else {
+  source("common/helpers.R")
+}
 
 dir.create("results/figures", showWarnings = FALSE, recursive = TRUE)
 
@@ -21,33 +26,8 @@ read_xvg <- function(path) {
   df
 }
 
-extract_features <- function(pmf_df) {
-  rc  <- pmf_df$RC
-  pmf <- pmf_df$PMF_norm
-  min_idx <- which.min(pmf)
-  
-  tibble(
-    rc_min       = rc[min_idx],
-    well_depth   = max(pmf) - min(pmf),
-    rc_range     = max(rc) - min(rc),
-    # Barrier: max left or right of minimum
-    barrier_left = if (min_idx > 1) max(pmf[1:min_idx]) - pmf[min_idx] else NA,
-    barrier_right= if (min_idx < length(rc)) max(pmf[min_idx:length(rc)]) - pmf[min_idx] else NA,
-    barrier      = max(barrier_left, barrier_right, na.rm = TRUE),
-    # FWHM basin width
-    fwhm = {
-      hm <- max(pmf) / 2
-      idx <- which(pmf <= hm)
-      if (length(idx) > 1) rc[tail(idx,1)] - rc[idx[1]] else NA
-    },
-    # # of local minima > 0.5 kcal depth
-    n_states = {
-      d1 <- diff(pmf)
-      local_mins <- which(diff(sign(d1)) == 2) + 1
-      sum(pmf[local_mins] <= (pmf[local_mins] + 0.5))
-    }
-  )
-}
+# extract_features comes from common/helpers.R (single source).
+
 
 # ---- 2. Load all systems ----------------------------------------------------
 systems <- list(
@@ -71,7 +51,7 @@ systems <- list(
 
 features <- lapply(systems, function(s) {
   df <- read_xvg(s$path)
-  feat <- extract_features(df)
+  feat <- as.list(extract_features(df))
   feat$ligand <- s$ligand
   feat$system <- s$system
   feat$n_points <- nrow(df)
@@ -163,7 +143,8 @@ write.csv(ratio_df, "results/analysis/S1_S2_ratios.csv", row.names = FALSE)
 # ---- 8. Summary figure: S1 well_depth vs S2 well_depth ---
 p_ratio <- ggplot(ratio_df, aes(x = well_depth_S2, y = well_depth_S1, label = ligand)) +
   geom_point(aes(color = ligand), size = 2.5) +
-  ggrepel::geom_text_repel(size = 2.5, force = 2, box.padding = 0.35, max.overlaps = Inf) +
+  ggrepel::geom_text_repel(size = 2.5, force = 2, box.padding = 0.35, max.overlaps = Inf,
+                          seed = 49) +
   geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "grey50") +
   scale_color_manual(values = c("APO" = "grey40", "AZD5305" = "darkorange",
                                  "Olaparib" = "#E41A1C", "Talazoparib" = "#FF7F00",

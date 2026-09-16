@@ -15,9 +15,14 @@ data_dir  <- "results/analysis"
 out_dir   <- "results/figures"
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
-theme_7pt <- theme_bw(base_size = 7) +
-  theme(panel.grid.minor = element_blank(),
-        plot.title = element_text(size = 7, face = "bold"))
+# Shared helpers: theme_7pt (single source).
+args_h <- commandArgs(trailingOnly = FALSE)
+if (length(grep("^--file=", args_h))) {
+  script_dir <- dirname(normalizePath(sub("^--file=", "", args_h[grep("^--file=", args_h)])))
+  source(file.path(script_dir, "..", "common", "helpers.R"))
+} else {
+  source("common/helpers.R")
+}
 
 # ---- Load CV data and compute 2D PMF ---------------------------------------
 compute_2d_pmf <- function(system_name, ligand_label) {

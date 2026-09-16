@@ -4,7 +4,9 @@
 
 AUTODL="root@connect.westc.seetacloud.com"
 PORT="22250"
-LOCAL="$HOME/clacky_workspace/PARPi_design/runs"
+# Download target: the repository's runs/ directory (repo-root-relative; no
+# machine-specific absolute paths, so this script is portable).
+LOCAL="$(cd "$(dirname "$0")/.." && pwd)/runs"
 
 mkdir -p "$LOCAL"
 

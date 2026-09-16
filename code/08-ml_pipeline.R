@@ -66,7 +66,10 @@ extract_pmf_features <- function(pmf_df) {
   right_max <- if (min_idx < length(pmf)) max(pmf[min_idx:length(pmf)]) else 0
   barrier   <- max(left_max, right_max) - pmf[min_idx]
   
-  # Number of metastable states
+  # Number of metastable states (plain local-minimum count).
+  # Note: 12-descriptive_analysis.R / 28-pca_features.R wrap this in a
+  # "pmf <= pmf + 0.5" filter that is tautological and never fires — the same quantity
+  # results. See data_manifest.md (n_states semantics).
   d1 <- diff(pmf)
   minima_idx <- which(diff(sign(d1)) == 2) + 1
   n_states   <- length(minima_idx)
@@ -328,7 +331,8 @@ run_xgboost_loocv <- function(ml_data, n_folds = NULL, seed = 49) {
     subsample        = 0.8,
     colsample_bytree = 0.8,
     min_child_weight = 1,
-    nthread          = 2
+    nthread          = 2,
+    seed             = 49
   )
   
   nrounds <- 50
@@ -421,7 +425,8 @@ run_lgb_loocv <- function(ml_data, n_folds = NULL, seed = 49) {
     num_leaves     = max(2, min(7, 2^(min(3, n - 1)) - 1)),
     min_data_in_leaf = 1,
     verbose        = -1,
-    num_threads    = 2
+    num_threads    = 2,
+    seed           = 49
   )
   
   nrounds <- 50
@@ -506,7 +511,8 @@ train_full_xgboost <- function(ml_data, seed = 49) {
     eta              = 0.1,
     subsample        = 0.8,
     colsample_bytree = 0.8,
-    nthread          = 2
+    nthread          = 2,
+    seed             = 49
   )
   
   dtrain <- xgb.DMatrix(ml_data$x, label = ml_data$y)
@@ -524,7 +530,8 @@ train_full_lightgbm <- function(ml_data, seed = 49) {
     learning_rate  = 0.1,
     num_leaves     = min(7, 2^(min(3, n)) - 1),
     verbose        = -1,
-    num_threads    = 2
+    num_threads    = 2,
+    seed           = 49
   )
   
   dtrain <- lgb.Dataset(data = ml_data$x, label = ml_data$y)

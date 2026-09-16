@@ -28,11 +28,14 @@ out_dir  <- "results/figures"
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
 # ---- Config ----
-theme_7pt <- theme_bw(base_size = 7) +
-  theme(panel.grid.minor = element_blank(),
-        plot.title = element_text(size = 7, face = "bold"),
-        axis.text = element_text(size = 6),
-        legend.key.size = unit(0.3, "cm"))
+# Shared helpers: theme_7pt (single source).
+args_h <- commandArgs(trailingOnly = FALSE)
+if (length(grep("^--file=", args_h))) {
+  script_dir <- dirname(normalizePath(sub("^--file=", "", args_h[grep("^--file=", args_h)])))
+  source(file.path(script_dir, "..", "common", "helpers.R"))
+} else {
+  source("common/helpers.R")
+}
 
 # ---- Minimal .npy reader (1-D numeric arrays, little-endian f8/f4) ----
 read_npy <- function(path) {
