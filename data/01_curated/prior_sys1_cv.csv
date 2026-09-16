@@ -1,0 +1,4 @@
+system,cv_mean,cv_sd,source
+veliparib,23.98,0.35,"Prior S1 study (CAT-only, early trajectory version; superseded by the current 200-ns runs — see results/archive/README.md)"
+olaparib,24.29,0.33,"Prior S1 study (CAT-only, early trajectory version; superseded by the current 200-ns runs — see results/archive/README.md)"
+talazoparib,23.75,0.34,"Prior S1 study (CAT-only, early trajectory version; superseded by the current 200-ns runs — see results/archive/README.md)"

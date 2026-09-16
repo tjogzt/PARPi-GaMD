@@ -75,10 +75,10 @@ write.csv(proj[, c("System", "Type", "PC1", "PC2", "PC3")],
 cat(sprintf("PC1 %.1f%% PC2 %.1f%% PC3 %.1f%%\n", pct[1], pct[2], pct[3]))
 
 # PC1 tracks the S1 well-depth ranking (manuscript claim, hard assert)
-wd_s1 <- c(APO = 42.4985895882366, AZD5305 = 28.1879423334875, olaparib = 68.8807354510918,
-           talazoparib = 30.4094036139146, veliparib = 101.051517562577,
-           niraparib = 51.6115176640968, rucaparib = 53.410090564278)
-rho_wd <- cor(rank(pc$x[match(names(wd_s1), X$System), 1]), rank(wd_s1), method = "spearman")
+# Canonical S1 well depths: results/figures/Fig_Mechanism_Data.csv (13-mechanism_figure.R)
+mech <- fread("results/figures/Fig_Mechanism_Data.csv")
+wd_s1 <- setNames(mech$wd_S1, mech$ligand)[X$System]  # subset to the 7 analyzed systems
+rho_wd <- cor(rank(pc$x[, 1]), rank(wd_s1), method = "spearman")
 stopifnot(rho_wd > 0.85)
 cat(sprintf("Spearman rho(PC1, S1 well depth) = %.3f (n = 7)\n", rho_wd))
 

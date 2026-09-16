@@ -16,6 +16,7 @@
 # the standalone CAT-domain receptor 6VKK (results/replicates/rep_eb47_6vkk/)
 # and is reported through the main data table footnote (22.2 kcal/mol).
 
+library(data.table)
 library(ggplot2)
 library(dplyr)
 library(tidyr)
@@ -161,11 +162,17 @@ cat("\n=== Cross-Replicate Well Depth Statistics ===\n")
 print(as.data.frame(cross_stats), row.names = FALSE)
 
 # ---- Comparison with the original cumulant-pipeline values ----
+# Canonical sources: results/analysis/cumulant_convergence.csv (wd_C3, wd_sd) +
+# class from common/ligands.csv
+cc  <- fread("results/analysis/cumulant_convergence.csv")
+cls <- fread("common/ligands.csv")
+cls_map <- setNames(gsub("_", " ", cls$class), cls$ligand)
+
 original <- data.frame(
-  ligand = c("talazoparib", "olaparib", "niraparib", "rucaparib", "veliparib", "AZD5305", "APO"),
-  well_depth_orig = c(30.4, 68.9, 51.6, 53.4, 101.1, 28.2, 42.5),
-  wd_sd_orig      = c(0.0, 14.9, 8.0, 7.2, 32.5, 0.7, 5.9),
-  type = c("Type II", "Type II", "Type III", "Type III", "Type III", "Unknown", "APO"),
+  ligand          = cc$ligand,
+  well_depth_orig = cc$wd_C3,
+  wd_sd_orig      = cc$wd_sd,
+  type            = unname(cls_map[cc$ligand]),
   stringsAsFactors = FALSE
 )
 

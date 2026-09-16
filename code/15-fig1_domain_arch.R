@@ -1,5 +1,6 @@
 #!/usr/bin/env Rscript
 # Fig 1: PARP1 domain architecture + system schematics + inhibitor panel
+library(data.table)
 library(ggplot2)
 library(dplyr)
 library(patchwork)
@@ -94,12 +95,23 @@ p_b <- ggplot(sys_data[1:2,], aes(x = x, y = y)) +
                     axis.title = element_blank(), panel.grid = element_blank())
 
 # ---- Panel C: Inhibitor Structures + Trapping Data ----
+# Canonical sources: data/01_curated/trapping_potency.csv (x olaparib, PMIDs in file);
+# class from common/ligands.csv. AZD5305: left-censored <0.01x (Pires 2025, PMID 40021124).
+trap_csv <- fread("data/01_curated/trapping_potency.csv")
+cls_csv  <- fread("common/ligands.csv")
+cls_map  <- setNames(cls_csv$class, cls_csv$ligand)
+
+inhib_names <- c("Talazoparib", "Niraparib", "Olaparib", "Rucaparib", "Veliparib", "AZD5305")
+trap_vals <- setNames(trap_csv$trapping_x_olaparib, trap_csv$inhibitor)[tolower(inhib_names)]
+trap_vals[is.na(trap_vals)] <- 0.01  # AZD5305 left-censored lower bound
+cls_vals <- cls_map[c("talazoparib", "niraparib", "olaparib", "rucaparib", "veliparib", "AZD5305")]
+
 inhib_data <- data.frame(
-  ligand       = factor(c("Talazoparib", "Niraparib", "Olaparib", "Rucaparib", "Veliparib", "AZD5305"),
-                        levels = c("Talazoparib", "Niraparib", "Olaparib", "Rucaparib", "Veliparib", "AZD5305")),
-  trap_potency = c(100, 65, 1.0, 0.8, 0.02, 0.01),  # AZD5305: left-censored lower bound
-  type         = c("Type II", "Type III", "Type II", "Type III", "Type III", "Unknown"),
-  bar_label    = c("100×", "65×", "1×", "0.8×", "0.02×", "<0.01×"),
+  ligand       = factor(inhib_names, levels = inhib_names),
+  trap_potency = unname(trap_vals),
+  type         = gsub("_", " ", unname(cls_vals)),
+  bar_label    = ifelse(inhib_names == "AZD5305", "<0.01×",
+                        sprintf("%g×", unname(trap_vals))),
   stringsAsFactors = FALSE
 )
 

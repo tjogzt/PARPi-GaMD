@@ -102,14 +102,13 @@ p3 <- ggplot(cv_ts, aes(x = time_ns, y = cv, color = system)) +
   )
 
 # ===== Panel D: Literature comparison =====
+# "This work" rows: computed from the current trajectories (cv_summary above);
+# "Prior (sys1)" rows: curated CSV with provenance (early trajectory version).
 cv_summary <- cv_data[, .(cv_mean = mean(cv), cv_sd = sd(cv)), by = system]
-lit <- data.table(
-  system = factor(c("APO", "veliparib", "olaparib", "talazoparib", "AZD5305"),
-                  levels = c("APO", "veliparib", "olaparib", "talazoparib", "AZD5305")),
-  cv_mean = c(23.25, 23.98, 24.29, 23.75, 22.66),
-  cv_sd   = c(0.38, 0.35, 0.33, 0.34, 0.35),
-  source  = c("This work", "Prior (sys1)", "Prior (sys1)", "Prior (sys1)", "This work")
-)
+lit_prior <- fread("data/01_curated/prior_sys1_cv.csv")
+lit_this  <- cv_summary[, .(system, cv_mean, cv_sd)][, source := "This work"]
+lit <- rbind(lit_prior[, .(system, cv_mean, cv_sd, source)], lit_this)
+lit[, system := factor(system, levels = c("APO", "veliparib", "olaparib", "talazoparib", "AZD5305"))]
 
 p4 <- ggplot(lit, aes(x = cv_mean, y = reorder(system, cv_mean, decreasing = TRUE),
                        color = source)) +

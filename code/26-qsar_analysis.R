@@ -8,6 +8,7 @@
 # Output: results/figures/Fig_QSAR.pdf
 #         results/analysis/qsar_correlation.csv
 
+library(data.table)
 library(ggplot2)
 library(dplyr)
 library(tidyr)
@@ -25,44 +26,53 @@ theme_7pt <- theme_bw(base_size = 7) +
         panel.grid.major = element_line(color = "grey92", linewidth = 0.2),
         legend.key.size = unit(0.3, "cm"))
 
-# ---- Inhibitor properties (from PubChem / literature) ----------------------
-# MW: molecular weight (Da), logP: octanol-water partition coefficient,
-# HBD: H-bond donors, HBA: H-bond acceptors, PSA: polar surface area (Å²),
-# RotB: rotatable bonds, Rings: ring count
+# ---- Inhibitor properties (canonical source: seed dataset, RDKit descriptors) ----
+six <- c("Talazoparib", "Olaparib", "Niraparib", "Rucaparib", "Veliparib", "AZD5305")
+seed <- fread("data/01_curated/trapping_seed_dataset.csv")
+# AZD5305 is stored under its INN "saruparib" (synonyms column: AZD5305, CID 155586901)
+seed_key <- ifelse(tolower(six) == "azd5305", "saruparib", tolower(six))
+seed6 <- seed[match(seed_key, tolower(seed$name))]
+stopifnot(all(!is.na(seed6$name)))
+
+# Trapping potency (x olaparib): canonical curated CSV; AZD5305 left-censored <0.01 (Pires 2025)
+trap <- fread("data/01_curated/trapping_potency.csv")
+trap_map <- setNames(trap$trapping_x_olaparib, trap$inhibitor)
+trap_vals <- unname(trap_map[tolower(six)])
+trap_vals[is.na(trap_vals)] <- 0.01  # AZD5305: left-censored lower bound, not in the curated table
+
 inhibitors <- data.frame(
-  name = c("Talazoparib", "Olaparib", "Niraparib", "Rucaparib", "Veliparib", "AZD5305"),
-  smiles = c(
-    "CN1CC[C@H]2CN(c3c(F)cc4[nH]c(=O)cc(-c5ccc6c(c5)CNC6=O)c4c3F)C[C@@]12c1ccccc1F",
-    "Cc1cccc2c1C(=O)N(CC1CC1)c1ccc(F)cc1-2",
-    "c1cc(ccc1C(=O)N)N1CCc2c(c3[nH]c(c4c3CCN(C(=O)c3cccnc3)C4)c3cccc(c3F)C(F)(F)F)c21",
-    "CNc1ncc2c(n1)c1ccc(F)cc1c1c2CCc2c1ccc(c2)C(F)(F)F",
-    "Cc1ccc(cc1)CN1C(=O)c2c(N1c1cccc(c1)F)ncn2",
-    "O=C(Nc1cnn(C)c1=O)c1cnc2c(c1)CC[C@@H](C1)CN1c1ncc(F)c(-c3cc(F)ccn3)n1"
-  ),
-  MW = c(380.4, 434.5, 293.4, 323.4, 231.2, 476.4),
-  logP = c(3.2, 2.1, 2.0, 2.8, 1.5, 2.3),
-  n_HBD = c(2, 1, 2, 2, 0, 1),
-  n_HBA = c(8, 9, 5, 6, 6, 12),
-  TPSA = c(86.4, 87.6, 67.2, 66.4, 59.2, 114.5),
-  n_rotatable = c(2, 3, 2, 2, 2, 4),
-  n_rings = c(5, 3, 4, 5, 3, 5),
-  n_heavy = c(28, 31, 21, 23, 17, 35),
-  trapping_potency = c(100, 10, 25, 2.5, 0.02, 15),  # relative to veliparib
-  log10_trapping = c(2.0, 1.0, 1.4, 0.4, -1.7, 1.18),
+  name = six,
+  MW = seed6$mw, logP = seed6$clogp,
+  n_HBD = seed6$hbd, n_HBA = seed6$hba, TPSA = seed6$tpsa,
+  n_rotatable = seed6$rotatable_bonds, n_rings = seed6$n_rings,
+  n_heavy = seed6$n_heavy,
+  trapping_potency = trap_vals,
+  log10_trapping = log10(trap_vals),
   stringsAsFactors = FALSE
 )
 
-# ---- PMF features (from existing analysis) ---------------------------------
+# ---- PMF features (loaded from canonical analysis outputs) ------------------
+mech <- fread("results/figures/Fig_Mechanism_Data.csv")          # wd_S1/wd_S2/wd_ratio/rcmin_S1
+feat <- fread("results/analysis/pmf_features_summary.csv")       # S1 barrier (12-descriptive_analysis.R)
+rmsf <- fread("results/analysis/rmsf_recomp/s2_rmsf_dccm_uniform.csv")  # RMSF + DCCM
+pcs  <- fread("results/analysis/pca_struct_system_stats.csv")    # structural-PCA total variance
+
+mech6 <- mech[match(tolower(six), tolower(mech$ligand))]
+feat6 <- feat[system == "S1"][match(tolower(six), tolower(feat$ligand))]
+rmsf6 <- rmsf[match(tolower(six), tolower(rmsf$system))]
+pcs6  <- pcs[match(six, pcs$System)]
+stopifnot(all(!is.na(mech6$ligand)), all(!is.na(rmsf6$system)), all(!is.na(pcs6$System)))
+
 pmf_features <- data.frame(
-  name = c("Talazoparib", "Olaparib", "Niraparib", "Rucaparib", "Veliparib", "AZD5305"),
-  S1_well_depth = c(30.4, 68.9, 51.6, 53.4, 101.1, 28.2),
-  S2_well_depth = c(29.7, 30.6, 29.1, 29.5, 28.4, 28.2),
-  S1_S2_ratio = c(0.99, 2.27, 1.68, 1.75, 3.47, 0.96),
-  S1_min_position = c(23.3, 23.3, 25.1, 22.2, 22.4, 22.8),
-  S1_barrier = c(0, 21.7, 3.4, 11.9, 12.1, 2.3),  # from transition barrier analysis
-  S2_mean_RMSF = c(3.32, 3.45, 3.28, 3.60, 3.22, 3.55),
-  hd_art_corr = c(0.820, 0.565, 0.585, 0.776, 0.837, 0.845),  # DCCM
-  s2_pca_variance = c(9538, 4623, 2767, 7176, 9447, 17181),  # structural-PCA total variance (25-pca_analysis.R -> pca_struct_system_stats.csv; internal only, not manuscript-cited)
+  name = six,
+  S1_well_depth   = mech6$wd_S1,
+  S2_well_depth   = mech6$wd_S2,
+  S1_S2_ratio     = mech6$wd_ratio,
+  S1_min_position = mech6$rcmin_S1,
+  S1_barrier      = feat6$barrier,
+  S2_mean_RMSF    = rowMeans(cbind(rmsf6$HD_rmsf, rmsf6$ART_rmsf)),
+  hd_art_corr     = rmsf6$dccm_abs,   # DCCM mean |r|
+  s2_pca_variance = pcs6$total_var,   # structural PCA (25-pca_analysis.R); internal only, not manuscript-cited
   stringsAsFactors = FALSE
 )
 
@@ -235,9 +245,9 @@ cat(sprintf("  n_HBA=%d (mean=%.1f), n_rings=%d (mean=%.1f)\n",
             azd_out$n_rings, mean(df$n_rings[df$name != "AZD5305"])))
 cat(sprintf("  S1_well_depth=%.1f (Type II mean=%.1f)\n",
             azd_out$S1_well_depth, 
-            mean(df$S1_well_depth[df$name != "AZD5305" & df$name != "Veliparib"])))
-cat(sprintf("  PCA_variance=%d (mean=%d)\n",
+            mean(df$S1_well_depth[df$name %in% c("Talazoparib", "Olaparib")])))
+cat(sprintf("  PCA_variance=%.0f (mean=%.0f)\n",
             azd_out$s2_pca_variance, 
-            as.integer(mean(df$s2_pca_variance[df$name != "AZD5305"]))))
+            mean(df$s2_pca_variance[df$name != "AZD5305"])))
 
 message("===== QSAR analysis complete =====")
