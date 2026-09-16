@@ -1,4 +1,11 @@
 #!/usr/bin/env python3
+"""LEGACY (2026-09-17): extension AAI console values computed with the old DFW
+S2 denominators. Superseded by the textbook-DBE reanalysis
+(scripts/reweight_s2_dbe.py, scripts/reconstruct_s2_dbe.py,
+scripts/consolidate_s2_dbe.py -> results/analysis/s2_dbe_final.csv), whose AAI
+values are the ones cited in the revised manuscript. Kept for provenance of the
+original extension-panel protocol only; do not cite its printed AAI values.
+"""
 """
 s2_new_drugs_aai.py — extension AAI = S1 well depth (C3, DBE) / S2 CV2 (C3, DFW)
 

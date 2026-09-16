@@ -24,8 +24,24 @@ if (length(grep("^--file=", args_h))) {
   source("common/helpers.R")
 }
 
-# ---- Load CV data and compute 2D PMF ---------------------------------------
-compute_2d_pmf <- function(system_name, ligand_label) {
+# ---- Load precomputed 2D cumulant-expansion PMF grids (DBE reweighting) ----
+# Grids are produced by scripts/compute_2d_dbe.py (PyReweighting-2D,
+# amdweight_CE, textbook e^{beta dV_D} weights; consistent with the S2 PMF
+# pipeline of the revised manuscript).
+load_2d_grid <- function(ligand, ligand_label) {
+  z <- np$load(file.path(data_dir, paste0("2d_c3_", ligand, ".npz")))
+  xs <- as.numeric(z$f[["X"]])
+  ys <- as.numeric(z$f[["Y"]])
+  F  <- as.numeric(z$f[["F"]])
+  df <- expand.grid(CV1 = xs, CV2 = ys)
+  df$PMF <- F - min(F, na.rm = TRUE)
+  df$ligand <- ligand_label
+  df
+}
+
+# ---- Legacy weighted-histogram implementation (retired 2026-09; kept for ----
+# ---- provenance of the pre-DBE figures) --------------------------------------
+compute_2d_pmf_legacy <- function(system_name, ligand_label) {
   # Load CV1 and CV2 numpy arrays
   cv1 <- np$load(file.path(data_dir, paste0(system_name, "_CV1_cv.npy")))
   cv2 <- np$load(file.path(data_dir, paste0(system_name, "_CV2_cv.npy")))
@@ -78,14 +94,10 @@ compute_2d_pmf <- function(system_name, ligand_label) {
 }
 
 # ---- Compute for talazoparib and veliparib ----------------------------------
-cat("Computing 2D PMF for talazoparib...\n")
-pmf_tala <- compute_2d_pmf("sys2_talazoparib", "Talazoparib")
-cat("Computing 2D PMF for veliparib...\n")
-pmf_veli <- compute_2d_pmf("sys2_veliparib", "Veliparib")
-
-# Also APO for reference
-cat("Computing 2D PMF for APO...\n")
-pmf_apo <- compute_2d_pmf("sys2_APO", "APO")
+cat("Loading 2D C3 grids...\n")
+pmf_tala <- load_2d_grid("talazoparib", "Talazoparib")
+pmf_veli <- load_2d_grid("veliparib", "Veliparib")
+pmf_apo  <- load_2d_grid("APO", "APO")
 
 # ---- Panel A: Talazoparib 2D landscape -------------------------------------
 p_a <- ggplot(pmf_tala, aes(x = CV1, y = CV2, fill = PMF, z = PMF)) +
@@ -155,7 +167,7 @@ for (sys in c("talazoparib", all_systems)) {
            ifelse(sys == "olaparib", "Olaparib",
            ifelse(sys == "rucaparib", "Rucaparib", "Veliparib"))))))
   tryCatch({
-    df <- compute_2d_pmf(sys_name, label)
+    df <- load_2d_grid(sys, label)
     all_pmf[[sys]] <- df
   }, error = function(e) {
     cat(sprintf("  Error for %s: %s\n", sys, e$message))

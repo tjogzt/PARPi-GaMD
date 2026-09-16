@@ -83,7 +83,7 @@ p_b <- ggplot(sys_data[1:2,], aes(x = x, y = y)) +
   annotate("text", x = 1, y = 1.95, label = "~61,500 atoms | 10 systems | 19-200 ns\nCV: HD-ART COM distance\nMeasures: allosteric response",
            size = 2.2, color = "grey30", lineheight = 0.9) +
   # S2 label
-  annotate("text", x = 1, y = 1.3, label = "S2: Full PARP1 + DNA break",
+  annotate("text", x = 1, y = 1.3, label = "S2: Near-full-length PARP1 + DNA break",
            size = 3, fontface = "bold", color = "#B2182B") +
   annotate("text", x = 1, y = 0.95, label = "~286,000 atoms | 10 systems | 22-26 ns\nCV1: Protein-DNA COM | CV2: HD-ART COM\nMeasures: complete trapping environment",
            size = 2.2, color = "grey30", lineheight = 0.9) +
@@ -100,22 +100,22 @@ p_b <- ggplot(sys_data[1:2,], aes(x = x, y = y)) +
 
 # ---- Panel C: Inhibitor Structures + Trapping Data ----
 # Canonical sources: data/01_curated/trapping_potency.csv (x olaparib, PMIDs in file);
-# class from common/ligands.csv. AZD5305: left-censored <0.01x (Pires 2025, PMID 40021124).
+# class from common/ligands.csv. AZD5305: potent PARP1-selective trapper measured
+# on a different scale (Illuzzi 2022, PMID 35929986) -- not plotted on the
+# dual-PARP x olaparib axis.
 trap_csv <- fread("data/01_curated/trapping_potency.csv")
 cls_csv  <- fread("common/ligands.csv")
 cls_map  <- setNames(cls_csv$class, cls_csv$ligand)
 
-inhib_names <- c("Talazoparib", "Niraparib", "Olaparib", "Rucaparib", "Veliparib", "AZD5305")
+inhib_names <- c("Talazoparib", "Niraparib", "Olaparib", "Rucaparib", "Veliparib")
 trap_vals <- setNames(trap_csv$trapping_x_olaparib, trap_csv$inhibitor)[tolower(inhib_names)]
-trap_vals[is.na(trap_vals)] <- 0.01  # AZD5305 left-censored lower bound
-cls_vals <- cls_map[c("talazoparib", "niraparib", "olaparib", "rucaparib", "veliparib", "AZD5305")]
+cls_vals <- cls_map[c("talazoparib", "niraparib", "olaparib", "rucaparib", "veliparib")]
 
 inhib_data <- data.frame(
   ligand       = factor(inhib_names, levels = inhib_names),
   trap_potency = unname(trap_vals),
   type         = gsub("_", " ", unname(cls_vals)),
-  bar_label    = ifelse(inhib_names == "AZD5305", "<0.01×",
-                        sprintf("%g×", unname(trap_vals))),
+  bar_label    = sprintf("%g×", unname(trap_vals)),
   stringsAsFactors = FALSE
 )
 
@@ -127,6 +127,9 @@ p_c <- ggplot(inhib_data, aes(x = ligand, y = trap_potency, fill = type)) +
   scale_y_log10(breaks = c(0.01, 0.1, 1, 10, 100), labels = c("0.01", "0.1", "1", "10", "100")) +
   labs(x = NULL, y = "Trapping Potency (× Olaparib, log scale)",
        title = "C  Inhibitor Trapping Potency & Type Classification") +
+  annotate("text", x = 4.3, y = 0.03, hjust = 1,
+           label = "AZD5305: potent PARP1-selective trapper\n(not on the dual-PARP × olaparib scale)",
+           size = 2.2, color = "darkorange") +
   theme_7pt + theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 6))
 
 # ---- Assemble Fig 1 ----

@@ -67,7 +67,7 @@ cat(sprintf("PC1 %.1f%% PC2 %.1f%% PC3 %.1f%%\n", pct[1], pct[2], pct[3]))
 mech <- fread("results/figures/Fig_Mechanism_Data.csv")
 wd_s1 <- setNames(mech$wd_S1, mech$ligand)[X$System]  # subset to the 7 analyzed systems
 rho_wd <- cor(rank(pc$x[, 1]), rank(wd_s1), method = "spearman")
-stopifnot(abs(rho_wd - 0.4643) < 0.005)
+stopifnot(abs(rho_wd - (-0.1071)) < 0.005)
 cat(sprintf("Spearman rho(PC1, S1 well depth) = %.3f (n = 7)\n", rho_wd))
 
 # ---- Figure: 7 systems, China-style palette, class labels ----

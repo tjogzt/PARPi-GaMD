@@ -11,8 +11,9 @@
 #            results/figures/Fig_Trapping_vs_Allostery.pdf (Fig. 3, two panels)
 # Depends:   R >= 4.0; packages: ggplot2, ggrepel, patchwork
 #
-# n = 5 follows the manuscript protocol: AZD5305 is excluded (trapping
-# left-censored at < 0.01x olaparib) and APO is excluded (no trapping value).
+# n = 5 follows the manuscript protocol: AZD5305 is excluded (potent
+# PARP1-selective trapper measured on a different scale, not comparable to the
+# dual-PARP x olaparib values) and APO is excluded (no trapping value).
 
 trapping <- read.csv("data/01_curated/trapping_potency.csv", stringsAsFactors = FALSE)
 mech     <- read.csv("results/figures/Fig_Mechanism_Data.csv", stringsAsFactors = FALSE)
