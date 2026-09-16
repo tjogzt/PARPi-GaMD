@@ -1,12 +1,7 @@
 #!/usr/bin/env Rscript
-# 25-pca_analysis.R — PCA free energy landscape for S2 systems
-#
-# Perform PCA on concatenated CA trajectories, project each system
-# onto common PC space, compute 2D free energy landscapes.
-#
-# Input:  CA DCDs from $DATA_ROOT/md_analysis/
-# Output: results/figures/Fig_PCA_Landscape.pdf
-#         results/analysis/pca_projections.csv
+# 25-pca_analysis.R — STRUCTURAL PCA (CA cartesian coordinates) of S2 trajectories
+# NOTE: this is NOT the manuscript's "24-dimensional PMF feature matrix" PCA (that analysis is
+# code/28-pca_features.R). This script's outputs are named pca_struct_*.csv and are not cited.
 
 library(bio3d)
 library(ggplot2)
@@ -43,9 +38,9 @@ SYSTEMS <- c(
 )
 
 TYPE <- c(
-  "APO" = "APO", "AZD5305" = "Type_II", "Talazoparib" = "Type_II",
-  "Veliparib" = "Type_III", "Niraparib" = "Type_II",
-  "Olaparib" = "Type_II", "Rucaparib" = "Type_II"
+  "APO" = "APO", "AZD5305" = "Unknown", "Talazoparib" = "Type_II",
+  "Veliparib" = "Type_III", "Niraparib" = "Type_III",
+  "Olaparib" = "Type_II", "Rucaparib" = "Type_III"
 )
 
 COLORS <- c(
@@ -110,7 +105,7 @@ cat(sprintf("PC1: %.1f%%, PC2: %.1f%%, PC3: %.1f%%\n",
 
 # Save full eigenvalues for scree
 write.csv(data.frame(PC = seq_along(pca_var_pct), Variance = pca_var_pct),
-          file.path(data_dir, "pca_eigenvalues.csv"), row.names = FALSE)
+          file.path(data_dir, "pca_struct_eigenvalues.csv"), row.names = FALSE)
 
 # Project each system's frames onto PC1 and PC2
 proj_df <- data.frame(
@@ -121,7 +116,7 @@ proj_df <- data.frame(
   Type = TYPE[all_labels]
 )
 
-write.csv(proj_df, file.path(data_dir, "pca_projections.csv"), row.names = FALSE)
+write.csv(proj_df, file.path(data_dir, "pca_struct_projections.csv"), row.names = FALSE)
 
 # ---- Compute per-system 2D free energy landscapes --------------------------
 compute_fel <- function(pc1, pc2, n_bins = 30, kT = 0.596) {
@@ -215,7 +210,7 @@ sys_stats <- proj_df %>%
 cat("\n--- Per-System PC Variance ---\n")
 print(sys_stats)
 
-write.csv(sys_stats, file.path(data_dir, "pca_system_stats.csv"), row.names = FALSE)
+write.csv(sys_stats, file.path(data_dir, "pca_struct_system_stats.csv"), row.names = FALSE)
 
 # ---- Variance comparison bar plot ----
 p_var <- ggplot(sys_stats, aes(x = reorder(System, total_var), 

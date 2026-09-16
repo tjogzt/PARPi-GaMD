@@ -119,9 +119,7 @@ p_c <- ggplot(pmf_diff, aes(x = CV1, y = CV2, fill = PMF, z = PMF)) +
 
 # ---- Assemble --------------------------------------------------------------
 fig2d <- (p_a | p_b | p_c) +
-  plot_layout(guides = "collect") +
-  plot_annotation(title = "2D Free Energy Landscapes: Same Pocket, Different Encoding",
-                  theme = theme(plot.title = element_text(size = 9, face = "bold", hjust = 0.5)))
+  plot_layout(guides = "collect")
 
 cairo_pdf(file.path(out_dir, "Fig_2D_Landscape.pdf"), width = 210/25.4, height = 80/25.4, pointsize = 7)
 print(fig2d)
@@ -171,8 +169,8 @@ if (length(all_pmf) > 0) {
     scale_fill_gradientn(colors = c("#2166AC", "#92C5DE", "white", "#F4A582", "#B2182B"),
                          name = "kcal/mol") +
     facet_wrap(~ ligand, ncol = 4, scales = "free") +
-    labs(x = "CV1: Protein-DNA (Å)", y = "CV2: HD-ART (Å)",
-         title = "S2: 2D Free Energy Landscapes — All Systems") +
+    scale_y_continuous(breaks = scales::pretty_breaks(3)) +
+    labs(x = "CV1: Protein-DNA (Å)", y = "CV2: HD-ART (Å)") +
     theme_7pt + theme(strip.text = element_text(size = 6))
   
   cairo_pdf(file.path(out_dir, "Fig_2D_Landscape_All.pdf"), 

@@ -62,7 +62,7 @@ pmf_features <- data.frame(
   S1_barrier = c(0, 21.7, 3.4, 11.9, 12.1, 2.3),  # from transition barrier analysis
   S2_mean_RMSF = c(3.32, 3.45, 3.28, 3.60, 3.22, 3.55),
   hd_art_corr = c(0.820, 0.565, 0.585, 0.776, 0.837, 0.845),  # DCCM
-  s2_pca_variance = c(9538, 4623, 2767, 7176, 9447, 17181),  # PCA total variance
+  s2_pca_variance = c(9538, 4623, 2767, 7176, 9447, 17181),  # structural-PCA total variance (25-pca_analysis.R -> pca_struct_system_stats.csv; internal only, not manuscript-cited)
   stringsAsFactors = FALSE
 )
 

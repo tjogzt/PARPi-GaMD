@@ -1,8 +1,5 @@
 # data_manifest.md — manuscript-number provenance
 
-Note: in this repository the shipped artifacts live under `data/`
-(the working tree stores them under `results/analysis` and `results/figures`).
-
 Every number cited in the manuscript traces back to a generating script through
 this table. Columns: artifact, generating script (and the exact line that writes
 it), upstream data, downstream consumers, manuscript location, protocol tag,
@@ -26,6 +23,12 @@ generation date, status, and MD5 checksum of the current file.
 | results/archive/S1_S2_ratios.csv | superseded | — | pre-rebuild S2 denominators | — | — | superseded | 2026-09-16 | superseded | see archive README |
 | results/archive/S2_CV1_retention.csv | superseded | — | CV1/CV2 without CSV provenance | — | — | superseded (replaced by cumulant_wells_C3.csv) | 2026-09-16 | superseded | see archive README |
 | results/archive/Fig4B_spearman_data.csv | superseded | — | included AZD5305 estimate row (n = 6) | — | — | superseded | 2026-09-16 | superseded | see archive README |
+| results/analysis/pca_projections.csv | code/25-pca_analysis.R | 124 | $DATA_ROOT md_analysis CA DCDs | Fig_PCA_Features.pdf; code/26-qsar_analysis.R | Results PCA clustering (Fig. S12) | bio3d pca.xyz on concatenated CA ensemble | 2026-09-16 | current | a7d39a4eb0a632d4ba2ea18fa9cf2539 |
+| results/analysis/pca_eigenvalues.csv | code/25-pca_analysis.R | 112 | (same ensemble) | Fig_PCA_Features.pdf axis labels | Fig. S12 | bio3d pca.xyz | 2026-09-16 | current | 8ed1f2b3b5f4ad181a577dd1fad2127e |
+| results/analysis/pca_system_stats.csv | code/25-pca_analysis.R | 218 | pca_projections.csv | Fig_PCA_Features.pdf centroids | Fig. S12 | per-system PC means/sd | 2026-09-16 | current | (see notes) |
+| results/figures/Fig_PCA_Features.pdf | code/28-pca_features.R | 40 | pca_projections.csv + pca_eigenvalues.csv | SI Fig. S12 | SI Fig. S12 | 95% ellipses, China palette, Type II/III labels | 2026-09-16 | current | a81c4de7554da0bc753deec9fcabb960 |
+| results/tables/pmf_convergence.csv | LEGACY — original script lost | — | replicate GaMD runs (pre-npy era) | Fig_SI_PMF_Convergence.pdf | SI Fig. S17 | cumulative local-barrier well depth; exact recipe not recoverable from surviving artifacts; terminal depths validated by pmf.npy/Table 4 chain | 2026-09-16 | legacy | 7de25addc4a4ec9d7ac2e9bf16951197 |
+| results/figures/Fig_SI_PMF_Convergence.pdf | code/30-convergence_figure.R | 52 | results/tables/pmf_convergence.csv (legacy) | SI Fig. S17 | SI Fig. S17 | thin replicate lines + LOESS + SEM ribbon + 80 ns threshold | 2026-09-16 | current | a3dc7032f6c4f84f9c318643f2fbb6f4 |
 
 Notes:
 - Checksums are MD5 of the file content at generation time; regenerate with `md5 -q <file>`.

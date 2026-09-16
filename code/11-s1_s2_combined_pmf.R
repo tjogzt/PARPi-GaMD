@@ -88,7 +88,6 @@ p_facet <- ggplot(pmf_all, aes(x = RC, y = PMF_norm, color = system)) +
                                  "S2: DNA-bound" = "#B2182B")) +
   facet_wrap(~ label, ncol = 3, scales = "free_x") +
   labs(x = "HD-ART COM Distance (Å)", y = "Free Energy (kcal/mol)",
-       title = "HD-ART Domain Motion PMF: CAT-only vs DNA-bound PARP1",
        color = NULL) +
   theme_pmf
 
@@ -98,7 +97,6 @@ p_overlay <- ggplot(pmf_all, aes(x = RC, y = PMF_norm,
   geom_line(linewidth = 0.4) +
   scale_color_manual(values = setNames(sys_meta$color, sys_meta$label)) +
   labs(x = "HD-ART COM Distance (Å)", y = "Free Energy (kcal/mol)",
-       title = "S1 vs S2 HD-ART PMF Overlay (all systems)",
        color = NULL, linetype = "System") +
   theme_pmf +
   theme(legend.position = "bottom")
@@ -137,8 +135,7 @@ dev.off()
 
 # Combined master figure
 p_master <- wrap_plots(p_facet, p_overlay, ncol = 1, heights = c(1, 0.8)) +
-  plot_annotation(title = "PARP1 HD-ART Free Energy Landscape: DNA-free vs DNA-bound",
-                  theme = theme(plot.title = element_text(size = 9, face = "bold", hjust = 0.5)))
+  plot_annotation(theme = theme(plot.title = element_text(size = 8, face = "bold", hjust = 0.5)))
 cairo_pdf(file.path(out_dir, "Fig_Master_S1S2_HD_ART.pdf"), 
           width = 7.2, height = 8, pointsize = 7)
 print(p_master)

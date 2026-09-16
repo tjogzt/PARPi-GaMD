@@ -163,7 +163,7 @@ write.csv(ratio_df, "results/analysis/S1_S2_ratios.csv", row.names = FALSE)
 # ---- 8. Summary figure: S1 well_depth vs S2 well_depth ---
 p_ratio <- ggplot(ratio_df, aes(x = well_depth_S2, y = well_depth_S1, label = ligand)) +
   geom_point(aes(color = ligand), size = 2.5) +
-  geom_text(hjust = -0.3, vjust = 0.5, size = 2.5) +
+  ggrepel::geom_text_repel(size = 2.5, force = 2, box.padding = 0.35, max.overlaps = Inf) +
   geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "grey50") +
   scale_color_manual(values = c("APO" = "grey40", "AZD5305" = "darkorange",
                                  "Olaparib" = "#E41A1C", "Talazoparib" = "#FF7F00",
@@ -172,8 +172,7 @@ p_ratio <- ggplot(ratio_df, aes(x = well_depth_S2, y = well_depth_S1, label = li
   annotate("text", x = 29, y = 85, label = "DNA-free amplifies\ntrapping differences",
            size = 2.5, color = "grey40", hjust = 0) +
   labs(x = "S2 DNA-bound Well Depth (kcal/mol)", 
-       y = "S1 CAT-only Well Depth (kcal/mol)",
-       title = "DNA-free vs DNA-bound: Trapping Signal Amplification") +
+       y = "S1 CAT-only Well Depth (kcal/mol)") +
   theme_7pt + theme(legend.position = "none")
 
 cairo_pdf("results/figures/Fig_S1S2_Ratio.pdf", width = 4, height = 3.5, pointsize = 7)

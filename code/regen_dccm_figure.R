@@ -1,5 +1,11 @@
 #!/usr/bin/env Rscript
 # Regenerate Fig_DCCM_Allostery.pdf — 7-system HDxART DCCM block heatmap (whole-protein superposition, unified protocol)
+#
+# Output: vector PDF (results/figures/Fig_DCCM_Allostery.pdf) — canonical, text-searchable.
+# SI compilation copy: manuscripts/pc/pc_figures/Fig_DCCM_Allostery.pdf is a 300-dpi raster
+# version of the same figure (keeps the combined SI PDF under the 2 MB submission limit):
+#   pdftoppm -png -r 300 results/figures/Fig_DCCM_Allostery.pdf /tmp/dccm && sips -s format pdf ...
+# The raster copy is byte-identical in appearance; regenerate it after any change to this script.
 suppressMessages({library(data.table); library(ggplot2); library(patchwork)})
 
 theme_set(theme_bw(base_size = 8, base_family = "Arial") +

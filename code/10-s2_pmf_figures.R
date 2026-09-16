@@ -76,7 +76,7 @@ p_cv1 <- ggplot(pmf_cv1, aes(x = RC, y = PMF_norm, color = label, linetype = lab
   scale_color_manual(values = setNames(sys_meta$color, sys_meta$label)) +
   scale_linetype_manual(values = setNames(sys_meta$lty, sys_meta$label)) +
   labs(x = "Protein-DNA COM Distance (Å)", y = "PMF (kcal/mol)",
-       title = "S2: PARP1-DNA Retention PMF (C3)") +
+       color = "System", linetype = "System") +
   theme_pmf
 
 # ---- Fig B: CV2 HD-ART overlay ---------------------------------------------
@@ -85,7 +85,7 @@ p_cv2 <- ggplot(pmf_cv2, aes(x = RC, y = PMF_norm, color = label, linetype = lab
   scale_color_manual(values = setNames(sys_meta$color, sys_meta$label)) +
   scale_linetype_manual(values = setNames(sys_meta$lty, sys_meta$label)) +
   labs(x = "HD-ART COM Distance (Å)", y = "PMF (kcal/mol)",
-       title = "S2: HD-ART Domain Motion PMF (C3)") +
+       color = "System", linetype = "System") +
   theme_pmf
 
 # ---- Fig C: CV1 multi-panel (one per system) -------------------------------
@@ -98,7 +98,7 @@ p_cv1_list <- lapply(ligand_order, function(lig) {
     geom_line(color = meta$color, linewidth = 0.4) +
     geom_vline(xintercept = pmf_min, color = meta$color, 
                linetype = "dashed", linewidth = 0.3) +
-    labs(title = meta$label, x = "Protein-DNA (Å)", y = "PMF") +
+    labs(title = meta$label, x = "Protein-DNA (Å)", y = "PMF (kcal/mol)") +
     annotate("text", x = pmf_min, y = max(df$PMF_norm) * 0.85,
              label = sprintf("%.1f", pmf_min), 
              hjust = -0.15, size = 2.2, color = meta$color) +
@@ -115,7 +115,7 @@ p_cv2_list <- lapply(ligand_order, function(lig) {
     geom_line(color = meta$color, linewidth = 0.4) +
     geom_vline(xintercept = pmf_min, color = meta$color, 
                linetype = "dashed", linewidth = 0.3) +
-    labs(title = meta$label, x = "HD-ART (Å)", y = "PMF") +
+    labs(title = meta$label, x = "HD-ART (Å)", y = "PMF (kcal/mol)") +
     annotate("text", x = pmf_min, y = max(df$PMF_norm) * 0.85,
              label = sprintf("%.1f", pmf_min), 
              hjust = -0.15, size = 2.2, color = meta$color) +
@@ -132,25 +132,19 @@ print(p_cv2)
 dev.off()
 
 # Combined 2-panel
-p_overlay <- wrap_plots(p_cv1, p_cv2, ncol = 1) +
-  plot_annotation(title = "S2: DNA-bound PARP1 GaMD PMF (C3 cumulant)",
-                  theme = theme(plot.title = element_text(size = 8, face = "bold", hjust = 0.5)))
+p_overlay <- wrap_plots(p_cv1, p_cv2, ncol = 1)
 cairo_pdf(file.path(out_dir, "Fig_S2_pmf_overlay_combined.pdf"), width = 4.5, height = 6.5, pointsize = 7)
 print(p_overlay)
 dev.off()
 
 # Multi-panel CV1
-panel_cv1 <- wrap_plots(p_cv1_list, ncol = 4, nrow = 2) +
-  plot_annotation(title = "S2: Protein-DNA Retention PMF — per system",
-                  theme = theme(plot.title = element_text(size = 8, face = "bold", hjust = 0.5)))
+panel_cv1 <- wrap_plots(p_cv1_list, ncol = 4, nrow = 2)
 cairo_pdf(file.path(out_dir, "Fig_S2_pmf_prot_dna_panels.pdf"), width = 9, height = 4.5, pointsize = 7)
 print(panel_cv1)
 dev.off()
 
 # Multi-panel CV2
-panel_cv2 <- wrap_plots(p_cv2_list, ncol = 4, nrow = 2) +
-  plot_annotation(title = "S2: HD-ART Domain Motion PMF — per system",
-                  theme = theme(plot.title = element_text(size = 8, face = "bold", hjust = 0.5)))
+panel_cv2 <- wrap_plots(p_cv2_list, ncol = 4, nrow = 2)
 cairo_pdf(file.path(out_dir, "Fig_S2_pmf_hd_art_panels.pdf"), width = 9, height = 4.5, pointsize = 7)
 print(panel_cv2)
 dev.off()

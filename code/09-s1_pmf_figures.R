@@ -79,11 +79,7 @@ names(p_list) <- sys_meta$ligand
 # Arrange in 2×3
 wrap_order <- c("APO", "olaparib", "talazoparib",
                 "veliparib", "niraparib", "rucaparib", "AZD5305")
-panel_a <- wrap_plots(p_list[wrap_order], ncol = 3, nrow = 3) +
-  plot_annotation(
-    title = "S1: HD-ART PMF (3rd cumulant expansion)",
-    theme = theme(plot.title = element_text(size = 8, face = "bold", hjust = 0.5))
-  )
+panel_a <- wrap_plots(p_list[wrap_order], ncol = 3, nrow = 3)
 
 ggsave(file.path(out_dir, "Fig_S1_pmf_panels.pdf"), panel_a,
        width = 7.2, height = 4.8, device = cairo_pdf)
@@ -106,7 +102,6 @@ panel_b <- ggplot() +
   scale_linetype_manual(values = c("APO (no ligand)" = "dotted", 
                                    "AZD5305 (blind)" = "dashed")) +
   labs(x = "HD-ART Distance (Å)", y = "PMF (kcal/mol)",
-       title = "S1: C3 PMF Overlay — Type II vs Type III PARP1 Inhibitors",
        color = NULL, linetype = NULL) +
   theme_bw(base_size = 7) +
   theme(
@@ -155,11 +150,7 @@ p_cum <- lapply(inhibitors, function(lig) {
           legend.key.size = unit(0.25, "cm"))
 })
 
-panel_c <- wrap_plots(p_cum, ncol = 4, nrow = 1) +
-  plot_annotation(
-    title = "S1: Cumulant expansion convergence (C1→C2→C3)",
-    theme = theme(plot.title = element_text(size = 8, face = "bold", hjust = 0.5))
-  )
+panel_c <- wrap_plots(p_cum, ncol = 4, nrow = 1)
 
 ggsave(file.path(out_dir, "Fig_S1_pmf_cumulants.pdf"), panel_c,
        width = 9, height = 2.8, device = cairo_pdf)

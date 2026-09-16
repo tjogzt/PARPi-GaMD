@@ -55,7 +55,7 @@ read_npy <- function(path) {
   if (length(dims) > 1L) matrix(x, nrow = dims[1], ncol = dims[2]) else x
 }
 
-# ---- Replicate inventory (manuscript Table 4) ----
+# ---- Replicate inventory (manuscript Table 4 + EB-47) ----
 rep_spec <- list(
   talazoparib = 1:3,   # N = 3
   veliparib   = 1:2,   # N = 2
@@ -89,7 +89,25 @@ for (lig in names(rep_spec)) {
   }
 }
 
-stopifnot(nrow(results) == 7L)  # 3 + 2 + 2 replicate trajectories
+# EB-47 (Type I): single trajectory on the 6VKK CAT-domain receptor
+# (results/replicates/rep_eb47_6vkk/). Reported through Table 1 footnote e.
+eb_pmf_path <- file.path(rep_dir, "rep_eb47_6vkk", "pmf.npy")
+eb_rc_path  <- file.path(rep_dir, "rep_eb47_6vkk", "rc.npy")
+if (file.exists(eb_pmf_path)) {
+  eb_pmf    <- read_npy(eb_pmf_path)
+  eb_rc     <- if (file.exists(eb_rc_path)) read_npy(eb_rc_path) else rep(NA_real_, length(eb_pmf))
+  results <- rbind(results, data.frame(
+    ligand = "EB47",
+    replicate = 1,
+    tag = "rep_eb47_6vkk",
+    well_depth = max(eb_pmf, na.rm = TRUE) - min(eb_pmf, na.rm = TRUE),
+    rc_min = eb_rc[which.min(eb_pmf)],
+    n_bins = length(eb_pmf),
+    stringsAsFactors = FALSE
+  ))
+}
+
+stopifnot(nrow(results) == 8L)  # 3 + 2 + 2 replicate trajectories + EB-47
 
 # ---- Cross-replicate statistics ----
 cross_stats <- results %>%
@@ -201,9 +219,7 @@ p3 <- ggplot(combined, aes(x = ligand, y = well_depth, fill = factor(replicate))
   theme_7pt + theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 p <- (p1 | p2) / p3 +
-  plot_layout(heights = c(1, 1.2)) +
-  plot_annotation(title = "GaMD Replicate Validation",
-                  theme = theme(plot.title = element_text(size = 9, face = "bold", hjust = 0.5)))
+  plot_layout(heights = c(1, 1.2))
 
 cairo_pdf(file.path(out_dir, "Fig_Replicate_Validation.pdf"),
           width = 190/25.4, height = 170/25.4, pointsize = 7)
