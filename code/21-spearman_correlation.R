@@ -151,7 +151,7 @@ p_a <- ggplot(df, aes(x = trap_plot, y = well_depth, color = class)) +
   scale_x_log10(breaks = c(0.01, 0.1, 1, 10, 100),
                 labels = c("0.01", "0.1", "1", "10", "100")) +
   scale_color_manual(values = c("Type II" = "#E41A1C", "Type III" = "#377EB8")) +
-  annotate("text", x = 0.05, y = 100, label = ann, size = 2.5, hjust = 0) +
+  annotate("text", x = 8, y = 92, label = ann, size = 2.5, hjust = 0) +
   labs(x = "Trapping Potency (x Olaparib)", y = "S1 HD-ART Well Depth (kcal/mol)",
        title = "A  S1 Well Depth vs Trapping", color = NULL) +
   theme_7pt + theme(legend.position = c(0.87, 0.87))

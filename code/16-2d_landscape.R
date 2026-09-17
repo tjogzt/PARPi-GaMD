@@ -116,7 +116,7 @@ p_b <- ggplot(pmf_veli, aes(x = CV1, y = CV2, fill = PMF, z = PMF)) +
   scale_fill_gradientn(colors = c("#2166AC", "#92C5DE", "white", "#F4A582", "#B2182B"),
                        name = "kcal/mol", limits = c(0, 8)) +
   labs(x = "CV1: Protein-DNA Distance (Å)", y = "CV2: HD-ART Distance (Å)",
-       title = "Veliparib (Type III, trapping 0.02× olaparib)") +
+       title = "Veliparib (Type III, trapping 0.1x olaparib)") +
   theme_7pt + coord_fixed()
 
 # ---- Panel C: Difference map (Talazoparib - Veliparib) ----------------------
