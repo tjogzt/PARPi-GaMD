@@ -140,7 +140,7 @@ df$label <- c(talazoparib = "Talazoparib", niraparib = "Niraparib\n(>1x, rank-on
               veliparib = "Veliparib")[df$inhibitor]
 df$class <- ifelse(df$inhibitor %in% c("talazoparib", "olaparib"), "Type II", "Type III")
 
-ann <- sprintf("rho = %.2f\np = %.3f (n = %d)", rho1, p1, nrow(df))
+ann <- sprintf("rho = %.2f, p = %.3f (n = %d)\nC3 only; C1 p = 0.27, C2 p = 0.13\n(suggestive; see text)", rho1, p1, nrow(df))
 
 p_a <- ggplot(df, aes(x = trap_plot, y = well_depth, color = class)) +
   geom_point(aes(shape = hollow), size = 2.5) +
@@ -151,7 +151,7 @@ p_a <- ggplot(df, aes(x = trap_plot, y = well_depth, color = class)) +
   scale_x_log10(breaks = c(0.01, 0.1, 1, 10, 100),
                 labels = c("0.01", "0.1", "1", "10", "100")) +
   scale_color_manual(values = c("Type II" = "#E41A1C", "Type III" = "#377EB8")) +
-  annotate("text", x = 8, y = 92, label = ann, size = 2.5, hjust = 0) +
+  annotate("text", x = 0.3, y = 36, label = ann, size = 2.2, hjust = 0) +
   labs(x = "Trapping Potency (x Olaparib)", y = "S1 HD-ART Well Depth (kcal/mol)",
        title = "A  S1 Well Depth vs Trapping", color = NULL) +
   theme_7pt + theme(legend.position = c(0.87, 0.87))

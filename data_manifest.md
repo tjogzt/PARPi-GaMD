@@ -7,7 +7,7 @@ generation date, status, and MD5 checksum of the current file.
 
 | artifact | generating_script | script_line | upstream_data | downstream | manuscript_location | protocol_tag | generation_date | status | checksum |
 |---|---|---|---|---|---|---|---|---|---|
-| results/figures/Fig_Mechanism_Data.csv | code/13-mechanism_figure.R | 238 | results/analysis/sys1_*_pmf_c3.xvg; results/analysis/pmf-c3-sys2_*_CV2_cv.dat.xvg | Fig_Mechanism_Master.pdf, Fig_2D_Mechanism_Map.pdf | Table 1 (tab:data): S1 well depths & AAI | C3 cumulant; S1 = DBE, S2 = DFW | 2026-09-15 | current |a00ca711e8daa0965f64b663b2fbd698 |
+| results/figures/Fig_Mechanism_Data.csv | code/13-mechanism_figure.R | 238 | results/analysis/sys1_*_pmf_c3.xvg; results/analysis/pmf-c3-sys2_*_CV2_cv.dat.xvg | Fig_Mechanism_Master.pdf, Fig_2D_Mechanism_Map.pdf | Table 1 (tab:data): S1 well depths & AAI | C3 cumulant; S1 = DBE, S2 = DBE (textbook boost-energy weights) | 2026-09-15 | current | 22b148323180a9f35b18fc07286c0964 |
 | results/figures/Fig4B_spearman_data.csv | code/21-spearman_correlation.R | 114 | data/01_curated/trapping_potency.csv + Fig_Mechanism_Data.csv | Fig_Trapping_vs_Allostery.pdf | Results "S1 well depth and AAI show a suggestive inverse relationship"; Fig. fig:trapping | exact permutation test, n = 5 | 2026-09-16 | current | 4f6546ad17550c5118781342284512c9 |
 | results/analysis/replicate_well_depths.csv | code/18-replicate_analysis.R | 205 | results/replicates/rep_{tala,veli,azd,eb47}_*/pmf.npy | Fig_Replicate_Validation.pdf | Table (tab:replicates): 23.8/7.1/6.8/22.2 | histogram-reweighted CA CV | 2026-09-16 | current | d6bccca2dc05b8800fc5efccf4e27e95 |
 | results/analysis/cumulant_wells_C3.csv | code/extract_cv1_wells.py | 48 | results/analysis/pmf-c3-sys2_*_CV{1,2}_cv.dat.xvg | AAI denominators; Table S5 | Methods AAI definition; Table S5 | C3 cumulant | 2026-09-16 | current | 4f4aa90651fdd4065f4e81c502c7b442 |
@@ -37,9 +37,12 @@ generation date, status, and MD5 checksum of the current file.
 Notes:
 - Checksums are MD5 of the file content at generation time; regenerate with `md5 -q <file>`.
 - `script_line` refers to the line of the `write.csv`/CSV-writer statement in the current script.
-- The extension-panel AAI values (fluzoparib 1.92, pamiparib 1.74, senaparib 1.86) are
-  computed by code/s2_new_drugs_aai.py (console output; C3-based central value, SD from the
-  C1-C3 spread) and are stored in Fig_Mechanism_Data.csv (wd_ratio column).
+- The extension-panel AAI values reported in the manuscript (fluzoparib 1.15, senaparib 1.06,
+  pamiparib 0.94) are computed by the textbook-DBE S2 pipeline
+  (scripts/regenerate_s2_pmf_xvgs.py + scripts/consolidate_s2_dbe.py, C3-based central value,
+  SD from the C1-C3 spread) and are stored in results/analysis/s2_dbe_final.csv and
+  Fig_Mechanism_Data.csv (wd_ratio column). The earlier s2_new_drugs_aai.py values (1.92/1.74/1.86,
+  force-scaled S2 scheme) are superseded; that script is marked LEGACY.
 - AAI SD (Table 1 "AAI ±" column): canonical propagation aai_sd = wd_sd(C1-C3) / wd_S2,
   implemented as hard asserts in code/13-mechanism_figure.R (2026-09-16 recomputation;
   the previous manuscript column was partially based on pre-rebuild S2 denominators).
