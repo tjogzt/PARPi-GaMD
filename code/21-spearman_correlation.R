@@ -23,15 +23,21 @@ stopifnot(all(trapping$inhibitor %in% mech$ligand))
 
 df <- data.frame(
   inhibitor  = trapping$inhibitor,
-  trapping   = trapping$trapping_x_olaparib,
+  trapping   = trapping$trapping_x_olaparib,     # display values ("100", ">1", "1.0", "1.0", "0.1")
+  trap_rank  = trapping$trapping_rank,           # literature-verified ranks (5,4,2.5,2.5,1)
   well_depth = mech$wd_S1[match(trapping$inhibitor, mech$ligand)],
   aai        = mech$wd_ratio[match(trapping$inhibitor, mech$ligand)],
   stringsAsFactors = FALSE
 )
-df$log_trap <- log10(df$trapping)
+# Numeric plotting positions: niraparib shown at 2x (hollow marker; verified rank >1,
+# exact fold-change unpublished in open sources). Correlation uses ranks only.
+df$trap_plot <- c(100, 2, 1, 1, 0.1)[match(df$inhibitor, c("talazoparib", "niraparib",
+                                                          "olaparib", "rucaparib", "veliparib"))]
+df$log_trap  <- log10(df$trap_plot)
+df$hollow    <- df$inhibitor == "niraparib"
 
 cat("=== Data for Spearman test (n = 5) ===\n")
-print(df[, c("inhibitor", "trapping", "well_depth", "aai")],
+print(df[, c("inhibitor", "trapping", "trap_rank", "well_depth", "aai")],
       row.names = FALSE, digits = 4)
 
 # --- Exact permutation test over all n! rankings -----------------------------
@@ -51,7 +57,8 @@ all_permutations <- function(n) {
 }
 
 exact_permutation_p <- function(x, y) {
-  # Two-tailed exact permutation p-value for Spearman's rho.
+  # Two-tailed exact permutation p-value for Spearman's rho (tie-corrected:
+  # Pearson correlation on midranks, matching scipy.stats.spearmanr).
   x_rank  <- rank(x)
   y_rank  <- rank(y)
   rho_obs <- cor(x_rank, y_rank, method = "pearson")  # Spearman = Pearson on ranks
@@ -60,10 +67,10 @@ exact_permutation_p <- function(x, y) {
   mean(abs(rho_perm) >= abs(rho_obs) - 1e-12)
 }
 
-rho1 <- cor(df$well_depth, df$log_trap, method = "spearman")
-p1   <- exact_permutation_p(df$well_depth, df$log_trap)
-rho2 <- cor(df$aai, df$log_trap, method = "spearman")
-p2   <- exact_permutation_p(df$aai, df$log_trap)
+rho1 <- cor(df$well_depth, df$trap_rank, method = "spearman")
+p1   <- exact_permutation_p(df$well_depth, df$trap_rank)
+rho2 <- cor(df$aai, df$trap_rank, method = "spearman")
+p2   <- exact_permutation_p(df$aai, df$trap_rank)
 
 cat("\n=== Test 1: S1 well depth vs experimental trapping ===\n")
 cat(sprintf("Spearman rho = %.2f, exact two-tailed p = %.3f (n = %d, permutation test)\n",
@@ -75,7 +82,7 @@ cat(sprintf("Spearman rho = %.2f, exact two-tailed p = %.3f (n = %d, permutation
 # --- Leave-one-out sensitivity ------------------------------------------------
 cat("\n=== Leave-one-out sensitivity ===\n")
 loo <- sapply(seq_len(nrow(df)), function(i) {
-  cor(df$well_depth[-i], df$log_trap[-i], method = "spearman")
+  cor(df$well_depth[-i], df$trap_rank[-i], method = "spearman")
 })
 loo_df <- data.frame(excluded = df$inhibitor, rho_loo = round(loo, 2))
 print(loo_df, row.names = FALSE)
@@ -88,26 +95,24 @@ cat(sprintf(
   "Spearman rank correlation between S1 well depth and trapping potency yielded rho = %.2f,\n",
   rho1))
 cat(sprintf(
-  "with an exact two-tailed p = %.3f (n = %d, permutation test). AAI showed an identical\n",
+  "with an exact two-tailed p = %.3f (n = %d, permutation test; trapping represented by\n",
   p1, nrow(df)))
+cat("the literature-verified rank order tala > nira > ola ~ ruca > veli). The AAI showed\n")
 cat(sprintf(
-  "rank correlation (rho = %.2f, p = %.3f). While this correlation does not reach the\n",
+  "a weaker inverse rank correlation (rho = %.2f, p = %.3f). A leave-one-out sensitivity\n",
   rho2, p2))
-cat("conventional p < 0.05 significance threshold, it is constrained by the limited sample\n")
 cat(sprintf(
-  "(n = %d) and should be interpreted as a trend warranting validation in larger inhibitor\n",
-  nrow(df)))
-cat(sprintf(
-  "panels. A leave-one-out sensitivity analysis confirmed robustness: excluding any single\n"))
-cat(sprintf(
-  "inhibitor left rho between %.2f and %.2f (all negative), indicating that no single data\n",
+  "analysis left rho between %.2f and %.2f (all negative); because each subsample shares\n",
   min(loo), max(loo)))
-cat("point drives the correlation.\n")
+cat("four of five compounds, these values document robustness to single-point exclusion\n")
+cat("rather than independent replication.\n")
 
 # --- Regenerate Fig4B_spearman_data.csv (n = 5, no AZD5305 row) ----------------
 out <- data.frame(
   inhibitor   = df$inhibitor,
-  trapping    = df$trapping,
+  trapping    = df$trapping,      # display values; niraparib ">1" (rank-only)
+  trap_rank   = df$trap_rank,
+  trap_plot   = df$trap_plot,     # numeric plotting positions (niraparib = 2, hollow)
   well_depth  = df$well_depth,
   s1_s2_ratio = df$aai,
   log_trap    = df$log_trap,
@@ -130,15 +135,16 @@ if (length(grep("^--file=", args_h))) {
   source("common/helpers.R")
 }
 
-df$label <- c(talazoparib = "Talazoparib", niraparib = "Niraparib",
+df$label <- c(talazoparib = "Talazoparib", niraparib = "Niraparib\n(>1x, rank-only)",
               olaparib = "Olaparib", rucaparib = "Rucaparib",
               veliparib = "Veliparib")[df$inhibitor]
 df$class <- ifelse(df$inhibitor %in% c("talazoparib", "olaparib"), "Type II", "Type III")
 
 ann <- sprintf("rho = %.2f\np = %.3f (n = %d)", rho1, p1, nrow(df))
 
-p_a <- ggplot(df, aes(x = trapping, y = well_depth, color = class)) +
-  geom_point(size = 2.5) +
+p_a <- ggplot(df, aes(x = trap_plot, y = well_depth, color = class)) +
+  geom_point(aes(shape = hollow), size = 2.5) +
+  scale_shape_manual(values = c("TRUE" = 1, "FALSE" = 16), guide = "none") +
   geom_text_repel(aes(label = label), size = 2.2, max.overlaps = 10,
                   seed = 49,
                   min.segment.length = 0.2, box.padding = 0.25) +
@@ -146,12 +152,13 @@ p_a <- ggplot(df, aes(x = trapping, y = well_depth, color = class)) +
                 labels = c("0.01", "0.1", "1", "10", "100")) +
   scale_color_manual(values = c("Type II" = "#E41A1C", "Type III" = "#377EB8")) +
   annotate("text", x = 0.05, y = 100, label = ann, size = 2.5, hjust = 0) +
-  labs(x = "Trapping Potency (× Olaparib)", y = "S1 HD-ART Well Depth (kcal/mol)",
+  labs(x = "Trapping Potency (x Olaparib)", y = "S1 HD-ART Well Depth (kcal/mol)",
        title = "A  S1 Well Depth vs Trapping", color = NULL) +
   theme_7pt + theme(legend.position = c(0.87, 0.87))
 
-p_b <- ggplot(df, aes(x = aai, y = trapping, color = class)) +
-  geom_point(size = 2.5) +
+p_b <- ggplot(df, aes(x = aai, y = trap_plot, color = class)) +
+  geom_point(aes(shape = hollow), size = 2.5) +
+  scale_shape_manual(values = c("TRUE" = 1, "FALSE" = 16), guide = "none") +
   geom_text_repel(aes(label = label), size = 2.2, max.overlaps = 10,
                   seed = 49,
                   min.segment.length = 0.2, box.padding = 0.25) +
@@ -159,9 +166,9 @@ p_b <- ggplot(df, aes(x = aai, y = trapping, color = class)) +
                 labels = c("0.01", "0.1", "1", "10", "100")) +
   scale_color_manual(values = c("Type II" = "#E41A1C", "Type III" = "#377EB8")) +
   annotate("text", x = 1.05, y = 60, label = ann, size = 2.5, hjust = 0) +
-  xlim(0.8, 4.0) +
+  xlim(0.4, 1.6) +
   labs(x = "Allosteric Amplification Index (S1/S2)",
-       y = "Trapping Potency (× Olaparib)",
+       y = "Trapping Potency (x Olaparib)",
        title = "B  AAI vs Trapping", color = NULL) +
   theme_7pt + theme(legend.position = "none")
 

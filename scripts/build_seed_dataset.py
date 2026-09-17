@@ -88,7 +88,7 @@ def main() -> int:
             "molecular_formula": c["molecular_formula"],
             "isomeric_smiles": smi, "inchikey_pubchem": ikey_pc,
             "trapping_class": c["trapping_class"],
-            "trapping_rank": int(c["trapping_rank"]),
+            "trapping_rank": float(c["trapping_rank"]),
             "parp1_selective": c["parp1_selective"] == "TRUE",
             "first_disclosure_year": year, "time_split": time_split,
             "primary_pmid": c["primary_pmid"],
