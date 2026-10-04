@@ -24,13 +24,15 @@ p <- ggplot(d, aes(x = time_ns, y = well_depth, color = ligand)) +
   scale_color_manual(values = cols, name = "") +
   scale_x_continuous(breaks = seq(0, 200, 40)) +
   labs(x = "Cumulative production time (ns)",
-       y = "S1 HD--ART well depth (kcal/mol, C3)") +
-  theme_bw(base_size = 9) +
-  theme(legend.position = c(0.82, 0.82),
+       y = "S1 well depth (kcal/mol, C3)") +
+  theme_bw(base_size = 9, base_family = "Arial") +
+  theme(axis.text = element_text(size = 8),
+        axis.title = element_text(size = 8),
+        legend.position = c(0.82, 0.82),
         legend.background = element_rect(fill = "white", color = "grey80", linewidth = 0.3),
         panel.grid.minor = element_blank(),
         text = element_text(family = "Arial"))
 
 ggsave("results/figures/Fig_SI_Extension_Convergence.pdf",
-       p, width = 90, height = 62, units = "mm", device = cairo_pdf)
+       p, width = 135, height = 99, units = "mm", device = cairo_pdf)
 cat("Saved: Fig_SI_Extension_Convergence.pdf\n")

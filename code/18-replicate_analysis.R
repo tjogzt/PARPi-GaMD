@@ -93,17 +93,21 @@ for (lig in names(rep_spec)) {
   }
 }
 
-# EB-47 (Type I): single trajectory on the 6VKK CAT-domain receptor
-# (results/replicates/rep_eb47_6vkk/). Reported through Table 1 footnote e.
-eb_pmf_path <- file.path(rep_dir, "rep_eb47_6vkk", "pmf.npy")
-eb_rc_path  <- file.path(rep_dir, "rep_eb47_6vkk", "rc.npy")
-if (file.exists(eb_pmf_path)) {
-  eb_pmf    <- read_npy(eb_pmf_path)
-  eb_rc     <- if (file.exists(eb_rc_path)) read_npy(eb_rc_path) else rep(NA_real_, length(eb_pmf))
+# EB-47 (Type I): two replicate trajectories on the 6VKK CAT-domain receptor
+# with the 7AAB co-crystal ligand identity (results/replicates/rep_eb47_s{7,49}/).
+# Reported through Table 4 and main-text Figure 4.
+for (.k in 1:2) {
+  .s <- c(7L, 49L)[.k]
+  tag <- sprintf("rep_eb47_s%d", .s)
+  pmf_path <- file.path(rep_dir, tag, "pmf.npy")
+  rc_path  <- file.path(rep_dir, tag, "rc.npy")
+  if (!file.exists(pmf_path)) next
+  eb_pmf <- read_npy(pmf_path)
+  eb_rc  <- if (file.exists(rc_path)) read_npy(rc_path) else rep(NA_real_, length(eb_pmf))
   results <- rbind(results, data.frame(
     ligand = "EB47",
-    replicate = 1,
-    tag = "rep_eb47_6vkk",
+    replicate = .k,
+    tag = tag,
     well_depth = max(eb_pmf, na.rm = TRUE) - min(eb_pmf, na.rm = TRUE),
     rc_min = eb_rc[which.min(eb_pmf)],
     n_bins = length(eb_pmf),
@@ -111,7 +115,7 @@ if (file.exists(eb_pmf_path)) {
   ))
 }
 
-stopifnot(nrow(results) == 8L)  # 3 + 2 + 2 replicate trajectories + EB-47
+stopifnot(nrow(results) == 9L)  # 3 + 2 + 2 replicate trajectories + 2 EB-47
 
 # ---- Cross-replicate statistics ----
 cross_stats <- results %>%
@@ -186,26 +190,35 @@ print(merged[, c("ligand", "type", "well_depth_orig", "wd_sd_orig", "wd_mean", "
 
 # ---- Figure: replicate comparison ----
 color_map <- c(talazoparib = "#FF7F00", veliparib = "#377EB8",
-               AZD5305 = "darkorange", EB47 = "#E41A1C",
+               AZD5305 = "grey30", EB47 = "#E41A1C",
                olaparib = "#E41A1C", niraparib = "#4DAF4A", rucaparib = "#984EA3")
 
-p1 <- ggplot(results, aes(x = ligand, y = well_depth, color = ligand,
+cnt <- table(results$ligand)
+results$ligand_n <- factor(
+  paste0(results$ligand, " (n=", as.integer(cnt[as.character(results$ligand)]), ")"),
+  levels = paste0(names(cnt), " (n=", as.integer(cnt), ")"))
+p1 <- ggplot(results, aes(x = ligand_n, y = well_depth, color = ligand,
                           shape = factor(replicate))) +
-  geom_point(size = 3, position = position_dodge(width = 0.3)) +
-  scale_color_manual(values = color_map, guide = "none") +
-  labs(x = NULL, y = "S1 Well Depth (kcal/mol)",
+  geom_point(size = 3,
+             position = position_jitterdodge(jitter.width = 0.07,
+                                             dodge.width = 0.55,
+                                             seed = 49)) +
+  scale_color_manual(values = color_map) +
+  labs(x = NULL, y = "S1 Well Depth (kcal/mol)", color = "Ligand",
        title = "A  Replicate Consistency", shape = "Replicate") +
   theme_7pt + theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 p2 <- ggplot(merged[!is.na(merged$wd_sd) & !is.na(merged$wd_sd_orig), ],
              aes(x = wd_sd_orig, y = wd_sd, label = ligand, color = type)) +
   geom_point(size = 3) +
-  geom_text(hjust = -0.15, vjust = 0.5, size = 2.5, show.legend = FALSE) +
+  geom_text(aes(hjust = ifelse(ligand == "veliparib", 1.15, -0.15)),
+            vjust = 0.5, size = 3.0, show.legend = FALSE) +
   geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "grey50") +
   scale_color_manual(values = c("Type II" = "#E41A1C", "Type III" = "#377EB8", "Unknown" = "darkorange")) +
   labs(x = "SD across C1-C3 cumulant (original)", y = "SD across replicates",
        title = "B  Cross-Trajectory vs Cumulant Uncertainty") +
-  theme_7pt
+  theme_7pt +
+  theme(axis.title.x = element_text(margin = margin(t = -26)))
 
 combined <- results %>%
   mutate(label = paste0(ligand, "_rep", replicate)) %>%
@@ -232,7 +245,7 @@ p <- (p1 | p2) / p3 +
   plot_layout(heights = c(1, 1.2))
 
 cairo_pdf(file.path(out_dir, "Fig_Replicate_Validation.pdf"),
-          width = 190/25.4, height = 170/25.4, pointsize = 7)
+          width = 170/25.4, height = 152.1/25.4, pointsize = 8)
 print(p)
 dev.off()
 

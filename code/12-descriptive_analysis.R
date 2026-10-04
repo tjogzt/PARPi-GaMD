@@ -6,6 +6,16 @@ library(tidyr)
 library(tibble)
 library(patchwork)
 
+# Shared helpers: read_pmf / theme_7pt / extract_features (single source).
+args_h <- commandArgs(trailingOnly = FALSE)
+if (length(grep("^--file=", args_h))) {
+  script_dir <- dirname(normalizePath(sub("^--file=", "", args_h[grep("^--file=", args_h)])))
+  source(file.path(script_dir, "..", "common", "helpers.R"))
+} else {
+  source("common/helpers.R")
+}
+
+
 # Shared helpers: theme_7pt / extract_features / read_pmf (single source).
 args_h <- commandArgs(trailingOnly = FALSE)
 if (length(grep("^--file=", args_h))) {
@@ -18,13 +28,7 @@ if (length(grep("^--file=", args_h))) {
 dir.create("results/figures", showWarnings = FALSE, recursive = TRUE)
 
 # ---- 1. PMF feature extraction ---------------------------------------------
-read_xvg <- function(path) {
-  lines <- readLines(path)
-  dstart <- which(grepl("^[0-9]", lines))[1]
-  df <- read.table(text = lines[dstart:length(lines)], col.names = c("RC", "PMF"))
-  df$PMF_norm <- df$PMF - min(df$PMF, na.rm = TRUE)
-  df
-}
+
 
 # extract_features comes from common/helpers.R (single source).
 
@@ -50,7 +54,7 @@ systems <- list(
 )
 
 features <- lapply(systems, function(s) {
-  df <- read_xvg(s$path)
+  df <- read_pmf(s$path)
   feat <- as.list(extract_features(df))
   feat$ligand <- s$ligand
   feat$system <- s$system
@@ -68,25 +72,25 @@ write.csv(features_df, "results/analysis/pmf_features_summary.csv", row.names = 
 p_well_depth <- ggplot(features_df, aes(x = ligand, y = well_depth, fill = system)) +
   geom_bar(stat = "identity", position = "dodge", width = 0.6) +
   scale_fill_manual(values = c("S1" = "#2166AC", "S2" = "#B2182B")) +
-  labs(x = NULL, y = "Well Depth (kcal/mol)", title = "HD-ART Free Energy Well Depth") +
-  theme_7pt + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  labs(x = NULL, y = "Well Depth (kcal/mol)", title = "Free Energy Well Depth") +
+  theme_7pt + theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 p_rc_min <- ggplot(features_df, aes(x = ligand, y = rc_min, fill = system)) +
   geom_bar(stat = "identity", position = "dodge", width = 0.6) +
   scale_fill_manual(values = c("S1" = "#2166AC", "S2" = "#B2182B")) +
-  labs(x = NULL, y = "RC at Minimum (Å)", title = "HD-ART Equilibrium Distance") +
-  theme_7pt + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  labs(x = NULL, y = "RC at Minimum (Å)", title = "Equilibrium Distance") +
+  theme_7pt + theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 p_rc_range <- ggplot(features_df, aes(x = ligand, y = rc_range, fill = system)) +
   geom_bar(stat = "identity", position = "dodge", width = 0.6) +
   scale_fill_manual(values = c("S1" = "#2166AC", "S2" = "#B2182B")) +
-  labs(x = NULL, y = "RC Range (Å)", title = "HD-ART Sampling Range") +
-  theme_7pt + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  labs(x = NULL, y = "RC Range (Å)", title = "Sampling Range") +
+  theme_7pt + theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 p_features <- (p_well_depth | p_rc_min | p_rc_range) +
   plot_layout(guides = "collect") & theme(legend.position = "bottom")
 
-cairo_pdf("results/figures/Fig_Feature_Comparison.pdf", width = 7.2, height = 3.5, pointsize = 7)
+cairo_pdf("results/figures/Fig_Feature_Comparison.pdf", width = 140/25.4, height = 68.1/25.4, pointsize = 8)
 print(p_features)
 dev.off()
 
@@ -142,21 +146,22 @@ write.csv(ratio_df, "results/analysis/S1_S2_ratios.csv", row.names = FALSE)
 
 # ---- 8. Summary figure: S1 well_depth vs S2 well_depth ---
 p_ratio <- ggplot(ratio_df, aes(x = well_depth_S2, y = well_depth_S1, label = ligand)) +
-  geom_point(aes(color = ligand), size = 2.5) +
-  ggrepel::geom_text_repel(size = 2.5, force = 2, box.padding = 0.35, max.overlaps = Inf,
-                          seed = 49) +
+  geom_point(aes(color = ligand), size = 3.0) +
+  ggrepel::geom_text_repel(size = 3.0, force = 2, box.padding = 0.35, max.overlaps = Inf,
+                          seed = 49, family = "Arial") +
   geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "grey50") +
   scale_color_manual(values = c("APO" = "grey40", "AZD5305" = "darkorange",
                                  "Olaparib" = "#E41A1C", "Talazoparib" = "#FF7F00",
                                  "Veliparib" = "#377EB8",
                                  "Niraparib" = "#4DAF4A", "Rucaparib" = "#984EA3")) +
   annotate("text", x = 29, y = 85, label = "DNA-free amplifies\ntrapping differences",
-           size = 2.5, color = "grey40", hjust = 0) +
+           size = 3.0, color = "grey40", hjust = 0) +
   labs(x = "S2 DNA-bound Well Depth (kcal/mol)", 
        y = "S1 CAT-only Well Depth (kcal/mol)") +
-  theme_7pt + theme(legend.position = "none")
+  theme_7pt + theme(legend.position = "none",
+                  plot.margin = ggplot2::margin(1, 1, 1, 3, unit = "mm"))
 
-cairo_pdf("results/figures/Fig_S1S2_Ratio.pdf", width = 4, height = 3.5, pointsize = 7)
+cairo_pdf("results/figures/Fig_S1S2_Ratio.pdf", width = 132/25.4, height = 115.5/25.4, pointsize = 8)
 print(p_ratio)
 dev.off()
 

@@ -4,6 +4,16 @@ library(ggplot2)
 library(dplyr)
 library(patchwork)
 
+# Shared helpers: read_pmf / theme_7pt / extract_features (single source).
+args_h <- commandArgs(trailingOnly = FALSE)
+if (length(grep("^--file=", args_h))) {
+  script_dir <- dirname(normalizePath(sub("^--file=", "", args_h[grep("^--file=", args_h)])))
+  source(file.path(script_dir, "..", "common", "helpers.R"))
+} else {
+  source("common/helpers.R")
+}
+
+
 # ---- Config ----------------------------------------------------------------
 data_dir  <- "results/analysis"
 out_dir   <- "results/figures"
@@ -20,15 +30,7 @@ sys_meta <- data.frame(
 )
 
 # ---- Load PMF data ---------------------------------------------------------
-read_xvg <- function(path) {
-  lines <- readLines(path)
-  data_start <- which(grepl("^[0-9]", lines))[1]
-  if (is.na(data_start)) stop("No data found in ", path)
-  df <- read.table(text = lines[data_start:length(lines)], 
-                   header = FALSE, col.names = c("RC", "PMF"))
-  df$PMF_norm <- df$PMF - min(df$PMF, na.rm = TRUE)
-  df
-}
+
 
 # Load CV1 (Protein-DNA) and CV2 (HD-ART) for all systems
 load_s2_pmf <- function(cv) {
@@ -40,7 +42,7 @@ load_s2_pmf <- function(cv) {
       message("Missing: ", f)
       next
     }
-    df <- read_xvg(f)
+    df <- read_pmf(f)
     df$ligand  <- lig
     df$label   <- sys_meta$label[i]
     df$class   <- sys_meta$class[i]
@@ -59,14 +61,15 @@ pmf_cv1$ligand <- factor(pmf_cv1$ligand, levels = ligand_order)
 pmf_cv2$ligand <- factor(pmf_cv2$ligand, levels = ligand_order)
 
 # ---- Theme -----------------------------------------------------------------
-theme_pmf <- theme_bw(base_size = 7) +
+theme_pmf <- theme_bw(base_size = 8, base_family = "Arial") +
   theme(
+    plot.margin       = ggplot2::margin(1, 1, 1, 3, unit = "mm"),
     panel.grid.minor  = element_blank(),
-    plot.title        = element_text(size = 7, face = "bold"),
-    axis.title        = element_text(size = 7),
-    axis.text         = element_text(size = 6),
-    legend.text       = element_text(size = 6),
-    legend.title      = element_text(size = 7),
+    plot.title        = element_text(size = 9, face = "bold"),
+    axis.title        = element_text(size = 8),
+    axis.text         = element_text(size = 8),
+    legend.text       = element_text(size = 8),
+    legend.title      = element_text(size = 8),
     legend.key.size   = unit(0.3, "cm")
   )
 
@@ -101,7 +104,7 @@ p_cv1_list <- lapply(ligand_order, function(lig) {
     labs(title = meta$label, x = "Protein-DNA (Å)", y = "PMF (kcal/mol)") +
     annotate("text", x = pmf_min, y = max(df$PMF_norm) * 0.85,
              label = sprintf("%.1f", pmf_min), 
-             hjust = -0.15, size = 2.2, color = meta$color) +
+             hjust = 1.15, size = 2.9, color = meta$color) +
     theme_pmf + theme(legend.position = "none")
 })
 
@@ -118,34 +121,34 @@ p_cv2_list <- lapply(ligand_order, function(lig) {
     labs(title = meta$label, x = "HD-ART (Å)", y = "PMF (kcal/mol)") +
     annotate("text", x = pmf_min, y = max(df$PMF_norm) * 0.85,
              label = sprintf("%.1f", pmf_min), 
-             hjust = -0.15, size = 2.2, color = meta$color) +
+             hjust = 1.15, size = 2.9, color = meta$color) +
     theme_pmf + theme(legend.position = "none")
 })
 
 # ---- Save figures ----------------------------------------------------------
-cairo_pdf(file.path(out_dir, "Fig_S2_pmf_prot_dna_overlay.pdf"), width = 4.5, height = 3, pointsize = 7)
+cairo_pdf(file.path(out_dir, "Fig_S2_pmf_prot_dna_overlay.pdf"), width = 149/25.4, height = 99.3/25.4, pointsize = 8)
 print(p_cv1)
 dev.off()
 
-cairo_pdf(file.path(out_dir, "Fig_S2_pmf_hd_art_overlay.pdf"), width = 4.5, height = 3, pointsize = 7)
+cairo_pdf(file.path(out_dir, "Fig_S2_pmf_hd_art_overlay.pdf"), width = 149/25.4, height = 99.3/25.4, pointsize = 8)
 print(p_cv2)
 dev.off()
 
 # Combined 2-panel
 p_overlay <- wrap_plots(p_cv1, p_cv2, ncol = 1)
-cairo_pdf(file.path(out_dir, "Fig_S2_pmf_overlay_combined.pdf"), width = 4.5, height = 6.5, pointsize = 7)
+cairo_pdf(file.path(out_dir, "Fig_S2_pmf_overlay_combined.pdf"), width = 4.5, height = 6.5, pointsize = 8)
 print(p_overlay)
 dev.off()
 
 # Multi-panel CV1
 panel_cv1 <- wrap_plots(p_cv1_list, ncol = 4, nrow = 2)
-cairo_pdf(file.path(out_dir, "Fig_S2_pmf_prot_dna_panels.pdf"), width = 9, height = 4.5, pointsize = 7)
+cairo_pdf(file.path(out_dir, "Fig_S2_pmf_prot_dna_panels.pdf"), width = 157/25.4, height = 78.5/25.4, pointsize = 8)
 print(panel_cv1)
 dev.off()
 
 # Multi-panel CV2
 panel_cv2 <- wrap_plots(p_cv2_list, ncol = 4, nrow = 2)
-cairo_pdf(file.path(out_dir, "Fig_S2_pmf_hd_art_panels.pdf"), width = 9, height = 4.5, pointsize = 7)
+cairo_pdf(file.path(out_dir, "Fig_S2_pmf_hd_art_panels.pdf"), width = 157/25.4, height = 78.5/25.4, pointsize = 8)
 print(panel_cv2)
 dev.off()
 

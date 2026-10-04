@@ -1,27 +1,33 @@
 #!/usr/bin/env python3
-"""Extract last-frame coordinates from a legacy S2 DCD to .npy (local; for cloud parmed PDB assembly)"""
-import struct, sys, os
-import numpy as np
+"""Extract last-frame coordinates from a legacy S2 DCD to .npy (local; for cloud parmed PDB assembly)
+
+Purpose:   One-off helper: pull the final frame of the AZD5305/veliparib S2
+           trajectories into .npy files used for ligand-pose PDB assembly on
+           the cloud machine (parmed). Not part of the analysis pipeline.
+Inputs:    $DATA_ROOT/sys2_<drug>/output.dcd (CHARMM/X-PLOR DCD)
+Outputs:   /tmp/<drug>_last_xyz.npy (natoms x 3 float32)
+Depends:   MDAnalysis; common.paths (DATA_ROOT)
+"""
+import os
 import sys
+from pathlib import Path
+
+import numpy as np
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from common.paths import data_root
 
+import MDAnalysis as mda
+
+
 def parse_dcd_last(path):
-    with open(path, 'rb') as f:
-        hdr = f.read(84)
-        n_frames = struct.unpack('<i', hdr[8:12])[0]
-        pos = 84
-        sz = struct.unpack('<i', f.read(4))[0]; f.read(sz)
-        assert struct.unpack('<i', f.read(4))[0] == sz
-        natoms = struct.unpack('<i', f.read(4))[0]
-        assert struct.unpack('<i', f.read(4))[0] == natoms
-        fsz = struct.unpack('<i', f.read(4))[0]
-        assert fsz == natoms * 12, f'frame {fsz} != natoms*12 {natoms*12}'
-        filesize = os.path.getsize(path)
-        f.seek(filesize - fsz - 4)
-        last = f.read(fsz)
-    xyz = np.frombuffer(last, dtype=np.float32).reshape(natoms, 3)
-    return n_frames, natoms, xyz
+    """Return (n_frames, natoms, last_frame_xyz) using MDAnalysis."""
+    u = mda.Universe(path)
+    n_frames = len(u.trajectory)
+    natoms = len(u.atoms)
+    u.trajectory[-1]
+    return n_frames, natoms, u.atoms.positions.astype(np.float32)
+
 
 for drug, dcd, out in [
     ('AZD5305', str(data_root() / 'sys2_AZD5305' / 'output.dcd'), '/tmp/azd5305_last_xyz.npy'),

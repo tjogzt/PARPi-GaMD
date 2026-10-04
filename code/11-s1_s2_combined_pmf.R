@@ -4,6 +4,16 @@ library(ggplot2)
 library(dplyr)
 library(patchwork)
 
+# Shared helpers: read_pmf / theme_7pt / extract_features (single source).
+args_h <- commandArgs(trailingOnly = FALSE)
+if (length(grep("^--file=", args_h))) {
+  script_dir <- dirname(normalizePath(sub("^--file=", "", args_h[grep("^--file=", args_h)])))
+  source(file.path(script_dir, "..", "common", "helpers.R"))
+} else {
+  source("common/helpers.R")
+}
+
+
 # ---- Config ----------------------------------------------------------------
 data_dir  <- "results/analysis"
 out_dir   <- "results/figures"
@@ -19,15 +29,7 @@ sys_meta <- data.frame(
 )
 
 # ---- Load PMF data ---------------------------------------------------------
-read_xvg <- function(path) {
-  lines <- readLines(path)
-  data_start <- which(grepl("^[0-9]", lines))[1]
-  if (is.na(data_start)) stop("No data in ", path)
-  df <- read.table(text = lines[data_start:length(lines)], 
-                   header = FALSE, col.names = c("RC", "PMF"))
-  df$PMF_norm <- df$PMF - min(df$PMF, na.rm = TRUE)
-  df
-}
+
 
 # S1: CAT-only HD-ART PMF
 s1_pmf <- list()
@@ -35,7 +37,7 @@ for (i in seq_len(nrow(sys_meta))) {
   lig <- sys_meta$ligand[i]
   f <- file.path(data_dir, sprintf("sys1_%s_pmf_c3.xvg", lig))
   if (!file.exists(f)) next
-  df <- read_xvg(f)
+  df <- read_pmf(f)
   df$ligand  <- lig
   df$label   <- sys_meta$label[i]
   df$class   <- sys_meta$class[i]
@@ -53,7 +55,7 @@ for (i in seq_len(nrow(s2_meta))) {
   lig <- s2_meta$ligand[i]
   f <- file.path(data_dir, sprintf("pmf-c3-sys2_%s_CV2_cv.dat.xvg", lig))
   if (!file.exists(f)) next
-  df <- read_xvg(f)
+  df <- read_pmf(f)
   df$ligand  <- lig
   df$label   <- s2_meta$label[i]
   df$class   <- s2_meta$class[i]
@@ -68,16 +70,17 @@ pmf_all <- bind_rows(s1_all, s2_all)
 pmf_all$system <- factor(pmf_all$system, levels = c("S1: CAT-only", "S2: DNA-bound"))
 
 # ---- Theme -----------------------------------------------------------------
-theme_pmf <- theme_bw(base_size = 7) +
+theme_pmf <- theme_bw(base_size = 8, base_family = "Arial") +
   theme(
+    plot.margin       = ggplot2::margin(1, 1, 1, 3, unit = "mm"),
     panel.grid.minor  = element_blank(),
-    plot.title        = element_text(size = 7, face = "bold"),
-    axis.title        = element_text(size = 7),
-    axis.text         = element_text(size = 6),
-    legend.text       = element_text(size = 6),
-    legend.title      = element_text(size = 7),
+    plot.title        = element_text(size = 9, face = "bold"),
+    axis.title        = element_text(size = 8),
+    axis.text         = element_text(size = 8),
+    legend.text       = element_text(size = 8),
+    legend.title      = element_text(size = 8),
     legend.key.size   = unit(0.3, "cm"),
-    strip.text        = element_text(size = 7, face = "bold"),
+    strip.text        = element_text(size = 8, face = "bold"),
     strip.background  = element_rect(fill = "grey95")
   )
 
@@ -119,25 +122,25 @@ panel_c <- wrap_plots(p_list, ncol = 4, nrow = 2)
 
 # ---- Save figures ----------------------------------------------------------
 cairo_pdf(file.path(out_dir, "Fig_S1S2_hd_art_facet.pdf"), 
-          width = 7.2, height = 4.8, pointsize = 7)
+          width = 149/25.4, height = 99.3/25.4, pointsize = 8)
 print(p_facet)
 dev.off()
 
 cairo_pdf(file.path(out_dir, "Fig_S1S2_hd_art_overlay.pdf"), 
-          width = 5, height = 4, pointsize = 7)
+          width = 5, height = 4, pointsize = 8)
 print(p_overlay)
 dev.off()
 
 cairo_pdf(file.path(out_dir, "Fig_S1S2_hd_art_panels.pdf"), 
-          width = 7.2, height = 4.8, pointsize = 7)
+          width = 7.2, height = 4.8, pointsize = 8)
 print(panel_c)
 dev.off()
 
 # Combined master figure
 p_master <- wrap_plots(p_facet, p_overlay, ncol = 1, heights = c(1, 0.8)) +
-  plot_annotation(theme = theme(plot.title = element_text(size = 8, face = "bold", hjust = 0.5)))
+  plot_annotation(theme = theme(plot.title = element_text(size = 9, face = "bold", hjust = 0.5)))
 cairo_pdf(file.path(out_dir, "Fig_Master_S1S2_HD_ART.pdf"), 
-          width = 7.2, height = 8, pointsize = 7)
+          width = 7.2, height = 8, pointsize = 8)
 print(p_master)
 dev.off()
 

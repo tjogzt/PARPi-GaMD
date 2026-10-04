@@ -48,8 +48,9 @@ pip install -r requirements.txt        # Python dependencies
 ## 5. Datasets
 
 - `data/replicates/` — histogram-reweighted replicate PMFs
-  (`pmf.npy`/`rc.npy`/`dist_raw.npy`) for talazoparib, veliparib, AZD5305 and
-  EB-47 (receptor 6VKK)
+  (`pmf.npy`/`rc.npy`/`dist_raw.npy`) for talazoparib, veliparib, AZD5305, and
+  EB-47 (N = 2 replicates; co-crystal EB-47 ligand from PDB 7AAB on the 6VKK
+  CAT-domain receptor)
 - `data/01_curated/` — trapping potencies (`trapping_potency.csv`), seed-ligand
   identities (`seed_ligands.csv`, PubChem-verified), derived descriptor dataset
   (`trapping_seed_dataset.csv`)

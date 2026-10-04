@@ -104,9 +104,9 @@ p_a <- ggplot(pmf_tala, aes(x = CV1, y = CV2, fill = PMF, z = PMF)) +
   geom_raster() +
   geom_contour(color = "white", linewidth = 0.3, bins = 8, alpha = 0.6) +
   scale_fill_gradientn(colors = c("#2166AC", "#92C5DE", "white", "#F4A582", "#B2182B"),
-                       name = "kcal/mol", limits = c(0, 8)) +
-  labs(x = "CV1: Protein-DNA Distance (Å)", y = "CV2: HD-ART Distance (Å)",
-       title = "Talazoparib (Type II, trapping 100× olaparib)") +
+                       name = "PMF (A,B,D)\nkcal/mol", limits = c(0, 8)) +
+  labs(x = "CV1: Protein-DNA (Å)", y = "CV2: HD-ART (Å)",
+       title = "Talazoparib (Type II)") +
   theme_7pt + coord_fixed()
 
 # ---- Panel B: Veliparib 2D landscape ---------------------------------------
@@ -114,9 +114,9 @@ p_b <- ggplot(pmf_veli, aes(x = CV1, y = CV2, fill = PMF, z = PMF)) +
   geom_raster() +
   geom_contour(color = "white", linewidth = 0.3, bins = 8, alpha = 0.6) +
   scale_fill_gradientn(colors = c("#2166AC", "#92C5DE", "white", "#F4A582", "#B2182B"),
-                       name = "kcal/mol", limits = c(0, 8)) +
-  labs(x = "CV1: Protein-DNA Distance (Å)", y = "CV2: HD-ART Distance (Å)",
-       title = "Veliparib (Type III, trapping 0.1x olaparib)") +
+                       name = "PMF (A,B,D)\nkcal/mol", limits = c(0, 8)) +
+  labs(x = "CV1: Protein-DNA (Å)", y = "CV2: HD-ART (Å)",
+       title = "Veliparib (Type III)") +
   theme_7pt + coord_fixed()
 
 # ---- Panel C: Difference map (Talazoparib - Veliparib) ----------------------
@@ -129,16 +129,32 @@ p_c <- ggplot(pmf_diff, aes(x = CV1, y = CV2, fill = PMF, z = PMF)) +
   geom_raster() +
   geom_contour(color = "grey40", linewidth = 0.3, bins = 8, alpha = 0.5) +
   scale_fill_gradient2(low = "#2166AC", mid = "white", high = "#B2182B",
-                       name = "Δ kcal/mol", midpoint = 0) +
-  labs(x = "CV1: Protein-DNA Distance (Å)", y = "CV2: HD-ART Distance (Å)",
+                       name = "ΔPMF (C)\nkcal/mol", midpoint = 0) +
+  labs(x = "CV1: Protein-DNA (Å)", y = "CV2: HD-ART (Å)",
        title = "ΔPMF: Talazoparib − Veliparib") +
   theme_7pt + coord_fixed()
 
-# ---- Assemble --------------------------------------------------------------
-fig2d <- (p_a | p_b | p_c) +
+# ---- Panel D: APO (ligand-free control) 2D landscape ------------------------
+p_d <- ggplot(pmf_apo, aes(x = CV1, y = CV2, fill = PMF, z = PMF)) +
+  geom_raster() +
+  geom_contour(color = "white", linewidth = 0.3, bins = 8, alpha = 0.6) +
+  scale_fill_gradientn(colors = c("#2166AC", "#92C5DE", "white", "#F4A582", "#B2182B"),
+                       name = "PMF (A,B,D)\nkcal/mol", limits = c(0, 8)) +
+  labs(x = "CV1: Protein-DNA (Å)", y = "CV2: HD-ART (Å)",
+       title = "APO (ligand-free control)") +
+  theme_7pt + coord_fixed()
+
+# ---- Tighten inter-row spacing (zero bottom margin on top row, zero top on bottom row) ----
+p_a <- p_a + theme(plot.margin = ggplot2::margin(7, 7, 0, 7))
+p_b <- p_b + theme(plot.margin = ggplot2::margin(7, 7, 0, 7))
+p_c <- p_c + theme(plot.margin = ggplot2::margin(0, 7, 7, 7))
+p_d <- p_d + theme(plot.margin = ggplot2::margin(0, 7, 7, 7))
+
+# ---- Assemble (2x2: A|B top, C|D bottom) -----------------------------------
+fig2d <- (p_a | p_b) / (p_c | p_d) +
   plot_layout(guides = "collect")
 
-cairo_pdf(file.path(out_dir, "Fig_2D_Landscape.pdf"), width = 210/25.4, height = 80/25.4, pointsize = 7)
+cairo_pdf(file.path(out_dir, "Fig_2D_Landscape.pdf"), width = 157/25.4, height = 94/25.4, pointsize = 8)
 print(fig2d)
 dev.off()
 
@@ -188,10 +204,11 @@ if (length(all_pmf) > 0) {
     facet_wrap(~ ligand, ncol = 4, scales = "free") +
     scale_y_continuous(breaks = scales::pretty_breaks(3)) +
     labs(x = "CV1: Protein-DNA (Å)", y = "CV2: HD-ART (Å)") +
-    theme_7pt + theme(strip.text = element_text(size = 6))
+    theme_7pt + theme(strip.text = element_text(size = 8),
+                      plot.margin = ggplot2::margin(1, 1, 1, 3, unit = "mm"))
   
   cairo_pdf(file.path(out_dir, "Fig_2D_Landscape_All.pdf"), 
-            width = 210/25.4, height = 140/25.4, pointsize = 7)
+            width = 157/25.4, height = 104.7/25.4, pointsize = 8)
   print(p_all)
   dev.off()
   cat("Saved: Fig_2D_Landscape_All.pdf\n")

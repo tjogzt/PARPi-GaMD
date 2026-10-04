@@ -4,7 +4,9 @@
 suppressMessages({library(data.table); library(ggplot2); library(patchwork)})
 
 theme_set(theme_bw(base_size = 8, base_family = "Arial") +
-  theme(panel.grid.minor = element_blank()))
+  theme(panel.grid.minor = element_blank(),
+        axis.text = element_text(size = 8, color = "black"),
+        axis.title = element_text(size = 8)))
 
 dir <- "results/analysis"
 sys_names <- c("APO", "talazoparib", "niraparib", "olaparib", "rucaparib", "veliparib", "AZD5305")
@@ -45,7 +47,7 @@ pA <- ggplot(pmf_all, aes(rc, pmf, color = system)) +
 pB <- ggplot(wells, aes(label, wd, fill = system)) +
   geom_col(width = 0.7) +
   scale_fill_manual(values = cols, guide = "none") +
-  geom_text(aes(y = wd + 0.5, label = sprintf("%.1f", wd)), size = 2.4) +
+  geom_text(aes(y = wd + 0.5, label = sprintf("%.1f", wd)), size = 3.0) +
   coord_cartesian(ylim = c(0, 34)) +
   labs(x = NULL, y = "CV1 well depth (kcal/mol)",
        title = "B  Protein\u2013DNA retention barrier is nearly invariant") +
@@ -53,7 +55,7 @@ pB <- ggplot(wells, aes(label, wd, fill = system)) +
         axis.text.x = element_text(angle = 30, hjust = 1))
 
 p <- pA / pB + plot_layout(heights = c(1.3, 1))
-cairo_pdf("results/figures/Fig_S2_CV1_Retention.pdf", width = 7.2, height = 4.6, pointsize = 8)
+cairo_pdf("results/figures/Fig_S2_CV1_Retention.pdf", width = 149/25.4, height = 95.2/25.4, pointsize = 8)
 print(p)
 dev.off()
 cat("Saved: results/figures/Fig_S2_CV1_Retention.pdf\n")

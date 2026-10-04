@@ -3,13 +3,14 @@
 #
 # Output: vector PDF (results/figures/Fig_DCCM_Allostery.pdf) — canonical, text-searchable.
 # SI compilation copy: manuscripts/pc/pc_figures/Fig_DCCM_Allostery.pdf is a 300-dpi raster
-# version of the same figure (keeps the combined SI PDF under the 2 MB submission limit):
-#   pdftoppm -png -r 300 results/figures/Fig_DCCM_Allostery.pdf /tmp/dccm && sips -s format pdf ...
-# The raster copy is byte-identical in appearance; regenerate it after any change to this script.
+# version of the same figure (keeps the combined SI PDF under the 2 MB submission limit);
+# regenerate it with scripts/rasterize_si_figures.sh after any change to this script.
 suppressMessages({library(data.table); library(ggplot2); library(patchwork)})
 
 theme_set(theme_bw(base_size = 8, base_family = "Arial") +
   theme(panel.grid = element_blank(), plot.title = element_text(hjust = 0.5, face = "bold", size = 9),
+        axis.text = element_text(size = 8, color = "black"),
+        axis.title = element_text(size = 8),
         legend.key.height = unit(0.35, "cm"), legend.key.width = unit(0.5, "cm")))
 
 dir <- "results/analysis/rmsf_recomp"
@@ -30,11 +31,11 @@ plots <- lapply(sys_names, function(s) {
                          midpoint = 0, limits = c(-1, 1), name = "r") +
     scale_y_reverse() +
     labs(x = "ART residue", y = "HD residue", title = short[[s]]) +
-    theme(axis.text = element_text(size = 6))
+    theme(axis.text = element_text(size = 8))
 })
 
 p <- wrap_plots(plots, ncol = 3)
-cairo_pdf("results/figures/Fig_DCCM_Allostery.pdf", width = 7.2, height = 5.2, pointsize = 8)
+cairo_pdf("results/figures/Fig_DCCM_Allostery.pdf", width = 149/25.4, height = 107.6/25.4, pointsize = 8)
 print(p)
 dev.off()
 cat("Saved: results/figures/Fig_DCCM_Allostery.pdf\n")

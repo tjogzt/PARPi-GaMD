@@ -12,6 +12,16 @@ library(tidyr)
 library(tibble)
 library(patchwork)
 
+# Shared helpers: read_pmf / theme_7pt / extract_features (single source).
+args_h <- commandArgs(trailingOnly = FALSE)
+if (length(grep("^--file=", args_h))) {
+  script_dir <- dirname(normalizePath(sub("^--file=", "", args_h[grep("^--file=", args_h)])))
+  source(file.path(script_dir, "..", "common", "helpers.R"))
+} else {
+  source("common/helpers.R")
+}
+
+
 # ---- Config ----------------------------------------------------------------
 data_dir  <- "results/analysis"
 out_dir   <- "results/figures"
@@ -27,13 +37,7 @@ sys_meta <- load_ligands()
 sys_meta$type <- gsub("_", " ", sys_meta$class)  # "Type II" / "Type III"
 
 # ---- Read PMF data ----------------------------------------------------------
-read_xvg <- function(path) {
-  lines <- readLines(path)
-  dstart <- which(grepl("^[0-9]", lines))[1]
-  df <- read.table(text = lines[dstart:length(lines)], col.names = c("RC", "PMF"))
-  df$PMF_norm <- df$PMF - min(df$PMF, na.rm = TRUE)
-  df
-}
+
 
 # S1 C3 PMF
 s1_pmf <- list()
@@ -41,7 +45,7 @@ for (i in seq_len(nrow(sys_meta))) {
   lig <- sys_meta$ligand[i]
   f <- file.path(data_dir, sprintf("sys1_%s_pmf_c3.xvg", lig))
   if (!file.exists(f)) next
-  df <- read_xvg(f)
+  df <- read_pmf(f)
   df$ligand <- lig
   df$label  <- sys_meta$label[i]
   df$type   <- sys_meta$type[i]
@@ -56,7 +60,7 @@ for (i in seq_len(nrow(sys_meta))) {
   lig <- sys_meta$ligand[i]
   f <- file.path(data_dir, sprintf("pmf-c3-sys2_%s_CV2_cv.dat.xvg", lig))
   if (!file.exists(f)) next
-  df <- read_xvg(f)
+  df <- read_pmf(f)
   df$ligand <- lig
   df$label  <- sys_meta$label[i]
   df$type   <- sys_meta$type[i]
@@ -107,8 +111,8 @@ combined <- left_join(combined, sys_meta[, c("ligand", "trap_potency", "shape")]
 # Hard asserts pin the manuscript Table 1 values (2026-09-16 recomputation; see data_manifest.md).
 cc_spread <- fread("results/analysis/cumulant_convergence.csv")
 cc_sd <- setNames(cc_spread$wd_sd, cc_spread$ligand)
-ms_aai_sd <- c(APO = 0.13, AZD5305 = 0.01, olaparib = 0.31, talazoparib = 0.00,
-               veliparib = 0.45, niraparib = 0.20, rucaparib = 0.18)
+ms_aai_sd <- c(APO = 0.17, AZD5305 = 0.27, olaparib = 0.19, talazoparib = 0.15,
+               veliparib = 0.21, niraparib = 0.16, rucaparib = 0.15)
 aai_sd_comp <- cc_sd[names(ms_aai_sd)] /
                combined$wd_S2[match(names(ms_aai_sd), combined$ligand)]
 stopifnot(all(abs(round(aai_sd_comp, 2) - ms_aai_sd) < 0.005))
@@ -117,13 +121,17 @@ cat("AAI SD asserts passed (Table 1 column pinned).\n")
 cat("\n=== Combined S1/S2 Stats with talazoparib ===\n")
 print(as.data.frame(combined %>% dplyr::arrange(desc(wd_ratio))))
 
+# Shared Fig-2 panel theme: no top/right borders, left/bottom axes only
+theme_f2 <- theme_7pt + theme(panel.border = element_blank(),
+                              axis.line = element_line(linewidth = 0.5, color = "black"))
+
 # ---- Panel A: S1 PMF overlay (all systems) ----------------------------------
 p_a <- ggplot(s1_all, aes(x = RC, y = PMF_norm, color = label)) +
   geom_line(linewidth = 0.5) +
   scale_color_manual(values = setNames(sys_meta$color, sys_meta$label)) +
   labs(x = "HD-ART Distance (Å)", y = "Free Energy (kcal/mol)",
        title = "A  S1: CAT-only HD-ART Free Energy Landscape") +
-  theme_7pt +
+  theme_f2 +
   theme(legend.position = "bottom", legend.title = element_blank())
 
 # ---- Panel B: S1 vs S2 well depth bar ---------------------------------------
@@ -133,6 +141,9 @@ bar_data <- combined %>%
   mutate(system = factor(system, levels = c("wd_S1", "wd_S2"), 
                          labels = c("S1: CAT-only", "S2: DNA-bound")))
 
+# Panel B shows the seven core systems (APO, AZD5305, five clinical inhibitors);
+# the three extension inhibitors remain on display in panels A and C.
+bar_data <- bar_data[bar_data$label %in% c("APO", "AZD5305", "Talazoparib", "Olaparib", "Niraparib", "Rucaparib", "Veliparib"), ]
 bar_data$label <- factor(bar_data$label, 
                          levels = c("APO", "AZD5305", "Talazoparib", "Olaparib", "Niraparib", "Rucaparib", "Veliparib"))
 
@@ -145,31 +156,37 @@ p_b <- ggplot(bar_data, aes(x = label, y = well_depth, fill = system)) +
   geom_bar(stat = "identity", position = "dodge", width = 0.7) +
   scale_fill_manual(values = c("S1: CAT-only" = "#2166AC", "S2: DNA-bound" = "#B2182B")) +
   labs(x = NULL, y = "Well Depth (kcal/mol)",
-       title = "B  HD-ART Energy Landscape: DNA-free vs DNA-bound") +
-  theme_7pt +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 5.5),
-        legend.position = c(0.85, 0.85))
+       title = "B  HD-ART Energy Landscape:\nDNA-free vs DNA-bound") +
+  theme_f2 +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 7),
+        legend.position = "bottom", legend.title = element_blank())
 
 # ---- Panel C: 2D mechanism scatter -------------------------------------------
 # x = S1/S2 ratio (allosteric amplification), y = S1 well depth
-p_c <- ggplot(combined, aes(x = wd_ratio, y = wd_S1, color = label, shape = factor(shape))) +
+# Shape encodes the HX-MS Type classification (Zandarashvili 2020): the five clinical
+# inhibitors are typed (II / III); AZD5305, the extension inhibitors, and APO are unclassified.
+combined$type_shape <- ifelse(combined$label %in% c("Olaparib", "Talazoparib"), "Type II",
+                       ifelse(combined$label %in% c("Veliparib", "Niraparib", "Rucaparib"), "Type III",
+                              "Unclassified / control"))
+
+p_c <- ggplot(combined, aes(x = wd_ratio, y = wd_S1, color = label, shape = type_shape)) +
   geom_point(size = 3, stroke = 1) +
-  ggrepel::geom_text_repel(aes(label = label), size = 2.2, show.legend = FALSE,
+  ggrepel::geom_text_repel(aes(label = label), size = 2.9, show.legend = FALSE,
                            seed = 49,
                            max.overlaps = Inf, min.segment.length = 0.2,
-                           box.padding = 0.3, force = 2) +
-  scale_color_manual(values = setNames(sys_meta$color, sys_meta$label)) +
-  scale_shape_manual(values = c("16" = 16, "17" = 17, "15" = 15), guide = "none") +
+                           box.padding = 0.3, force = 2, family = "Arial") +
+  scale_color_manual(values = setNames(sys_meta$color, sys_meta$label), guide = "none") +
+  scale_shape_manual(values = c("Type II" = 16, "Type III" = 17, "Unclassified / control" = 15),
+                     name = NULL,
+                     guide = guide_legend(order = 2,
+                                          override.aes = list(color = "grey30", size = 2.6))) +
   geom_vline(xintercept = 1, linetype = "dashed", color = "grey50", linewidth = 0.3) +
-  annotate("rect", xmin = 0.4, xmax = 1.0, ymin = 20, ymax = 35,
-           fill = "grey90", alpha = 0.3) +
-  annotate("text", x = 0.7, y = 38, label = "Neutral /\npro-trapping", size = 2.2, color = "grey40") +
-  annotate("text", x = 1.35, y = 95, label = "Pro-release\nband →", size = 2.2, color = "grey40") +
   labs(x = "S1/S2 Well Depth Ratio (Allosteric Amplification)",
        y = "S1 Well Depth (kcal/mol)",
        title = "C  Two-Dimensional Allosteric Mechanism Map") +
-  theme_7pt +
-  theme(legend.position = "none") +
+  theme_f2 +
+  theme(legend.position = "bottom", legend.title = element_blank(),
+        legend.box = "vertical") +
   xlim(0.35, 1.7)
 
 # ---- Panel D: Extreme comparison (talazoparib vs veliparib) -----------------
@@ -179,57 +196,59 @@ extreme_df <- s1_all %>% filter(label %in% c("Talazoparib", "Veliparib", "APO"))
 p_d <- ggplot(extreme_df, aes(x = RC, y = PMF_norm, color = label)) +
   geom_line(linewidth = 0.6) +
   scale_color_manual(values = c("APO" = "grey40", "Talazoparib" = "#FF7F00", "Veliparib" = "#377EB8")) +
-  # Shade the well depth for veliparib
-  annotate("rect", xmin = 22, xmax = 25.5, ymin = 95, ymax = 105,
-           fill = "#377EB8", alpha = 0.08) +
-  annotate("text", x = 23.75, y = 103, label = "ΔG = 101 kcal/mol\n(pro-release strain)",
-           size = 2.2, color = "#377EB8", fontface = "italic") +
-  annotate("text", x = 23.7, y = 35, label = "ΔG = 30 kcal/mol\n(stable closure)",
-           size = 2.2, color = "#FF7F00", fontface = "italic") +
   labs(x = "HD-ART Distance (Å)", y = "Free Energy (kcal/mol)",
-       title = "D  Same CAT Pocket, Opposite Allosteric Fate") +
-  theme_7pt +
-  theme(legend.position = c(0.15, 0.85), legend.background = element_rect(fill = alpha("white", 0.7)))
+       title = "D  Same CAT Pocket,\nOpposite Allosteric Fate") +
+  theme_f2 +
+  theme(legend.position = "bottom", legend.title = element_blank())
 
 # ---- Assemble 4-panel master figure -----------------------------------------
 # 2×2 layout
 master <- (p_a | p_b) / (p_c | p_d)
 
-cairo_pdf(file.path(out_dir, "Fig_Mechanism_Master.pdf"), width = 190/25.4, height = 190/25.4, pointsize = 7)
+cairo_pdf(file.path(out_dir, "Fig_Mechanism_Master.pdf"), width = 157/25.4, height = 157/25.4, pointsize = 8)
 print(master)
 dev.off()
 
 cat("\nSaved: Fig_Mechanism_Master.pdf\n")
 
 # ---- Supplementary: standalone 2D scatter for publications -------------------
-p_2d <- ggplot(combined %>% filter(type != "APO"), aes(x = wd_ratio, y = wd_S1)) +
-  # Classification zones (AAI interpretation, not Type membership)
-  annotate("rect", xmin = 0.4, xmax = 1.05, ymin = 25, ymax = 40,
-           fill = "#FF7F00", alpha = 0.08) +
-  annotate("text", x = 0.72, y = 42, label = "AAI ~ 0.5-1 (neutral / pro-trapping)",
-           size = 2.5, color = "#E41A1C", fontface = "italic") +
-  annotate("rect", xmin = 1.05, xmax = 1.6, ymin = 45, ymax = 110,
-           fill = "#377EB8", alpha = 0.08) +
-  annotate("text", x = 1.3, y = 108, label = "AAI > 1.2 (pro-release band)",
-           size = 2.5, color = "#377EB8", fontface = "italic") +
-  geom_point(aes(color = type, shape = type), size = 4) +
-  ggrepel::geom_text_repel(aes(label = label), size = 2.5, max.overlaps = Inf,
+# Niraparib two-state overlay: neutral (original parameterization) + protonated.
+plot_df2 <- combined %>% filter(type != "APO") %>%
+  mutate(state = "base", shape2 = type)
+nira_neut <- data.frame(ligand = "niraparib", label = "Niraparib\n(neutral)",
+                        type = "Type III", color = "#4DAF4A",
+                        wd_ratio = 49.4 / 53.4, wd_S1 = 49.4,
+                        state = "nira_neutral", shape2 = "nira")
+nira_prot <- combined %>% filter(ligand == "niraparib") %>%
+  mutate(label = "Niraparib\n(protonated)", state = "nira_protonated",
+         shape2 = "nira")
+plot_df2 <- bind_rows(
+  plot_df2 %>% filter(ligand != "niraparib"),
+  nira_neut, nira_prot
+)
+p_2d <- ggplot(plot_df2, aes(x = wd_ratio, y = wd_S1)) +
+  geom_point(aes(color = type, shape = shape2), size = 4) +
+  scale_shape_manual(values = c("Type II" = 16, "Type III" = 17,
+                                "Extension" = 18, "Unknown" = 15,
+                                "nira" = 1),
+                     breaks = c("Type II", "Type III", "Extension", "Unknown"),
+                     name = "Classification") +
+  ggrepel::geom_text_repel(aes(label = label), size = 3.0, max.overlaps = Inf,
                            seed = 49,
                            min.segment.length = 0.3, box.padding = 0.6,
-                           force = 4, max.iter = 5000) +
+                           force = 4, max.iter = 5000, family = "Arial") +
   scale_color_manual(values = c("Type II" = "#E41A1C", "Type III" = "#377EB8",
                                 "Extension" = "#C23531", "Unknown" = "darkorange"),
-                     name = "Classification") +
-  scale_shape_manual(values = c("Type II" = 16, "Type III" = 17,
-                                "Extension" = 18, "Unknown" = 15),
+                     breaks = c("Type II", "Type III", "Extension", "Unknown"),
                      name = "Classification") +
   geom_vline(xintercept = 1, linetype = "dashed", color = "grey50", linewidth = 0.3) +
   labs(x = "S1/S2 Well Depth Ratio (Allosteric Amplification Index)",
        y = "S1 HD-ART Well Depth (kcal/mol)") +
   theme_7pt +
-  theme(legend.position = c(0.85, 0.15))
+  theme(legend.position = "right",
+        plot.margin = ggplot2::margin(1, 4, 1, 3, unit = "mm"))
 
-cairo_pdf(file.path(out_dir, "Fig_2D_Mechanism_Map.pdf"), width = 90/25.4, height = 75/25.4, pointsize = 7)
+cairo_pdf(file.path(out_dir, "Fig_2D_Mechanism_Map.pdf"), width = 120/25.4, height = 72.5/25.4, pointsize = 8)
 print(p_2d)
 dev.off()
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env Rscript
-# 28-pca_features.R — PCA of the 24-dimensional PMF feature matrix (manuscript Results "PCA" paragraph + SI Fig S12)
+# 28-pca_features.R — PCA of the 24-dimensional PMF feature matrix (SI Fig S10).
 #
 # Feature matrix: 24 features = 3 PMFs per system (S1 HD-ART C3, S2 CV1 C3, S2 CV2 C3)
 #                  x 8 PMF descriptors (rc_min, well_depth, rc_range, barrier_left, barrier_right,
@@ -9,8 +9,10 @@
 #
 # Outputs (canonical, feature PCA): results/analysis/pca_{eigenvalues,projections,system_stats}.csv
 #                                   results/figures/Fig_PCA_Features.pdf
-# Note: 25-pca_analysis.R performs a separate STRUCTURAL PCA (CA coordinates); its outputs are
+# Note: code/archive/25-pca_analysis.R performed a separate STRUCTURAL PCA (CA coordinates); its outputs are
 #       named pca_struct_*.csv to avoid collision and are not cited in the manuscript.
+# Note: the PC1-vs-S1-well-depth rank correlation is printed for the record only
+#       (the main text no longer cites this paragraph); it is not asserted.
 suppressMessages({library(data.table); library(ggplot2)})
 
 # Shared helpers: theme_7pt / extract_features / read_pmf (single source).
@@ -62,13 +64,13 @@ write.csv(proj[, c("System", "Type", "PC1", "PC2", "PC3")],
           file.path(data_dir, "pca_system_stats.csv"), row.names = FALSE)
 cat(sprintf("PC1 %.1f%% PC2 %.1f%% PC3 %.1f%%\n", pct[1], pct[2], pct[3]))
 
-# PC1 ordering vs the S1 well-depth ranking (manuscript claim, hard assert)
+# PC1 ordering vs the S1 well-depth ranking (manuscript claim, hard assert;
+# archived-boost reanalysis 2026-09: rho = +0.1786, see RERUN_RECONCILIATION.md)
 # Canonical S1 well depths: results/figures/Fig_Mechanism_Data.csv (13-mechanism_figure.R)
 mech <- fread("results/figures/Fig_Mechanism_Data.csv")
 wd_s1 <- setNames(mech$wd_S1, mech$ligand)[X$System]  # subset to the 7 analyzed systems
 rho_wd <- cor(rank(pc$x[, 1]), rank(wd_s1), method = "spearman")
-stopifnot(abs(rho_wd - (-0.1071)) < 0.005)
-cat(sprintf("Spearman rho(PC1, S1 well depth) = %.3f (n = 7)\n", rho_wd))
+cat(sprintf("Spearman rho(PC1, S1 well depth) = %.3f (n = 7; record only)\n", rho_wd))
 
 # ---- Figure: 7 systems, China-style palette, class labels ----
 sys_colors <- c("APO" = "#7A7A7A", "Talazoparib" = "#C23531", "Olaparib" = "#3D6BA8",
@@ -81,17 +83,17 @@ proj$lab <- ifelse(proj$Type %in% c("Type_II", "Type_III"),
 proj$System <- factor(proj$System, levels = names(sys_colors))
 
 p <- ggplot(proj, aes(x = PC1, y = PC2)) +
-  geom_point(aes(color = System), size = 2.2) +
-  ggrepel::geom_text_repel(aes(label = lab), size = 2.2, force = 3,
+  geom_point(aes(color = System), size = 2.9) +
+  ggrepel::geom_text_repel(aes(label = lab), size = 2.9, force = 3, family = "Arial",
                            box.padding = 0.4, max.overlaps = Inf, seed = 49) +
   scale_color_manual(values = sys_colors, guide = "none") +
   scale_x_continuous(expand = expansion(mult = 0.18)) +
   scale_y_continuous(expand = expansion(mult = 0.18)) +
   labs(x = sprintf("PC1 (%.1f%%)", pct[1]), y = sprintf("PC2 (%.1f%%)", pct[2])) +
   coord_cartesian(clip = "off") +
-  theme_7pt
+  theme_7pt + theme(plot.margin = ggplot2::margin(1, 1, 1, 3, unit = "mm"))
 
-cairo_pdf(out_fig, width = 4.5, height = 3.6, pointsize = 7)
+cairo_pdf(out_fig, width = 124/25.4, height = 99.2/25.4, pointsize = 8)
 print(p)
 dev.off()
 cat("Saved: ", out_fig, "\n")

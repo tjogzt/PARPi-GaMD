@@ -47,14 +47,14 @@ p <- ggplot(cv, aes(x = ns, y = well_depth)) +
   geom_line(data = smooth_rib, aes(x = ns, y = mean_depth, color = inhibitor), linewidth = 0.8) +
   geom_vline(xintercept = 80, linetype = "dashed", color = "grey40", linewidth = 0.3) +
   annotate("text", x = 80, y = -Inf, label = "80 ns", vjust = 1.5, hjust = -0.1,
-           size = 2, color = "grey40") +
+           size = 2.9, color = "grey40") +
   scale_color_manual(values = inib_colors, name = NULL) +
   scale_fill_manual(values = inib_colors, guide = "none") +
   labs(x = "Cumulative production time (ns)", y = "S1 Well Depth (kcal/mol)") +
   theme_7pt +
   theme(legend.position = "bottom")
 
-cairo_pdf("results/figures/Fig_SI_PMF_Convergence.pdf", width = 4.5, height = 3.4, pointsize = 7)
+cairo_pdf("results/figures/Fig_SI_PMF_Convergence.pdf", width = 4.5, height = 3.4, pointsize = 8)
 print(p)
 dev.off()
 cat("Saved: results/figures/Fig_SI_PMF_Convergence.pdf\n")

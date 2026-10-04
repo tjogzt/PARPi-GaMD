@@ -4,6 +4,16 @@ library(ggplot2)
 library(dplyr)
 library(patchwork)
 
+# Shared helpers: read_pmf / theme_7pt / extract_features (single source).
+args_h <- commandArgs(trailingOnly = FALSE)
+if (length(grep("^--file=", args_h))) {
+  script_dir <- dirname(normalizePath(sub("^--file=", "", args_h[grep("^--file=", args_h)])))
+  source(file.path(script_dir, "..", "common", "helpers.R"))
+} else {
+  source("common/helpers.R")
+}
+
+
 # ---- Config ----------------------------------------------------------------
 data_dir  <- "results/analysis"
 out_dir   <- "results/figures"
@@ -17,19 +27,10 @@ sys_meta <- load_ligands()
 # Display labels for this figure: plain label + class annotation
 label_suffix <- c(APO = "(no ligand)", Unknown = "(blind)",
                   Type_II = "(Type II)", Type_III = "(Type III)", Extension = "(ext.)")
-sys_meta$label <- paste(sys_meta$label, label_suffix[sys_meta$class])
+sys_meta$label <- paste0(sys_meta$label, "\n", label_suffix[sys_meta$class])
 
 # ---- Load PMF data ---------------------------------------------------------
-read_xvg <- function(path) {
-  lines <- readLines(path)
-  data_start <- which(grepl("^[0-9]", lines))[1]
-  if (is.na(data_start)) stop("No data found in ", path)
-  df <- read.table(text = lines[data_start:length(lines)], 
-                   header = FALSE, col.names = c("RC", "PMF"))
-  # Normalize PMF to minimum = 0
-  df$PMF_norm <- df$PMF - min(df$PMF, na.rm = TRUE)
-  df
-}
+
 
 all_pmf <- list()
 for (i in seq_len(nrow(sys_meta))) {
@@ -39,7 +40,7 @@ for (i in seq_len(nrow(sys_meta))) {
     message("Missing: ", f)
     next
   }
-  df <- read_xvg(f)
+  df <- read_pmf(f)
   df$ligand  <- lig
   df$label   <- sys_meta$label[i]
   df$class   <- sys_meta$class[i]
@@ -50,13 +51,14 @@ pmf_all <- bind_rows(all_pmf)
 pmf_all$ligand <- factor(pmf_all$ligand, levels = sys_meta$ligand)
 
 # ---- A. Multi-panel: one PMF per system (3×3 grid) -------------------------
-theme_pmf <- theme_bw(base_size = 7) +
+theme_pmf <- theme_bw(base_size = 8, base_family = "Arial") +
   theme(
+    plot.margin       = ggplot2::margin(1, 1, 1, 3, unit = "mm"),
     panel.grid.minor = element_blank(),
     legend.position   = "none",
-    plot.title        = element_text(size = 7, face = "bold"),
-    axis.title        = element_text(size = 7),
-    axis.text         = element_text(size = 6)
+    plot.title        = element_text(size = 9, face = "bold"),
+    axis.title        = element_text(size = 8),
+    axis.text         = element_text(size = 8)
   )
 
 p_list <- lapply(sys_meta$ligand, function(lig) {
@@ -71,7 +73,7 @@ p_list <- lapply(sys_meta$ligand, function(lig) {
     labs(title = meta$label, x = "HD-ART Distance (Å)", y = "PMF (kcal/mol)") +
     annotate("text", x = pmf_min, y = max(df$PMF_norm) * 0.85,
              label = sprintf("%.1f Å", pmf_min), 
-             hjust = -0.15, size = 2.2, color = meta$color) +
+             hjust = -0.15, size = 2.9, color = meta$color) +
     theme_pmf
 })
 names(p_list) <- sys_meta$ligand
@@ -82,12 +84,16 @@ wrap_order <- c("APO", "olaparib", "talazoparib",
 panel_a <- wrap_plots(p_list[wrap_order], ncol = 3, nrow = 3)
 
 ggsave(file.path(out_dir, "Fig_S1_pmf_panels.pdf"), panel_a,
-       width = 7.2, height = 4.8, device = cairo_pdf)
+       width = 157/25.4, height = 104.7/25.4, device = cairo_pdf)
 message("Saved: Fig_S1_pmf_panels.pdf")
 
 # ---- B. Overlay: all systems c3 PMF ----------------------------------------
 overlay_known <- filter(pmf_all, class %in% c("Type_II", "Type_III"))
 overlay_other <- filter(pmf_all, !class %in% c("Type_II", "Type_III"))
+# Short legend labels for the overlay (class is color-coded; long "(Type II)"
+# suffixes overflow the 4.5-in figure width)
+overlay_known$label <- sub(" \\((Type (II|III)|ext\\.)\\)$", "", overlay_known$label)
+overlay_other$label <- sub(" \\((Type (II|III)|ext\\.)\\)$", "", overlay_other$label)
 
 panel_b <- ggplot() +
   # APO + AZD5305 as reference
@@ -103,19 +109,22 @@ panel_b <- ggplot() +
                                    "AZD5305 (blind)" = "dashed")) +
   labs(x = "HD-ART Distance (Å)", y = "PMF (kcal/mol)",
        color = NULL, linetype = NULL) +
-  theme_bw(base_size = 7) +
+  theme_bw(base_size = 8, base_family = "Arial") +
   theme(
+    plot.margin       = ggplot2::margin(1, 1, 1, 3, unit = "mm"),
     legend.position   = "bottom",
-    legend.text       = element_text(size = 6),
-    legend.key.size   = unit(0.3, "cm"),
+    legend.text       = element_text(size = 8),
+    legend.key.size   = unit(0.35, "cm"),
     panel.grid.minor  = element_blank(),
-    plot.title        = element_text(size = 8, face = "bold", hjust = 0.5),
-    axis.title        = element_text(size = 7),
-    axis.text         = element_text(size = 6)
-  )
+    plot.title        = element_text(size = 9, face = "bold", hjust = 0.5),
+    axis.title        = element_text(size = 8),
+    axis.text         = element_text(size = 8)
+  ) +
+  guides(color = guide_legend(nrow = 2, byrow = TRUE),
+         linetype = guide_legend(nrow = 2, byrow = TRUE))
 
 ggsave(file.path(out_dir, "Fig_S1_pmf_overlay.pdf"), panel_b,
-       width = 4.5, height = 3.5, device = cairo_pdf)
+       width = 140/25.4, height = 108.9/25.4, device = cairo_pdf)
 message("Saved: Fig_S1_pmf_overlay.pdf")
 
 # ---- C. C1/C2/C3 comparison per inhibitor (4 panels) -----------------------
@@ -125,7 +134,7 @@ read_all_cumulants <- function(ligand) {
   dfs <- lapply(orders, function(o) {
     f <- file.path(data_dir, sprintf("sys1_%s_pmf_%s.xvg", ligand, o))
     if (!file.exists(f)) return(NULL)
-    df <- read_xvg(f)
+    df <- read_pmf(f)
     df$cumulant <- o
     df
   })
@@ -144,16 +153,16 @@ p_cum <- lapply(inhibitors, function(lig) {
     labs(title = meta$label, x = "HD-ART Distance (Å)", 
          y = "PMF (kcal/mol)", color = "Cumulant") +
     theme_pmf +
-    theme(legend.position = c(0.85, 0.7),
-          legend.text = element_text(size = 5),
-          legend.title = element_text(size = 5),
-          legend.key.size = unit(0.25, "cm"))
+    theme(legend.position = c(0.78, 0.72),
+          legend.text = element_text(size = 8),
+          legend.title = element_text(size = 8),
+          legend.key.size = unit(0.35, "cm"))
 })
 
 panel_c <- wrap_plots(p_cum, ncol = 4, nrow = 1)
 
 ggsave(file.path(out_dir, "Fig_S1_pmf_cumulants.pdf"), panel_c,
-       width = 9, height = 2.8, device = cairo_pdf)
+       width = 149/25.4, height = 46.4/25.4, device = cairo_pdf)
 message("Saved: Fig_S1_pmf_cumulants.pdf")
 
 # ---- Summary statistics ----------------------------------------------------

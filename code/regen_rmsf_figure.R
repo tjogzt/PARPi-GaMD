@@ -5,6 +5,8 @@ suppressMessages({library(data.table); library(ggplot2); library(patchwork)})
 
 theme_set(theme_bw(base_size = 8, base_family = "Arial") +
   theme(panel.grid.minor = element_blank(),
+        axis.text = element_text(size = 8, color = "black"),
+        axis.title = element_text(size = 8),
         legend.position = "right", legend.key.size = unit(0.3, "cm")))
 
 # China-style palette
@@ -41,7 +43,7 @@ pA <- ggplot(hd_prof, aes(resid, rmsf, color = system)) +
   labs(x = "HD residue (PARP1)", y = "RMSF (\u00C5)", title = "A  HD per-residue RMSF") +
   theme(plot.title = element_text(hjust = 0, face = "bold", size = 9),
         legend.position = "bottom", legend.direction = "horizontal",
-        legend.text = element_text(size = 7))
+        legend.text = element_text(size = 8))
 
 # (B) domain means
 dom_mean <- rmsf_all[domain %in% c("HD", "ART"),
@@ -70,7 +72,8 @@ pC <- ggplot(dr, aes(resid, drmsf)) +
   geom_line(linewidth = 0.5, color = "#9D2933") +
   labs(x = "HD residue (PARP1)", y = "\u0394RMSF (II \u2212 III) (\u00C5)",
        title = "C  Type II vs III \u0394RMSF") +
-  theme(plot.title = element_text(hjust = 0, face = "bold", size = 9))
+  theme(plot.title = element_text(hjust = 0, face = "bold", size = 9),
+        axis.title.x = element_text(margin = ggplot2::margin(t = -16)))
 
 n_pos <- dr[drmsf > 0.3, .N]
 cat(sprintf("Type II more flexible (dRMSF>0.3): %d HD residues\n", n_pos))
@@ -79,7 +82,7 @@ top5 <- dr[order(-drmsf)][1:5]
 cat("Top differentiated residues:\n"); print(top5)
 
 p <- pA / (pB | pC) + plot_layout(heights = c(1, 1))
-cairo_pdf("results/figures/Fig_S2_RMSF_All.pdf", width = 7.2, height = 6.0, pointsize = 8)
+cairo_pdf("results/figures/Fig_S2_RMSF_All.pdf", width = 157/25.4, height = 130.8/25.4, pointsize = 8)
 print(p)
 dev.off()
 cat("Saved: results/figures/Fig_S2_RMSF_All.pdf\n")
