@@ -28,6 +28,8 @@ suppressMessages({library(ggplot2); library(patchwork)})
 theme_set(theme_bw(base_size = 8, base_family = "Arial") +
   theme(panel.grid.minor = element_blank(),
         panel.grid.major = element_line(color = "grey92", linewidth = 0.2),
+        panel.border = element_blank(),                      # open frame:
+        axis.line = element_line(color = "grey20", linewidth = 0.4),  # left+bottom only
         axis.text = element_text(size = 8, color = "black"),
         axis.title = element_text(size = 8)))
 
