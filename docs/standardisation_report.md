@@ -235,3 +235,9 @@ Executed after the main round, same approval:
   (tick-to-title 26.3 -> 11.0 pt; title-to-legend 13.0 -> 11.0 pt) via explicit
   ``axis.title.x`` / ``axis.text.x`` / ``legend.margin`` margins. Re-rendered; 8-pt and geometry
   checks clean; manuscript recompiled (57 pp).
+- **S17 panel spacing (user-requested).** The three-panel layout had oversized inter-panel margins
+  (edge-to-edge gaps 79/76 pt vs ~30 pt in the ggplot figures). Margins unified to
+  ``mar = c(4.2, 3.0, 2.5, 0.5)`` for all three panels: each plot region +~20 pt wider, gaps
+  reduced to 58/54 pt (visual whitespace 22/18 pt), consistent with the journal style. Labels
+  re-verified collision-free; all previous S17 fixes (3-decimal p labels, rightmost-label shift,
+  two-line title) retained; SI recompiled (25 pp).

@@ -22,7 +22,7 @@ lab <- c("niraparib", "olaparib", "rucaparib", "niraparib\n(prot.)", "rucaparib\
 col <- c(NIRA, OLA, RUCA, adjustcolor(NIRA, 0.45), adjustcolor(RUCA, 0.45))
 
 draw_panels <- function() {
-  par(mfrow = c(1, 3), family = "Arial", mar = c(4.2, 4.6, 2.5, 0.7),
+  par(mfrow = c(1, 3), family = "Arial", mar = c(4.2, 3.0, 2.5, 0.5),
       mgp = c(1.9, 0.5, 0), tcl = -0.25, cex.axis = 0.75, cex.lab = 0.8, las = 1)
   par(cex = 1)   # base R reduces base cex to 0.66 for mfrow layouts (>=3 panels); pin it
 
