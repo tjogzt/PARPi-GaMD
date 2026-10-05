@@ -204,11 +204,14 @@ if (length(all_pmf) > 0) {
     facet_wrap(~ ligand, ncol = 4, scales = "free") +
     scale_y_continuous(breaks = scales::pretty_breaks(3)) +
     labs(x = "CV1: Protein-DNA (Å)", y = "CV2: HD-ART (Å)") +
-    theme_7pt + theme(strip.text = element_text(size = 8),
+    theme_7pt + theme(aspect.ratio = 1,
+                      strip.text = element_text(size = 8),
                       plot.margin = ggplot2::margin(1, 1, 1, 3, unit = "mm"))
   
+  # Square facet panels (aspect.ratio = 1 in the theme above); canvas sized so
+  # each panel plots as a square at ~1:1 display in the SI (0.98\textwidth).
   cairo_pdf(file.path(out_dir, "Fig_2D_Landscape_All.pdf"), 
-            width = 157/25.4, height = 104.7/25.4, pointsize = 8)
+            width = 157/25.4, height = 88/25.4, pointsize = 8)
   print(p_all)
   dev.off()
   cat("Saved: Fig_2D_Landscape_All.pdf\n")
