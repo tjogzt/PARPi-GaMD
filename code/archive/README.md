@@ -31,3 +31,15 @@ and (2) dead/superseded analysis scripts.
 Small python utility scripts that remain in `code/` are upstream pipeline steps
 (trajectory prep, extraction) and are kept in place for reproducibility; see
 data_manifest.md for the canonical producer of each cited artifact.
+| `s2_new_drugs_aai.py` | Superseded AAI computation: DFW S2 denominators (AAI 1.92/1.74/1.86 and manuscript 0.99/3.60 values) replaced by the DBE-consistent pipeline | `code/13-mechanism_figure.R` (`Fig_Mechanism_Data.csv` `wd_ratio` column, Table 1 AAI) |
+
+## Added 2026-09-29 (code audit batch 3 — merge/deduplication)
+
+| Archived file | Why archived | Current authoritative path |
+|---|---|---|
+| `scripts/analyze_nira_prot.py` | Merged (96% duplication with rucaparib twin) | `scripts/analyze_prot_dbe.py --lig nira` |
+| `scripts/analyze_ruca_prot.py` | Merged (see above) | `scripts/analyze_prot_dbe.py --lig ruca` |
+| `scripts/analyze_s1_dbe.py` | DBE-only variant; manuscript uses the unified table-convention producer | `scripts/analyze_s1_unified.py` |
+| `scripts/regen_rerun3_s2_xvgs.py` | One-off xvg regeneration, logic overlaps regenerate_s2_pmf_xvgs.py | `scripts/regenerate_s2_pmf_xvgs.py` |
+| `scripts/s2_new_drugs_pmf_dfw.py` | DFW weight variant (6-line diff); DBE variant is canonical | `scripts/s2_new_drugs_pmf.py` |
+| `code/25-pca_analysis.R` | Self-declared "not cited in the manuscript"; structural PCA, sole consumer retired | — (outputs pca_struct_*.csv retained) |

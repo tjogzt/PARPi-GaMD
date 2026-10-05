@@ -3,8 +3,8 @@
 import numpy as np
 import subprocess, tempfile
 
-PW = '/Users/taozhu/clacky_workspace/PARPi_design/tools/PyReweighting/PyReweighting-1D.py'
-DATA = '/Users/taozhu/clacky_workspace/PARPi_design/results/analysis/new_drugs_s2'
+PW = os.path.join(os.path.dirname(__file__), '..', '..', 'tools', 'PyReweighting', 'PyReweighting-1D.py')
+DATA = os.path.join(os.path.dirname(__file__), '..', '..', 'results', 'analysis', 'new_drugs_s2')
 
 def wd_from_pmf(f):
     d = []

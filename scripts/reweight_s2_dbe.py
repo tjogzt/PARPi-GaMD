@@ -30,7 +30,7 @@ from common.pmf import run_pyrew
 BETA = 1.0 / (0.001987 * 300.0)  # 1/kcal/mol at 300 K
 
 A = analysis_dir()
-D = Path(data_root()) if data_root() else Path("/Volumes/tjogzt4T/PARPi_data")
+D = Path(data_root()) if data_root() else data_root()
 
 # --- systems with archived gamd.log (row-aligned with results/analysis CV) ---
 LOG_SYSTEMS = {

@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-prepare_ligands.py — 配体 3D 准备 (对接就绪)
+prepare_ligands.py -- ligand 3D preparation (docking-ready)
 
-读 data/01_curated/trapping_seed_dataset.csv 的 isomeric SMILES,
-RDKit 加氢 -> ETKDGv3 多构象嵌入 -> MMFF94 优化 -> 选最低能构象,
-输出 SDF + PDB (docking/ligands/), 再用 obabel 转 PDBQT (Gasteiger 电荷)。
+Reads isomeric SMILES from data/01_curated/trapping_seed_dataset.csv,
+RDKit add hydrogens -> ETKDGv3 multi-conformer embedding -> MMFF94 optimization -> lowest-energy conformer selected,
+writes SDF + PDB (docking/ligands/), then converts to PDBQT with obabel (Gasteiger charges).
 
-立体化学从 isomeric SMILES 保留 (talazoparib 双立体中心关键)。
+Stereochemistry is preserved from the isomeric SMILES (talazoparib dual stereocenters are critical).
 """
 from __future__ import annotations
 import subprocess
@@ -28,7 +28,7 @@ SEED = 42
 
 
 def embed_best(mol: Chem.Mol) -> tuple[Chem.Mol, float] | tuple[None, None]:
-    """多构象嵌入 + MMFF 优化, 返回最低能构象。"""
+    """Multi-conformer embedding + MMFF optimization, returns the lowest-energy conformer."""
     molH = Chem.AddHs(mol)
     params = AllChem.ETKDGv3()
     params.randomSeed = SEED
@@ -48,7 +48,7 @@ def embed_best(mol: Chem.Mol) -> tuple[Chem.Mol, float] | tuple[None, None]:
         return None, None
     energies.sort()
     best_e, best_cid = energies[0]
-    # 仅保留最优构象
+    # keep only the best conformer
     keep = Chem.Mol(molH)
     keep.RemoveAllConformers()
     keep.AddConformer(molH.GetConformer(best_cid), assignId=True)
@@ -88,7 +88,7 @@ def main() -> int:
         Chem.MolToMolFile(confmol, str(sdf))
         Chem.MolToPDBFile(confmol, str(pdb))
         pq = to_pdbqt(sdf, pdbqt)
-        # 立体中心核验
+        # stereocenter verification
         sc = Chem.FindMolChiralCenters(confmol, useLegacyImplementation=False,
                                        includeUnassigned=True)
         flag = "OK" if pq else "PDBQT_FAIL"

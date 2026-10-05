@@ -11,7 +11,9 @@ import sys
 import csv
 from pathlib import Path
 
-DATA_ROOT = Path(os.environ.get("DATA_ROOT", "/Volumes/tjogzt4T/PARPi_data"))
+from common.paths import data_root
+
+DATA_ROOT = data_root()
 OUT = Path(__file__).resolve().parents[1] / "results" / "analysis" / "trajectory_metadata.csv"
 
 import MDAnalysis as mda  # noqa: E402

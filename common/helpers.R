@@ -10,19 +10,22 @@
 #                      files; a fixed skip silently drops data rows)
 #   source_common_helpers() — script-relative source helper for the above.
 
-# Project-wide 7-pt figure theme (authoritative; formerly 13-mechanism_figure.R).
+# Project-wide 8-pt figure theme (authoritative; formerly 13-mechanism_figure.R).
+# User hard rule: minimum in-figure character size >= 8 pt. Raised from 7 pt
+# base / 6 pt text (2026-09-30 figure audit).
 # Fully namespace-qualified so scripts without library(ggplot2) can still source us.
-theme_7pt <- ggplot2::theme_bw(base_size = 7) +
+theme_7pt <- ggplot2::theme_bw(base_size = 8, base_family = "Arial") +
   ggplot2::theme(
     panel.grid.minor  = ggplot2::element_blank(),
     panel.grid.major  = ggplot2::element_line(color = "grey92", linewidth = 0.2),
-    plot.title        = ggplot2::element_text(size = 7, face = "bold"),
-    axis.title        = ggplot2::element_text(size = 7),
-    axis.text         = ggplot2::element_text(size = 6),
-    legend.text       = ggplot2::element_text(size = 6),
-    legend.title      = ggplot2::element_text(size = 7),
-    legend.key.size   = grid::unit(0.3, "cm"),
-    strip.text        = ggplot2::element_text(size = 7, face = "bold"),
+    panel.border      = ggplot2::element_rect(linewidth = 0.6),
+    plot.title        = ggplot2::element_text(size = 9, face = "bold"),
+    axis.title        = ggplot2::element_text(size = 8),
+    axis.text         = ggplot2::element_text(size = 8),
+    legend.text       = ggplot2::element_text(size = 8),
+    legend.title      = ggplot2::element_text(size = 8),
+    legend.key.size   = grid::unit(0.35, "cm"),
+    strip.text        = ggplot2::element_text(size = 8, face = "bold"),
     strip.background  = ggplot2::element_rect(fill = "grey95")
   )
 

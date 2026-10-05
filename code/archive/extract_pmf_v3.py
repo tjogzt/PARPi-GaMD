@@ -3,7 +3,7 @@
 import mdtraj as md, numpy as np, sys, os
 
 tag = sys.argv[1]
-rundir = f'/root/autodl-tmp/PARPi_design/runs/{tag}'
+rundir = os.path.join(os.environ.get('RUNS_ROOT', './runs'), tag)
 outdir = f'{rundir}/analysis'; os.makedirs(outdir, exist_ok=True)
 
 print(f'=== {tag} ===')

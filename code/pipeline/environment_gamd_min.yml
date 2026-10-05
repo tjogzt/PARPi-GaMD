@@ -1,7 +1,6 @@
 name: gamd
 channels:
   - conda-forge
-  - bioconda
 dependencies:
   - python=3.10
   - openmm>=8.1
@@ -11,3 +10,9 @@ dependencies:
   - mdtraj
   - mdanalysis>=2.7
   - openbabel
+  - pdbfixer
+  - parmed
+  - openmmforcefields
+  - rdkit>=2024
+  - pandas
+  - matplotlib

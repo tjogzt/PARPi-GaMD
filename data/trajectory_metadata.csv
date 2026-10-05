@@ -1,5 +1,6 @@
 system_id,compound_id,construct_id,topology,topology_hash,trajectory,frame_interval_ps,frames,production_ns,boost_log,log_fields,restart_history,random_seed,software_commit,analysis_config
 dbe_rebuild,rebuild,S2,apo_solute.prmtop,3fe975dae367,apo_solute.dcd,0.001,2400,0.0,NONE,,._apo_ref.rst7;apo_ref.rst7,unknown,see release env file,see data_manifest.md
+review_runs,runs,S2,sys1_veliparib.prmtop,d80e84e5f117,NONE,,,,NONE,,none,unknown,see release env file,see data_manifest.md
 sys1_APO,APO,S1,sys1_APO.prmtop,e360ab567ba8,output.dcd,1.0,24000,24.0,gamd.log,10 cols: 	1	500	-194350.27195891162	4393.722907853101	1.0	1.0	0.0	0.0	0.0	0.0,none,unknown,see release env file,see data_manifest.md
 sys1_AZD5305,AZD5305,S1,system.prmtop,fab29ff732cf,output.dcd,1.0,24000,24.0,gamd.log,10 cols: 	1	500	-194048.78992206807	4451.420043809307	1.0	1.0	0.0	0.0	0.0	0.0,none,unknown,see release env file,see data_manifest.md
 sys2_APO,APO,S2,sys2_APO.prmtop,ec32a2c09e1f,output.dcd,1.0,24000,24.0,gamd.log,10 cols: 	1	500	-904261.3172815092	7571.533563862776	1.0	1.0	0.0	0.0	0.0	0.0,none,unknown,see release env file,see data_manifest.md
@@ -9,3 +10,8 @@ sys2_olaparib,olaparib,S2,sys2_olaparib.prmtop,25aef39212fc,output.dcd,1.0,26000
 sys2_rucaparib,rucaparib,S2,sys2_rucaparib.prmtop,8d70d035c031,output.dcd,1.0,26000,26.0,NONE,,none,unknown,see release env file,see data_manifest.md
 sys2_talazoparib,talazoparib,S2,sys2_talazoparib.prmtop,682ef473dbd3,output.dcd,1.0,26000,26.0,gamd.log,10 cols: 	1	500	-904215.1303001925	7550.424636383968	1.0	1.0	0.0	0.0	0.0	0.0,none,unknown,see release env file,see data_manifest.md
 sys2_veliparib,veliparib,S2,sys2_veliparib.prmtop,94df5def745a,output.dcd,10.0,1931,19.31,NONE,,none,unknown,see release env file,see data_manifest.md
+
+sys1_nira_prot,nira,S1,sys1_niraparib_prot.prmtop,25e7661822fa,output.dcd,50,481,24.0,gamd.log,10 cols log col8 dV_D,none,42,see release env file,see data_manifest.md
+sys2_nira_prot,nira,S2,niraparib_best_prot.prmtop,78d254af2d29,output.dcd,50,521,26.0,gamd.log,10 cols log col8 dV_D,none,42,see release env file,see data_manifest.md
+sys1_ruca_prot,ruca,S1,sys1_rucaparib_prot.prmtop,907a421cbcd8,output.dcd,50,481,24.0,gamd.log,10 cols log col8 dV_D,none,42,see release env file,see data_manifest.md
+sys2_ruca_prot,ruca,S2,rucaparib_best_prot.prmtop,12d121ae53af,output.dcd,50,521,26.0,gamd.log,10 cols log col8 dV_D,none,42,see release env file,see data_manifest.md

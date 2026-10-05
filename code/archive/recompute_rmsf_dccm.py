@@ -8,7 +8,7 @@ import MDAnalysis as mda
 import numpy as np
 from pathlib import Path
 
-DATA = Path('/Volumes/tjogzt4T/PARPi_data/s2_new_drugs')
+DATA = Path('<DATA_ROOT>/s2_new_drugs')
 HD = (662, 787)
 ART = (788, 1014)
 
