@@ -35,9 +35,10 @@ dr <- colorRampPalette(c("#24466E", "#3D6BA8", "#A9BFD6", "#F8F5ED",
 colf <- function(v) dr[pmax(1, pmin(100, round((v - zlim[1]) / diff(zlim) * 99) + 1))]
 
 draw_delta <- function() {
-  par(family = "Arial", ps = 8, cex = 8/12, col.axis = "grey20", xpd = NA,
+  par(family = "Arial", ps = 12, cex = 8/12, col.axis = "grey20", xpd = NA,
       oma = c(0.4, 0.4, 0.4, 0.4))
   layout(matrix(1:2, nrow = 1), widths = c(1, 0.19))
+  par(cex = 1)   # base R resets/reduces base cex on layout(); pin it so cex=X/12 sizes are absolute
   # ---- main heatmap (6 rows) ----
   par(mar = c(2.0, 6.8, 0.6, 0.2))
   plot(0, 0, type = "n", xlim = c(0, 5), ylim = c(0, 6), axes = FALSE,
@@ -67,6 +68,6 @@ draw_delta <- function() {
 }
 
 cairo_pdf("figures/pdf/Fig_SI_Helix_RMSF_Heatmap.pdf",
-          width = 118/25.4, height = 66/25.4, pointsize = 8)
+          width = 118/25.4, height = 66/25.4, pointsize = 12)
 draw_delta(); invisible(dev.off())
 cat("Saved: figures/pdf/Fig_SI_Helix_RMSF_Heatmap.pdf (ΔRMSF vs APO)\n")

@@ -19,7 +19,7 @@
 # figures keep the full panel borders (theme_7pt default).
 theme_open <- ggplot2::theme(
   panel.border = ggplot2::element_blank(),
-  axis.line    = ggplot2::element_line(color = "grey20", linewidth = 0.4)
+  axis.line    = ggplot2::element_line(color = "black", linewidth = 0.5)
 )
 
 theme_7pt <- ggplot2::theme_bw(base_size = 8, base_family = "Arial") +

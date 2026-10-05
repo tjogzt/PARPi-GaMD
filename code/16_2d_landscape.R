@@ -61,7 +61,7 @@ p_a <- ggplot(pmf_tala, aes(x = CV1, y = CV2, fill = PMF, z = PMF)) +
   geom_contour(color = "white", linewidth = 0.3, bins = 8, alpha = 0.6) +
   scale_fill_gradientn(colors = c("#2166AC", "#92C5DE", "white", "#F4A582", "#B2182B"),
                        name = "PMF (A,B,D)\nkcal/mol", limits = c(0, 8)) +
-  labs(x = "CV1: Protein-DNA (Å)", y = "CV2: HD-ART (Å)",
+  labs(x = "CV1: Protein–DNA (Å)", y = "CV2: HD-ART (Å)",
        title = "Talazoparib (Type II)") +
   theme_7pt + coord_fixed()
 
@@ -71,7 +71,7 @@ p_b <- ggplot(pmf_veli, aes(x = CV1, y = CV2, fill = PMF, z = PMF)) +
   geom_contour(color = "white", linewidth = 0.3, bins = 8, alpha = 0.6) +
   scale_fill_gradientn(colors = c("#2166AC", "#92C5DE", "white", "#F4A582", "#B2182B"),
                        name = "PMF (A,B,D)\nkcal/mol", limits = c(0, 8)) +
-  labs(x = "CV1: Protein-DNA (Å)", y = "CV2: HD-ART (Å)",
+  labs(x = "CV1: Protein–DNA (Å)", y = "CV2: HD-ART (Å)",
        title = "Veliparib (Type III)") +
   theme_7pt + coord_fixed()
 
@@ -86,7 +86,7 @@ p_c <- ggplot(pmf_diff, aes(x = CV1, y = CV2, fill = PMF, z = PMF)) +
   geom_contour(color = "grey40", linewidth = 0.3, bins = 8, alpha = 0.5) +
   scale_fill_gradient2(low = "#2166AC", mid = "white", high = "#B2182B",
                        name = "ΔPMF (C)\nkcal/mol", midpoint = 0) +
-  labs(x = "CV1: Protein-DNA (Å)", y = "CV2: HD-ART (Å)",
+  labs(x = "CV1: Protein–DNA (Å)", y = "CV2: HD-ART (Å)",
        title = "ΔPMF: Talazoparib − Veliparib") +
   theme_7pt + coord_fixed()
 
@@ -96,7 +96,7 @@ p_d <- ggplot(pmf_apo, aes(x = CV1, y = CV2, fill = PMF, z = PMF)) +
   geom_contour(color = "white", linewidth = 0.3, bins = 8, alpha = 0.6) +
   scale_fill_gradientn(colors = c("#2166AC", "#92C5DE", "white", "#F4A582", "#B2182B"),
                        name = "PMF (A,B,D)\nkcal/mol", limits = c(0, 8)) +
-  labs(x = "CV1: Protein-DNA (Å)", y = "CV2: HD-ART (Å)",
+  labs(x = "CV1: Protein–DNA (Å)", y = "CV2: HD-ART (Å)",
        title = "APO (ligand-free control)") +
   theme_7pt + coord_fixed()
 
@@ -159,7 +159,7 @@ if (length(all_pmf) > 0) {
                          name = "kcal/mol") +
     facet_wrap(~ ligand, ncol = 4, scales = "free") +
     scale_y_continuous(breaks = scales::pretty_breaks(3)) +
-    labs(x = "CV1: Protein-DNA (Å)", y = "CV2: HD-ART (Å)") +
+    labs(x = "CV1: Protein–DNA (Å)", y = "CV2: HD-ART (Å)") +
     theme_7pt + theme(aspect.ratio = 1,
                       strip.text = element_text(size = 8),
                       plot.margin = ggplot2::margin(1, 1, 1, 3, unit = "mm"))

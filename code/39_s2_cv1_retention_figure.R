@@ -29,9 +29,11 @@ theme_set(theme_bw(base_size = 8, base_family = "Arial") +
   theme(panel.grid.minor = element_blank(),
         panel.grid.major = element_line(color = "grey92", linewidth = 0.2),
         panel.border = element_blank(),                      # open frame:
-        axis.line = element_line(color = "grey20", linewidth = 0.4),  # left+bottom only
+        axis.line = element_line(color = "black", linewidth = 0.5),  # left+bottom only
         axis.text = element_text(size = 8, color = "black"),
-        axis.title = element_text(size = 8)))
+        axis.title = element_text(size = 8),
+        legend.text = element_text(size = 8),
+        legend.title = element_text(size = 8)))
 
 dir <- "data/analysis"
 sys_names <- c("APO", "talazoparib", "niraparib", "olaparib", "rucaparib", "veliparib", "AZD5305")
@@ -58,7 +60,7 @@ pmf_all$system <- factor(pmf_all$system, levels = sys_names)
 pA <- ggplot(pmf_all, aes(rc, pmf, color = system)) +
   geom_line(linewidth = 0.5) +
   scale_color_manual(values = cols, labels = short) +
-  labs(x = "CV1: protein\u2013DNA COM distance (\u00C5)", y = "PMF (kcal/mol)",
+  labs(x = "CV1: Protein–DNA COM Distance (\u00C5)", y = "PMF (kcal/mol)",
        title = "A  S2 CV1 PMF overlay (C3 cumulant)", color = NULL) +
   theme(plot.title = element_text(hjust = 0, face = "bold", size = 9),
         legend.key.size = unit(0.25, "cm"))

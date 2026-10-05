@@ -86,7 +86,7 @@ p_cv1 <- ggplot(pmf_cv1, aes(x = RC, y = PMF_norm, color = label, linetype = lab
   geom_line(linewidth = 0.5) +
   scale_color_manual(values = setNames(sys_meta$color, sys_meta$label)) +
   scale_linetype_manual(values = setNames(sys_meta$lty, sys_meta$label)) +
-  labs(x = "Protein-DNA COM Distance (Å)", y = "PMF (kcal/mol)",
+  labs(x = "Protein–DNA COM Distance (Å)", y = "PMF (kcal/mol)",
        color = "System", linetype = "System") +
   theme_pmf + theme_open
 
@@ -109,7 +109,7 @@ p_cv1_list <- lapply(ligand_order, function(lig) {
     geom_line(color = meta$color, linewidth = 0.4) +
     geom_vline(xintercept = pmf_min, color = meta$color, 
                linetype = "dashed", linewidth = 0.3) +
-    labs(title = meta$label, x = "Protein-DNA (Å)", y = "PMF (kcal/mol)") +
+    labs(title = meta$label, x = "Protein–DNA (Å)", y = "PMF (kcal/mol)") +
     annotate("text", x = pmf_min, y = max(df$PMF_norm) * 0.85,
              label = sprintf("%.1f", pmf_min), 
              hjust = 1.15, size = 2.9, color = meta$color) +

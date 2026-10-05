@@ -38,14 +38,14 @@ generation date, status, and MD5 checksum of the current file.
 | S1_S2_ratios.csv (archived; not distributed) | superseded | — | pre-rebuild S2 denominators | — | — | superseded | 2026-09-16 | superseded | see archive README |
 | S2_CV1_retention.csv (archived; not distributed) | superseded | — | CV1/CV2 without CSV provenance | — | — | superseded (replaced by cumulant_wells_C3.csv) | 2026-09-16 | superseded | see archive README |
 | the superseded Fig4B table (archived; not distributed) | superseded | — | included AZD5305 estimate row (n = 6) | — | — | superseded | 2026-09-16 | superseded | see archive README |
-| data/pca_projections.csv | code/28_pca_features.R (feature PCA) | 60 | sys1_*_pmf_c3.xvg + pmf-c3-sys2_*_CV{1,2}_cv.dat.xvg (24-dim feature matrix) | Fig_PCA_Features.pdf | Results PCA paragraph (Fig. S12) | prcomp, standardized 24-dim features | 2026-09-16 | current | (see notes) |
-| data/pca_eigenvalues.csv | code/28_pca_features.R (feature PCA) | 55 | (same feature matrix) | Fig_PCA_Features.pdf axis labels | Fig. S12 | prcomp | 2026-09-16 | current | (see notes) |
-| data/pca_system_stats.csv | code/28_pca_features.R (feature PCA) | 61 | pca_projections.csv | Fig_PCA_Features.pdf labels | Fig. S12 | per-system PC coordinates | 2026-09-16 | current | (see notes) |
+| data/pca_projections.csv | code/28_pca_features.R (feature PCA) | 60 | sys1_*_pmf_c3.xvg + pmf-c3-sys2_*_CV{1,2}_cv.dat.xvg (24-dim feature matrix) | Fig_PCA_Features.pdf | Results PCA paragraph (Fig. S10) | prcomp, standardized 24-dim features | 2026-09-16 | current | (see notes) |
+| data/pca_eigenvalues.csv | code/28_pca_features.R (feature PCA) | 55 | (same feature matrix) | Fig_PCA_Features.pdf axis labels | Fig. S10 | prcomp | 2026-09-16 | current | (see notes) |
+| data/pca_system_stats.csv | code/28_pca_features.R (feature PCA) | 61 | pca_projections.csv | Fig_PCA_Features.pdf labels | Fig. S10 | per-system PC coordinates | 2026-09-16 | current | (see notes) |
 | data/analysis/pca_struct_*.csv | 25-pca_analysis.R (structural PCA; not distributed) | 112-218 | $DATA_ROOT md_analysis CA DCDs | internal (26 retired) | — | bio3d pca.xyz; not manuscript-cited | 2026-09-16 | current | (see notes) |
-| figures/pdf/Fig_PCA_Features.pdf | code/28_pca_features.R | 40 | pca_projections.csv + pca_eigenvalues.csv | SI Fig. S12 | SI Fig. S12 | 7-point PCA, China palette, Type II/III labels, seed=49 | 2026-09-16 | current | 2033e9d172b68927d763ee89a2d844b6 |
-| data/pmf_convergence.csv | LEGACY — original script lost | — | replicate GaMD runs (pre-npy era) | Fig_SI_PMF_Convergence.pdf | SI Fig. S17 | cumulative local-barrier well depth; exact recipe not recoverable from surviving artifacts; terminal depths validated by pmf.npy/Table 4 chain | 2026-09-16 | legacy | 7de25addc4a4ec9d7ac2e9bf16951197 |
+| figures/pdf/Fig_PCA_Features.pdf | code/28_pca_features.R | 40 | pca_projections.csv + pca_eigenvalues.csv | SI Fig. S10 | SI Fig. S10 | 7-point PCA, China palette, Type II/III labels, seed=49 | 2026-10-05 | current | 8517febde3dfd6578e928d09ee179bcf |
+| data/pmf_convergence.csv | LEGACY — original script lost | — | replicate GaMD runs (pre-npy era) | Fig_SI_PMF_Convergence.pdf (legacy; not cited) | — (legacy) | cumulative local-barrier well depth; exact recipe not recoverable from surviving artifacts; terminal depths validated by pmf.npy/Table 4 chain | 2026-09-16 | legacy | 7de25addc4a4ec9d7ac2e9bf16951197 |
 | data/cumulant_convergence.csv | code/32_cumulant_convergence.R (reconstructed producer) | 75 | data/analysis/sys1_*_pmf_c{1,2,3}.xvg | 13-mechanism_figure.R (AAI SD asserts), 18-replicate_analysis.R (Table 1 comparison) | Table 1 S1 ±SD column; Table S1 | C1-C3 cumulant spread; pmf_cor_C2C3 recomputed 2026-09-16 (Table S1 r column updated) | 2026-09-16 | current | (see notes) |
-| data/analysis/Fig_SI_PMF_Convergence.pdf (auxiliary; not in SI) | code/30_convergence_figure.R | 52 | data/pmf_convergence.csv (legacy) | SI Fig. S17 | SI Fig. S17 | thin replicate lines + LOESS + SEM ribbon + 80 ns threshold | 2026-09-16 | current | TBD (regenerable) |
+| data/analysis/Fig_SI_PMF_Convergence.pdf (auxiliary; not in SI) | code/30_convergence_figure.R | 52 | data/pmf_convergence.csv (legacy) | — (legacy; not cited) | — (legacy) | thin replicate lines + LOESS + SEM ribbon + 80 ns threshold | 2026-09-16 | current | TBD (regenerable) |
 
 Notes:
 - Checksums are MD5 of the file content at generation time; regenerate with `md5 -q <file>`.
@@ -66,5 +66,11 @@ Notes:
 - xvg files have variable header lengths (typically 5 comment lines); scripts must use the
   comment-aware read_pmf in common/helpers.R — a fixed skip (e.g. skip=10) silently drops
   data rows (this corrupted the pre-2026-09-16 PCA feature matrix; fixed and re-derived).
+- `code/10_s2_pmf_figures.R` additionally emits `figures/pdf/Fig_S2_pmf_overlay_combined.pdf`
+  (a legacy single-file overlay variant, superseded by the split protein–DNA / HD–ART
+  overlays). It is not referenced by any manuscript text and is intentionally excluded from
+  this tree (the workspace keeps a historical copy; re-running the script re-creates it).
+- Figure files were refreshed 2026-10-05 by the user-approved figure-review round
+  (see docs/standardisation_report.md §9); checksums above reflect the current files.
 - data/analysis/pca_*.csv are produced by code/28_pca_features.R (24-dim PMF feature PCA,
   manuscript-cited); pca_struct_*.csv by 25-pca_analysis.R (not distributed) (structural PCA, internal).

@@ -152,3 +152,35 @@ All data-only scripts were executed in the standardised tree. Findings and fixes
   30/32/35 checked against their outputs; `scripts/s10_verify_manifest.py`
   passes 11/11 checksums with 0 mismatches.
 
+
+
+## 9. Figure-review round 1 (2026-10-05, user-approved; four-team review)
+
+Applied fixes from the full figure-set review (全篇图件审查; full report: workspace `docs/figures_review_round1.md`):
+- **Base-R font scale** (S15 `code/31`, S16 `code/34`): device/par pointsize 8 -> 12 with explicit
+  ``par(cex = 1)`` after ``layout()`` (base R resets/reduces the base cex on layout); all sub-8pt
+  cex values raised to >= 8pt. S15 extras: panel-B note split to two lines (panel-letter collision),
+  bottom margin raised 3.6 -> 4.2 lines and panel-C axis title raised (bottom-edge safety),
+  senaparib drawn dashed (line-type redundancy for the red pair, matching the legend), title/label
+  retune verified by a full 8-pt word scan.
+- **S17** (`code/40`): ``par(cex = 1)`` after ``par(mfrow = c(1, 3))`` (base R reduces the base cex
+  to 0.66 for >=3-panel layouts), legend cex 0.72 -> 0.75, significance-note moved and split
+  (two lines, lower-left; no collision with the p=0.13 label or the page edge), data-label offsets
+  retuned (dot/label clearance >= 2pt), panel-A axis title split to two lines (slot clipping at 8.8pt).
+- **ggplot fixes**: S12 (`code/39`) and Fig8 (`code/37`) legend text/title set to 8pt; Fig2
+  (`code/13`) 45-degree axis text 7 -> 8pt; Fig10 (`code/18`) subtitle 7 -> 8pt.
+- **Axis-line unification**: ``theme_open`` (helpers.R) and S12's inline theme now ``black/0.5``
+  (was grey20/0.4), matching Fig1/Fig2 panels and the documented axis standard.
+- **Label harmonisation**: figure texts now use the en-dash ``Protein–DNA`` form matching the
+  manuscript (scripts 10/16/21/39); Fig3 legend ``Unknown`` -> ``Unclassified`` (display-only via
+  scale ``labels``) plus a marker-classes sentence added to the Fig3 caption; S17 caption and
+  SI section 2.10 seed descriptions aligned with the data (talazoparib 3 x 200 ns; veliparib
+  1 x 200 ns + 2 x 400 ns, REV-1/REV-2).
+- **Housekeeping**: unreferenced ``Fig_S2_pmf_overlay_combined.pdf`` removed from this tree
+  (see data_manifest.md note); all 27 shipped figures re-verified.
+
+Verification: 8-pt scan passes on all 27 shipped figures (one documented false positive: a
+rotated label fragment in Fig8 measured 7.8pt while its text span is 8.00pt); geometry audit
+0 overlaps / 0 edge words on all figures; pixel-diffs of every touched figure restricted to the
+intended regions; main manuscript (57 pp) and SI (25 pp) recompiled with the new figures and
+feature-checked (caption sentences, in-figure notes, en-dash labels present in the compiled PDFs).

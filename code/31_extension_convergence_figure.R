@@ -61,9 +61,10 @@ s1_sd <- round(apply(s1w[, c("C1", "C2", "C3")], 1,
 conv <- read.csv(sprintf("%s/data/extension_s1_convergence.csv", PROJ))
 
 draw_all <- function() {
-  par(cex = 8/12, ps = 8, family = "Arial", col.axis = "grey20", col.lab = "grey10",
+  par(cex = 8/12, ps = 12, family = "Arial", col.axis = "grey20", col.lab = "grey10",
       tcl = -0.25, mgp = c(1.6, 0.5, 0), xaxs = "i", yaxs = "i")
   layout(matrix(c(1, 1, 2, 3), nrow = 2, byrow = TRUE), heights = c(1.12, 1))
+  par(cex = 1)   # base R resets/reduces base cex on layout(); pin it so cex=X/12 sizes are absolute
 
   ## ---- Panel A: S1 PMF overlay ----
   par(mar = c(2.7, 3.1, 1.8, 0.7))
@@ -71,12 +72,12 @@ draw_all <- function() {
        xlab = "", ylab = "")
   axis(1, at = 23:26); axis(2, at = seq(0, 50, 10))
   for (l in ligs) { p <- pmfs[[l]]; p$y <- p$y - min(p$y)
-    lines(p$x, p$y, col = cols[l], lwd = 1.1) }
+    lines(p$x, p$y, col = cols[l], lwd = 1.1, lty = if (l == "senaparib") 2 else 1) }
   mtext("C3 distance (\u00C5)", 1, line = 1.75, cex = 8/12)
   mtext("PMF (kcal/mol)", 2, line = 2.0, cex = 8/12)
   usr <- par("usr")
   mtext("A", 3, at = usr[1], adj = 0, line = 0.55, font = 2, cex = 10/12)
-  legend("top", legend = ligs, col = cols[ligs], lwd = 1.8, bty = "n",
+  legend("top", legend = ligs, col = cols[ligs], lwd = 1.8, lty = c(1, 1, 2), bty = "n",
          cex = 8/12, seg.len = 1.2, x.intersp = 0.5, y.intersp = 0.8, horiz = TRUE)
   mtext("S1 PMF (C3, 200 ns)", 3, line = 0.55, adj = 0.5, cex = 8.5/12, col = "grey30")
 
@@ -102,17 +103,19 @@ draw_all <- function() {
   }
   axis(2, at = seq(30, 80, 10))
   axis(1, at = gx, labels = FALSE, tick = FALSE)
-  mtext(c("Fluzoparib", "Pamiparib", "Senaparib"), 1, at = gx, line = 1.35, cex = 7.6/12)
+  mtext(c("Fluzoparib", "Pamiparib", "Senaparib"), 1, at = gx, line = 1.35, cex = 8/12)
   mtext(c("S1", "S2", "S1", "S2", "S1", "S2"), 1,
-        at = as.vector(rbind(gx - 0.38, gx + 0.38)), line = 0.25, cex = 6.8/12, col = "grey35")
+        at = as.vector(rbind(gx - 0.38, gx + 0.38)), line = 0.25, cex = 8/12, col = "grey35")
   mtext("Well depth (kcal/mol)", 2, line = 2.0, cex = 8/12)
   usr <- par("usr")
   mtext("B", 3, at = usr[1], adj = 0, line = 0.55, font = 2, cex = 10/12)
   legend("topright", legend = c("S1 (200 ns)", "S2 CV2 (22 ns)"),
          fill = c("grey30", adjustcolor("grey30", 0.42)), border = "grey20",
-         bty = "n", cex = 7.8/12, seg.len = 0.8, y.intersp = 0.85)
-  mtext("wells \u00B1 C1\u2013C3 spread; grey band = 7-system S1 range", 3,
-        line = 0.55, adj = 0.5, cex = 7.2/12, col = "grey30")
+         bty = "n", cex = 8/12, seg.len = 0.8, y.intersp = 0.85)
+  mtext("wells \u00B1 C1\u2013C3 spread;", 3,
+        line = 1.15, adj = 0.5, cex = 8/12, col = "grey30")
+  mtext("grey band = 7-system S1 range", 3,
+        line = 0.40, adj = 0.5, cex = 8/12, col = "grey30")
 
   ## ---- Panel C: convergence + 22 ns truncation ----
   par(mar = c(2.7, 3.1, 1.8, 0.7))
@@ -120,13 +123,13 @@ draw_all <- function() {
        xlab = "", ylab = "")
   axis(1); axis(2, at = seq(40, 90, 10))
   for (l in ligs) { cd <- conv[conv$ligand == l, ]; cd <- cd[order(cd$time_ns), ]
-    lines(cd$time_ns, cd$well_depth, col = cols[l], lwd = 1.0)
+    lines(cd$time_ns, cd$well_depth, col = cols[l], lwd = 1.0, lty = if (l == "senaparib") 2 else 1)
     segments(cd$time_ns[nrow(cd)] - 22, tail(cd$well_depth, 1),
              cd$time_ns[nrow(cd)] + 3, tail(cd$well_depth, 1),
              col = cols[l], lty = 3, lwd = 0.7) }
   abline(v = 22, col = "grey35", lty = 2, lwd = 0.8)
-  text(30, 92, "22 ns truncation", adj = 0, cex = 7.2/12, col = "grey35")
-  mtext("Production time (ns)", 1, line = 1.75, cex = 8/12)
+  text(30, 92, "22 ns truncation", adj = 0, cex = 8/12, col = "grey35")
+  mtext("Production time (ns)", 1, line = 1.30, cex = 8/12)
   mtext("Cumulative S1 well depth (C3)", 2, line = 2.0, cex = 8/12)
   usr <- par("usr")
   mtext("C", 3, at = usr[1], adj = 0, line = 0.55, font = 2, cex = 10/12)
@@ -134,7 +137,7 @@ draw_all <- function() {
 }
 
 cairo_pdf(OUT, width = 160/25.4, height = 115/25.4,
-          pointsize = 8, family = "Arial")
+          pointsize = 12, family = "Arial")
 draw_all(); invisible(dev.off())
 
 # self-check: all three panels must carry real data

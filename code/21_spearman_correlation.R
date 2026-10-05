@@ -183,8 +183,8 @@ p_a <- ggplot(plot_df, aes(x = trap_plot, y = s2_cv1, color = class)) +
   scale_color_manual(values = c("Type II" = "#E41A1C", "Type III" = "#377EB8")) +
   coord_cartesian(ylim = c(50, 66)) +
   labs(x = "Trapping Potency (x Olaparib)",
-       y = "S2 CV1 Protein-DNA Span (kcal/mol)",
-       title = "A  S2 Protein-DNA Span vs Trapping (two-state)",
+       y = "S2 CV1 Protein–DNA Span (kcal/mol)",
+       title = "A  S2 Protein–DNA Span vs Trapping (two-state)",
        subtitle = "neutral: -0.82 (p 0.133)\nniraparib-protonated: -0.21 (p 0.767)\nrucaparib-protonated: -0.36 (p 0.633)",
        color = NULL) +
   theme_7pt + theme(legend.position = c(0.87, 0.87),

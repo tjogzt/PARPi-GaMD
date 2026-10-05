@@ -243,7 +243,7 @@ pC1 <- ggplot(c1df, aes(x = ligand, y = well_depth_orig)) +
        title = "C1  Main pipeline (cumulant C3; reference)",
        subtitle = "independent scale; not directly comparable with C2") +
   theme_7pt + theme(axis.text.x = element_text(angle = 45, hjust = 1),
-                    plot.subtitle = element_text(color = "grey35", size = 7))
+                    plot.subtitle = element_text(color = "grey35", size = 8))
 
 c2df <- results
 c2df$ligand <- factor(c2df$ligand, levels = c("AZD5305", "EB47", "talazoparib", "veliparib"))

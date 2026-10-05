@@ -65,7 +65,9 @@ pB <- ggplot(dom_mean, aes(system, mean, fill = domain)) +
   labs(x = NULL, y = "Mean RMSF (\u00C5)", fill = "Domain",
        title = "B  Subdomain mean RMSF") +
   theme(plot.title = element_text(hjust = 0, face = "bold", size = 9),
-        axis.text.x = element_text(angle = 30, hjust = 1))
+        axis.text.x = element_text(angle = 30, hjust = 1),
+        legend.text = element_text(size = 8),
+        legend.title = element_text(size = 8))
 
 # (C) Type II - Type III dRMSF (HD domain)
 dr <- rmsf_all[domain == "HD" & type %in% c("II", "III"),

@@ -22,11 +22,12 @@ lab <- c("niraparib", "olaparib", "rucaparib", "niraparib\n(prot.)", "rucaparib\
 col <- c(NIRA, OLA, RUCA, adjustcolor(NIRA, 0.45), adjustcolor(RUCA, 0.45))
 
 draw_panels <- function() {
-  par(mfrow = c(1, 3), family = "Arial", mar = c(3.6, 4.6, 2.5, 0.7),
+  par(mfrow = c(1, 3), family = "Arial", mar = c(4.2, 4.6, 2.5, 0.7),
       mgp = c(1.9, 0.5, 0), tcl = -0.25, cex.axis = 0.75, cex.lab = 0.8, las = 1)
+  par(cex = 1)   # base R reduces base cex to 0.66 for mfrow layouts (>=3 panels); pin it
 
   # ---------- Panel A ----------
-  plot(NA, xlim = c(0, 21.5), ylim = c(0.4, 6.0), xlab = "window-to-window SD (kcal/mol)", ylab = "", axes = FALSE)
+  plot(NA, xlim = c(0, 21.5), ylim = c(0.4, 6.0), xlab = "", ylab = "", axes = FALSE)
   rect(3.5, 0.4, 8.9, 6.0, col = adjustcolor("#888888", 0.16), border = NA)
   abline(v = 3.5, col = "#888888", lty = 3, lwd = 0.7); abline(v = 8.9, col = "#888888", lty = 3, lwd = 0.7)
   for (i in 1:5) {
@@ -35,6 +36,9 @@ draw_panels <- function() {
     text(pa$c3_span_sd[i] + 0.35, y, sprintf("%.1f", pa$c3_span_sd[i]), cex = 0.73, adj = 0)
   }
   axis(1, at = c(0, 5, 10, 15, 20))
+  # axis title split to two lines: keeps the full term inside the narrow panel slot
+  mtext("window-to-window SD", side = 1, line = 1.8, cex = 0.8)
+  mtext("(kcal/mol)", side = 1, line = 2.7, cex = 0.8)
   xpd_bak <- par(xpd = TRUE)
   text(-0.5, 5.5 - (1:5), lab, adj = 1, cex = 0.75, xpd = NA)
   par(xpd = FALSE)
@@ -53,7 +57,7 @@ draw_panels <- function() {
   }
   axis(1, at = c(2, 6, 12, 18, 24)); axis(2, at = c(2, 3, 4))
   legend("topright", legend = c("talazoparib (3 seeds)", "veliparib (3 seeds)"), col = c(TALA, VELI),
-         lty = 1, lwd = 1.2, bty = "n", cex = 0.72, seg.len = 1.5, y.intersp = 1.05)
+         lty = 1, lwd = 1.2, bty = "n", cex = 0.75, seg.len = 1.5, y.intersp = 1.05)
   mtext("B", side = 3, at = 1.3, line = 0.6, adj = 0, font = 2, cex = 0.92)
   mtext("noise vs sampling length", side = 3, at = 3.9, line = 0.6, adj = 0, cex = 0.73)
 
@@ -65,11 +69,12 @@ draw_panels <- function() {
   points(tr$T_ns, tr$rho, pch = 16, col = CINNABAR, cex = 0.85)
   pcol <- ifelse(tr$p < 0.2, CINNABAR, "#666666")
   for (i in seq_len(nrow(tr))) {
-    dy <- ifelse(tr$rho[i] >= 0, 0.12, ifelse(tr$rho[i] < -0.6, -0.10, -0.155))
+    dy <- ifelse(tr$rho[i] >= 0, 0.15, ifelse(tr$rho[i] < -0.6, -0.19, -0.20))
     text(tr$T_ns[i], tr$rho[i] + dy, sprintf("p=%.2f", tr$p[i]), cex = 0.73, col = pcol[i])
   }
   axis(1, at = c(8, 12, 16, 20, 24)); axis(2, at = c(-1.0, -0.5, 0, 0.5))
-  text(9.3, -0.87, "p<0.05 needs |rho| >= 0.975", adj = 0, cex = 0.73, col = "#666666")
+  text(6.1, -0.58, "p<0.05 needs", adj = 0, cex = 0.73, col = "#666666")
+  text(6.1, -0.84, "|rho| >= 0.975", adj = 0, cex = 0.73, col = "#666666")
   mtext("C", side = 3, at = 5.7, line = 0.6, adj = 0, font = 2, cex = 0.92)
   mtext("association vs length", side = 3, at = 9.0, line = 0.6, adj = 0, cex = 0.73)
 }

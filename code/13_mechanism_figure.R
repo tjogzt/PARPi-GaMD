@@ -170,7 +170,7 @@ p_b <- ggplot(bar_data, aes(x = label, y = well_depth, fill = system)) +
   labs(x = NULL, y = "Well Depth (kcal/mol)",
        title = "B  HD-ART Energy Landscape:\nDNA-free vs DNA-bound") +
   theme_f2 +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 7),
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
         legend.position = "bottom", legend.title = element_blank())
 
 # ---- Panel C: 2D mechanism scatter -------------------------------------------
@@ -244,6 +244,8 @@ p_2d <- ggplot(plot_df2, aes(x = wd_ratio, y = wd_S1)) +
                                 "Extension" = 18, "Unknown" = 15,
                                 "nira" = 1),
                      breaks = c("Type II", "Type III", "Extension", "Unknown"),
+                     labels = c("Type II" = "Type II", "Type III" = "Type III",
+                                "Extension" = "Extension", "Unknown" = "Unclassified"),
                      name = "Classification") +
   ggrepel::geom_text_repel(aes(label = label), size = 3.0, max.overlaps = Inf,
                            seed = 49,
@@ -252,6 +254,8 @@ p_2d <- ggplot(plot_df2, aes(x = wd_ratio, y = wd_S1)) +
   scale_color_manual(values = c("Type II" = "#E41A1C", "Type III" = "#377EB8",
                                 "Extension" = "#C23531", "Unknown" = "darkorange"),
                      breaks = c("Type II", "Type III", "Extension", "Unknown"),
+                     labels = c("Type II" = "Type II", "Type III" = "Type III",
+                                "Extension" = "Extension", "Unknown" = "Unclassified"),
                      name = "Classification") +
   geom_vline(xintercept = 1, linetype = "dashed", color = "grey50", linewidth = 0.3) +
   labs(x = "S1/S2 Well Depth Ratio (Allosteric Amplification Index)",
