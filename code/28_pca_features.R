@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 # 28-pca_features.R — PCA of the 24-dimensional PMF feature matrix (SI Fig S10).
 #
-# Feature matrix: 24 features = 3 PMFs per system (S1 HD-ART C3, S2 CV1 C3, S2 CV2 C3)
+# Feature matrix: 24 features = 3 PMFs per system (S1 HD–ART C3, S2 CV1 C3, S2 CV2 C3)
 #                  x 8 PMF descriptors (rc_min, well_depth, rc_range, barrier_left, barrier_right,
 #                  barrier, fwhm, n_states) — same descriptor set as 12-descriptive_analysis.R.
 # The original feature-PCA script was lost; this reconstruction reproduces the manuscript's

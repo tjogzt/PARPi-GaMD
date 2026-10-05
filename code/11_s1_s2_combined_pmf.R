@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
-# 11-s1_s2_combined_pmf.R — S1 vs S2 HD-ART PMF comparison (13 trajectories)
+# 11-s1_s2_combined_pmf.R — S1 vs S2 HD–ART PMF comparison (13 trajectories)
 #
-# Purpose:  Render the combined S1-vs-S2 HD-ART PMF comparison across the 13 trajectories.
+# Purpose:  Render the combined S1-vs-S2 HD–ART PMF comparison across the 13 trajectories.
 # Author:   Tao Zhu (tjogzt@gmail.com)
 # Created:  2026-09-15 (header standardised 2026-10-05)
 # Depends:  dplyr, ggplot2, patchwork
@@ -39,7 +39,7 @@ sys_meta <- data.frame(
 # ---- Load PMF data ---------------------------------------------------------
 
 
-# S1: CAT-only HD-ART PMF
+# S1: CAT-only HD–ART PMF
 s1_pmf <- list()
 for (i in seq_len(nrow(sys_meta))) {
   lig <- sys_meta$ligand[i]
@@ -55,7 +55,7 @@ for (i in seq_len(nrow(sys_meta))) {
 }
 s1_all <- bind_rows(s1_pmf)
 
-# S2: DNA-bound HD-ART PMF
+# S2: DNA-bound HD–ART PMF
 s2_meta <- sys_meta
 s2_meta$ligand[s2_meta$ligand == "olaparib"] <- "olaparib"  # same
 s2_pmf <- list()
@@ -98,7 +98,7 @@ p_facet <- ggplot(pmf_all, aes(x = RC, y = PMF_norm, color = system)) +
   scale_color_manual(values = c("S1: CAT-only" = "#2166AC", 
                                  "S2: DNA-bound" = "#B2182B")) +
   facet_wrap(~ label, ncol = 3, scales = "free_x") +
-  labs(x = "HD-ART COM Distance (Å)", y = "Free Energy (kcal/mol)",
+  labs(x = "HD–ART COM Distance (Å)", y = "Free Energy (kcal/mol)",
        color = NULL) +
   theme_pmf
 
@@ -107,7 +107,7 @@ p_overlay <- ggplot(pmf_all, aes(x = RC, y = PMF_norm,
                                   color = label, linetype = system)) +
   geom_line(linewidth = 0.4) +
   scale_color_manual(values = setNames(sys_meta$color, sys_meta$label)) +
-  labs(x = "HD-ART COM Distance (Å)", y = "Free Energy (kcal/mol)",
+  labs(x = "HD–ART COM Distance (Å)", y = "Free Energy (kcal/mol)",
        color = NULL, linetype = "System") +
   theme_pmf +
   theme(legend.position = "bottom")
@@ -121,7 +121,7 @@ p_list <- lapply(sys_meta$ligand, function(lig) {
     geom_line(linewidth = 0.5) +
     scale_color_manual(values = c("S1: CAT-only" = "#2166AC", 
                                    "S2: DNA-bound" = "#B2182B")) +
-    labs(title = meta$label, x = "HD-ART (Å)", y = "PMF") +
+    labs(title = meta$label, x = "HD–ART (Å)", y = "PMF") +
     theme_pmf +
     theme(legend.position = "none")
 })

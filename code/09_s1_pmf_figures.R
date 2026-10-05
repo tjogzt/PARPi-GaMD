@@ -1,7 +1,7 @@
 # 09-s1_pmf_figures.R — S1 PMF comparison figures
-# HD-ART domain distance PMF curves for 7 systems (APO + 6 inhibitors)
+# HD–ART domain distance PMF curves for 7 systems (APO + 6 inhibitors)
 #
-# Purpose:  Render the S1 HD-ART PMF comparison figures for the seven systems (overlay + facet panels).
+# Purpose:  Render the S1 HD–ART PMF comparison figures for the seven systems (overlay + facet panels).
 # Author:   Tao Zhu (tjogzt@gmail.com)
 # Created:  2026-09-15 (header standardised 2026-10-05)
 # Depends:  dplyr, ggplot2, patchwork
@@ -78,7 +78,7 @@ p_list <- lapply(sys_meta$ligand, function(lig) {
     geom_line(color = meta$color, linewidth = 0.4) +
     geom_vline(xintercept = pmf_min, color = meta$color, 
                linetype = "dashed", linewidth = 0.3) +
-    labs(title = meta$label, x = "HD-ART Distance (Å)", y = "PMF (kcal/mol)") +
+    labs(title = meta$label, x = "HD–ART Distance (Å)", y = "PMF (kcal/mol)") +
     annotate("text", x = pmf_min, y = max(df$PMF_norm) * 0.85,
              label = sprintf("%.1f Å", pmf_min), 
              hjust = -0.15, size = 2.9, color = meta$color) +
@@ -115,7 +115,7 @@ panel_b <- ggplot() +
   scale_color_manual(values = setNames(sys_meta$color, sys_meta$label)) +
   scale_linetype_manual(values = c("APO (no ligand)" = "dotted", 
                                    "AZD5305 (blind)" = "dashed")) +
-  labs(x = "HD-ART Distance (Å)", y = "PMF (kcal/mol)",
+  labs(x = "HD–ART Distance (Å)", y = "PMF (kcal/mol)",
        color = NULL, linetype = NULL) +
   theme_bw(base_size = 8, base_family = "Arial") +
   theme(
@@ -159,7 +159,7 @@ p_cum <- lapply(inhibitors, function(lig) {
     geom_line(linewidth = 0.4) +
     scale_color_brewer(palette = "Set1", 
                        labels = c("c1"="1st", "c2"="2nd", "c3"="3rd")) +
-    labs(title = meta$label, x = "HD-ART Distance (Å)", 
+    labs(title = meta$label, x = "HD–ART Distance (Å)", 
          y = "PMF (kcal/mol)", color = "Cumulant") +
     theme_pmf +
     theme(legend.position = c(0.78, 0.72),

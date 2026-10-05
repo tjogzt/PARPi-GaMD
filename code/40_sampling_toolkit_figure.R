@@ -1,5 +1,5 @@
 #!/usr/bin/env Rscript
-# Fig_SI_Sampling_Toolkit: sampling-resolution synthesis (Figure S16)
+# Fig_SI_Sampling_Toolkit: sampling-resolution synthesis (Figure S17)
 #
 # Purpose:  Render the sampling-resolution synthesis figure (Fig_SI_Sampling_Toolkit): truncation scan + timescale scaling.
 # Author:   Tao Zhu (tjogzt@gmail.com)
@@ -70,7 +70,8 @@ draw_panels <- function() {
   pcol <- ifelse(tr$p < 0.2, CINNABAR, "#666666")
   for (i in seq_len(nrow(tr))) {
     dy <- ifelse(tr$rho[i] >= 0, 0.15, ifelse(tr$rho[i] < -0.6, -0.19, -0.20))
-    text(tr$T_ns[i], tr$rho[i] + dy, sprintf("p=%.2f", tr$p[i]), cex = 0.73, col = pcol[i])
+    dx <- ifelse(tr$T_ns[i] > 25, -1.8, 0)  # keep the rightmost label inside the panel region
+    text(tr$T_ns[i] + dx, tr$rho[i] + dy, sprintf("p=%.3f", tr$p[i]), cex = 0.73, col = pcol[i])
   }
   axis(1, at = c(8, 12, 16, 20, 24)); axis(2, at = c(-1.0, -0.5, 0, 0.5))
   text(6.1, -0.58, "p<0.05 needs", adj = 0, cex = 0.73, col = "#666666")

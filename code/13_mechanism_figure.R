@@ -63,7 +63,7 @@ for (i in seq_len(nrow(sys_meta))) {
 }
 s1_all <- bind_rows(s1_pmf)
 
-# S2 CV2 (HD-ART) C3 PMF
+# S2 CV2 (HD–ART) C3 PMF
 s2_pmf <- list()
 for (i in seq_len(nrow(sys_meta))) {
   lig <- sys_meta$ligand[i]
@@ -141,8 +141,8 @@ theme_f2 <- theme_7pt + theme(panel.border = element_blank(),
 p_a <- ggplot(s1_all, aes(x = RC, y = PMF_norm, color = label)) +
   geom_line(linewidth = 0.5) +
   scale_color_manual(values = setNames(sys_meta$color, sys_meta$label)) +
-  labs(x = "HD-ART Distance (Å)", y = "Free Energy (kcal/mol)",
-       title = "A  S1: CAT-only HD-ART Free Energy Landscape") +
+  labs(x = "HD–ART Distance (Å)", y = "Free Energy (kcal/mol)",
+       title = "A  S1: CAT-only HD–ART Free Energy Landscape") +
   theme_f2 +
   theme(legend.position = "bottom", legend.title = element_blank())
 
@@ -168,7 +168,7 @@ p_b <- ggplot(bar_data, aes(x = label, y = well_depth, fill = system)) +
   geom_bar(stat = "identity", position = "dodge", width = 0.7) +
   scale_fill_manual(values = c("S1: CAT-only" = "#2166AC", "S2: DNA-bound" = "#B2182B")) +
   labs(x = NULL, y = "Well Depth (kcal/mol)",
-       title = "B  HD-ART Energy Landscape:\nDNA-free vs DNA-bound") +
+       title = "B  HD–ART Energy Landscape:\nDNA-free vs DNA-bound") +
   theme_f2 +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
         legend.position = "bottom", legend.title = element_blank())
@@ -208,7 +208,7 @@ extreme_df <- s1_all %>% filter(label %in% c("Talazoparib", "Veliparib", "APO"))
 p_d <- ggplot(extreme_df, aes(x = RC, y = PMF_norm, color = label)) +
   geom_line(linewidth = 0.6) +
   scale_color_manual(values = c("APO" = "grey40", "Talazoparib" = "#FF7F00", "Veliparib" = "#377EB8")) +
-  labs(x = "HD-ART Distance (Å)", y = "Free Energy (kcal/mol)",
+  labs(x = "HD–ART Distance (Å)", y = "Free Energy (kcal/mol)",
        title = "D  Same CAT Pocket,\nOpposite Allosteric Fate") +
   theme_f2 +
   theme(legend.position = "bottom", legend.title = element_blank())
@@ -259,7 +259,7 @@ p_2d <- ggplot(plot_df2, aes(x = wd_ratio, y = wd_S1)) +
                      name = "Classification") +
   geom_vline(xintercept = 1, linetype = "dashed", color = "grey50", linewidth = 0.3) +
   labs(x = "S1/S2 Well Depth Ratio (Allosteric Amplification Index)",
-       y = "S1 HD-ART Well Depth (kcal/mol)") +
+       y = "S1 HD–ART Well Depth (kcal/mol)") +
   theme_7pt +
   theme(legend.position = "right",
         plot.margin = ggplot2::margin(1, 4, 1, 3, unit = "mm")) +

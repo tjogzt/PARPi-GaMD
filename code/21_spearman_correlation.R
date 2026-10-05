@@ -31,13 +31,13 @@ getc <- function(col) setNames(ts[[col]], ts$inhibitor)
 s5 <- c("talazoparib", "niraparib", "olaparib", "rucaparib", "veliparib")
 
 # Panel vectors, all read from the curated table (Table S1/S5 C3 convention).
-s2_cv2_c3   <- getc("s2cv2_neutral")      # S2 CV2 (HD-ART), neutral
+s2_cv2_c3   <- getc("s2cv2_neutral")      # S2 CV2 (HD–ART), neutral
 s2_cv2_pro  <- getc("s2cv2_nira_prot")    # niraparib-protonated panel
 s2_cv2_ruca <- getc("s2cv2_ruca_prot")    # rucaparib-protonated panel
 s1_neu      <- getc("s1_neutral")         # S1 spans, neutral
 s1_pro      <- getc("s1_nira_prot")       # niraparib-protonated panel
 s1_ruca     <- getc("s1_ruca_prot")       # rucaparib-protonated panel
-s2_cv1_neu  <- getc("s2cv1_neutral")      # S2 CV1 (protein-DNA), neutral
+s2_cv1_neu  <- getc("s2cv1_neutral")      # S2 CV1 (protein–DNA), neutral
 s2_cv1_c3   <- getc("s2cv1_nira_prot")    # niraparib-protonated panel
 s2_cv1_ruca <- getc("s2cv1_ruca_prot")    # rucaparib-protonated panel
 aai_ruca    <- (s1_ruca / s2_cv2_ruca)

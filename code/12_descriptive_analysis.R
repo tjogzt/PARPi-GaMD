@@ -43,7 +43,7 @@ dir.create("figures/pdf", showWarnings = FALSE, recursive = TRUE)
 
 # ---- 2. Load all systems ----------------------------------------------------
 systems <- list(
-  # S1 (CAT-only): HD-ART PMF
+  # S1 (CAT-only): HD–ART PMF
   S1_APO         = list(path = "data/analysis/sys1_APO_pmf_c3.xvg",        ligand = "APO",         system = "S1"),
   S1_AZD5305     = list(path = "data/analysis/sys1_AZD5305_pmf_c3.xvg",    ligand = "AZD5305",     system = "S1"),
   S1_niraparib   = list(path = "data/analysis/sys1_niraparib_pmf_c3.xvg",  ligand = "Niraparib",   system = "S1"),
@@ -51,7 +51,7 @@ systems <- list(
   S1_rucaparib   = list(path = "data/analysis/sys1_rucaparib_pmf_c3.xvg",  ligand = "Rucaparib",   system = "S1"),
   S1_talazoparib = list(path = "data/analysis/sys1_talazoparib_pmf_c3.xvg",ligand = "Talazoparib", system = "S1"),
   S1_veliparib   = list(path = "data/analysis/sys1_veliparib_pmf_c3.xvg",  ligand = "Veliparib",   system = "S1"),
-  # S2 (DNA-bound): HD-ART PMF
+  # S2 (DNA-bound): HD–ART PMF
   S2_APO         = list(path = "data/analysis/pmf-c3-sys2_APO_CV2_cv.dat.xvg",         ligand = "APO",        system = "S2"),
   S2_AZD5305     = list(path = "data/analysis/pmf-c3-sys2_AZD5305_CV2_cv.dat.xvg",     ligand = "AZD5305",    system = "S2"),
   S2_niraparib   = list(path = "data/analysis/pmf-c3-sys2_niraparib_CV2_cv.dat.xvg",   ligand = "Niraparib",  system = "S2"),
@@ -123,14 +123,14 @@ cat("\nVeliparib S1 well_depth =",
     "kcal/mol (2× any other)\n")
 
 # ---- 6. S1 inhibitor ranking ---
-cat("\n========== S1 HD-ART Well Depth Ranking ==========\n")
+cat("\n========== S1 HD–ART Well Depth Ranking ==========\n")
 s1_rank <- features_df %>%
   filter(system == "S1") %>%
   arrange(desc(well_depth)) %>%
   select(ligand, well_depth, rc_min, rc_range)
 print(s1_rank, n = 10)
 
-cat("\n========== S2 HD-ART Well Depth Ranking ==========\n")
+cat("\n========== S2 HD–ART Well Depth Ranking ==========\n")
 s2_rank <- features_df %>%
   filter(system == "S2") %>%
   arrange(desc(well_depth)) %>%

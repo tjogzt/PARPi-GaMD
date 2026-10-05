@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
-# 10-s2_pmf_figures.R — S2 PMF figures (Protein-DNA + HD-ART, 7 systems)
+# 10-s2_pmf_figures.R — S2 PMF figures (Protein–DNA + HD–ART, 7 systems)
 #
-# Purpose:  Render the S2 PMF figures (protein-DNA and HD-ART, seven systems: overlay + facet panels).
+# Purpose:  Render the S2 PMF figures (protein–DNA and HD–ART, seven systems: overlay + facet panels).
 # Author:   Tao Zhu (tjogzt@gmail.com)
 # Created:  2026-09-15 (header standardised 2026-10-05)
 # Depends:  dplyr, ggplot2, patchwork
@@ -40,7 +40,7 @@ sys_meta <- data.frame(
 # ---- Load PMF data ---------------------------------------------------------
 
 
-# Load CV1 (Protein-DNA) and CV2 (HD-ART) for all systems
+# Load CV1 (Protein–DNA) and CV2 (HD–ART) for all systems
 load_s2_pmf <- function(cv) {
   all_pmf <- list()
   for (i in seq_len(nrow(sys_meta))) {
@@ -81,7 +81,7 @@ theme_pmf <- theme_bw(base_size = 8, base_family = "Arial") +
     legend.key.size   = unit(0.3, "cm")
   )
 
-# ---- Fig A: CV1 Protein-DNA overlay ----------------------------------------
+# ---- Fig A: CV1 Protein–DNA overlay ----------------------------------------
 p_cv1 <- ggplot(pmf_cv1, aes(x = RC, y = PMF_norm, color = label, linetype = label)) +
   geom_line(linewidth = 0.5) +
   scale_color_manual(values = setNames(sys_meta$color, sys_meta$label)) +
@@ -90,12 +90,12 @@ p_cv1 <- ggplot(pmf_cv1, aes(x = RC, y = PMF_norm, color = label, linetype = lab
        color = "System", linetype = "System") +
   theme_pmf + theme_open
 
-# ---- Fig B: CV2 HD-ART overlay ---------------------------------------------
+# ---- Fig B: CV2 HD–ART overlay ---------------------------------------------
 p_cv2 <- ggplot(pmf_cv2, aes(x = RC, y = PMF_norm, color = label, linetype = label)) +
   geom_line(linewidth = 0.5) +
   scale_color_manual(values = setNames(sys_meta$color, sys_meta$label)) +
   scale_linetype_manual(values = setNames(sys_meta$lty, sys_meta$label)) +
-  labs(x = "HD-ART COM Distance (Å)", y = "PMF (kcal/mol)",
+  labs(x = "HD–ART COM Distance (Å)", y = "PMF (kcal/mol)",
        color = "System", linetype = "System") +
   theme_pmf + theme_open
 
@@ -126,7 +126,7 @@ p_cv2_list <- lapply(ligand_order, function(lig) {
     geom_line(color = meta$color, linewidth = 0.4) +
     geom_vline(xintercept = pmf_min, color = meta$color, 
                linetype = "dashed", linewidth = 0.3) +
-    labs(title = meta$label, x = "HD-ART (Å)", y = "PMF (kcal/mol)") +
+    labs(title = meta$label, x = "HD–ART (Å)", y = "PMF (kcal/mol)") +
     annotate("text", x = pmf_min, y = max(df$PMF_norm) * 0.85,
              label = sprintf("%.1f", pmf_min), 
              hjust = 1.15, size = 2.9, color = meta$color) +
@@ -180,9 +180,9 @@ cv2_stats <- pmf_cv2 %>%
     .groups     = "drop"
   )
 
-cat("\n=== S2 CV1 (Protein-DNA) PMF Stats ===\n")
+cat("\n=== S2 CV1 (Protein–DNA) PMF Stats ===\n")
 print(cv1_stats)
-cat("\n=== S2 CV2 (HD-ART) PMF Stats ===\n")
+cat("\n=== S2 CV2 (HD–ART) PMF Stats ===\n")
 print(cv2_stats)
 
 write.csv(cv1_stats, file.path(stats_dir, "S2_CV1_stats.csv"), row.names = FALSE)

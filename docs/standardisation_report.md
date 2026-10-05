@@ -184,3 +184,33 @@ rotated label fragment in Fig8 measured 7.8pt while its text span is 8.00pt); ge
 0 overlaps / 0 edge words on all figures; pixel-diffs of every touched figure restricted to the
 intended regions; main manuscript (57 pp) and SI (25 pp) recompiled with the new figures and
 feature-checked (caption sentences, in-figure notes, en-dash labels present in the compiled PDFs).
+
+### 9b. Figure-review round 1 — follow-up batch (2026-10-05, continued)
+
+Executed after the main round, same approval:
+
+- **Numeric-precision unification (p-values -> 3 decimals).** All p-values in the manuscript
+  and SI now use 3 decimal places, matching the sensitivity table and the computed sources
+  (``data/analysis/d4_consistency_matrix.csv``, ``data/analysis/p0_2_trunc_scan.csv``):
+  e.g. 0.77 -> 0.767, 0.63 -> 0.633, 0.50 -> 0.500, 0.27 -> 0.267, 0.13 -> 0.133, 0.65 -> 0.650,
+  0.85 -> 0.850, 0.20 -> 0.200, 1.0 -> 1.000 (incl. the two ``(1.0)`` cells in the sensitivity
+  table); the bound ``p >= 0.43`` was tightened to ``p >= 0.433``. Conventional inequality
+  thresholds (``p < 0.05``, ``p >= 0.70``) and the structural probabilities
+  (``1/120 ~= 0.008``, ``0.083``, ``0.356``) keep their existing forms.
+- **Hyphen unification extended: ``HD-ART`` -> ``HD–ART`` in figure text.** All 10 shipped figures that displayed the
+  hyphenated form (scripts 09/10/11/13/16) now use the en dash, matching the manuscript
+  (main 39x, SI 23x ``HD--ART``); all remaining hyphen instances in scripts (comments, console
+  strings) were also converted, and the one stray SI comment was fixed. Zero hyphen residues
+  remain in the shipped figure PDFs.
+- **S17 p-labels.** ``code/40`` now prints p-labels with ``%.3f`` (0.133 / 0.433 / 0.767 / 0.833 /
+  1.000), consistent with the manuscript's p-value family. The rightmost label exceeded the
+  panel region and had its last glyph clipped; it is now drawn with a small inward offset
+  (dx = -1.8 data units for T > 25 ns) so the full string stays inside the panel.
+- **Tree cleanup.** Re-running script 11 regenerates three non-shipped by-products
+  (``Fig_Master_S1S2_HD_ART``, ``Fig_S1S2_hd_art_overlay``, ``Fig_S1S2_hd_art_panels``); removed
+  from this tree after the run (same policy as ``Fig_S2_pmf_overlay_combined``). Stale header
+  comment in ``code/40`` corrected (Figure S16 -> S17).
+- **Re-verification.** 8-pt scan 27/28 (single documented false positive: rotated fragment in
+  Fig8, span = 8.00 pt); geometry 0 overlaps / 0 edge words on all 27; pixel-diffs restricted to
+  the intended regions; main (57 pp) and SI (25 pp) recompiled; packages refreshed; repository
+  synced.

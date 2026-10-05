@@ -16,7 +16,7 @@
 # without an error.
 # =============================================================================
 #
-# Purpose:  Render Fig_S2_CV1_Retention.pdf: S2 CV1 (protein-DNA) retention summary with the C1/C3 span panel.
+# Purpose:  Render Fig_S2_CV1_Retention.pdf: S2 CV1 (protein–DNA) retention summary with the C1/C3 span panel.
 # Author:   Tao Zhu (tjogzt@gmail.com)
 # Created:  2026-09-15 (header standardised 2026-10-05)
 # Outputs:  figures/pdf/Fig_S2_CV1_Retention.pdf
