@@ -228,3 +228,10 @@ Executed after the main round, same approval:
   Follow-up (same day, user-requested): the 3D structure in Panel B was sunk by scaling it
   0.92 about its bottom edge (centred), lifting the top of the protein clear of the note line
   (ink-top to note-bottom gap -2.9 -> +6.9 pt); labels were remapped with the same transform.
+- **Fig2 Panel A bottom assembly (user-requested).** The 10-entry two-row legend was wider than
+  the panel and its first key was clipped at the page edge; an asymmetric ``legend.margin``
+  (left +18 pt) shifts the wrapped legend right (first key -5.5 -> +3.5 pt, right edge clears the
+  neighbouring legend by 25 pt). The axis title and legend were pulled toward the axis
+  (tick-to-title 26.3 -> 11.0 pt; title-to-legend 13.0 -> 11.0 pt) via explicit
+  ``axis.title.x`` / ``axis.text.x`` / ``legend.margin`` margins. Re-rendered; 8-pt and geometry
+  checks clean; manuscript recompiled (57 pp).

@@ -144,7 +144,10 @@ p_a <- ggplot(s1_all, aes(x = RC, y = PMF_norm, color = label)) +
   labs(x = "HD–ART Distance (Å)", y = "Free Energy (kcal/mol)",
        title = "A  S1: CAT-only HD–ART Free Energy Landscape") +
   theme_f2 +
-  theme(legend.position = "bottom", legend.title = element_blank())
+  theme(legend.position = "bottom", legend.title = element_blank(),
+        legend.margin    = margin(-4, 5.5, 5.5, 23.5),     # asym left pad shifts the legend right; negative top pulls it toward the axis
+        axis.text.x      = element_text(margin = margin(t = 1)),    # tighten tick labels toward the axis
+        axis.title.x     = element_text(margin = margin(t = -14)))  # pull the axis title up toward the ticks
 
 # ---- Panel B: S1 vs S2 well depth bar ---------------------------------------
 bar_data <- combined %>%
