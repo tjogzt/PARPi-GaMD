@@ -214,3 +214,8 @@ Executed after the main round, same approval:
   Fig8, span = 8.00 pt); geometry 0 overlaps / 0 edge words on all 27; pixel-diffs restricted to
   the intended regions; main (57 pp) and SI (25 pp) recompiled; packages refreshed; repository
   synced.
+
+- **Fig10 legend label (found during post-sync verification).** The replicate-validation figure
+  (``code/18``) displayed the legacy legend term ``Unknown``; it now shows ``Unclassified``
+  (display-only via scale ``labels``, same treatment as Fig3). Re-rendered, redistributed;
+  the main manuscript was recompiled (57 pp) and re-verified (main ``Unknown`` = 0).

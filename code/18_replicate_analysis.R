@@ -220,7 +220,8 @@ p2 <- ggplot(merged[!is.na(merged$wd_sd) & !is.na(merged$wd_sd_orig), ],
   geom_text(aes(hjust = ifelse(ligand == "veliparib", 1.15, -0.15)),
             vjust = 0.5, size = 3.0, show.legend = FALSE) +
   geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "grey50") +
-  scale_color_manual(values = c("Type II" = "#E41A1C", "Type III" = "#377EB8", "Unknown" = "darkorange")) +
+  scale_color_manual(values = c("Type II" = "#E41A1C", "Type III" = "#377EB8", "Unknown" = "darkorange"),
+                       labels = c("Type II" = "Type II", "Type III" = "Type III", "Unknown" = "Unclassified")) +
   labs(x = "SD across C1-C3 cumulant (original)", y = "SD across replicates",
        title = "B  Cross-Trajectory vs Cumulant Uncertainty") +
   theme_7pt +
