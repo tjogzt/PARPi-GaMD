@@ -101,6 +101,15 @@ Seeds (e.g. `set.seed(49)`) are retained by design.
 | `code/30` re-run | writes to `results/analysis/` only |
 | Metadata checksum script `scripts/s10_verify_manifest.py` | coherent with the updated `data_manifest.md` (regenerable paths flagged) |
 
+
+- **Figure-style revision (2026-10-05, later round)**: open-frame panel style
+  (top/right borders removed, left/bottom axis lines retained) applied to the
+  single-panel SI figures S3, S4, S5, S10, S11 via `theme_open` in
+  `common/helpers.R`, and to S12 via `code/39`. Grid/facet figures
+  (S1/S2/S6/S7/S8/S9/S13/S14 and the S15-S17 base-R panels) intentionally keep
+  their existing frames. The SI was recompiled and the submission package
+  updated accordingly.
+
 ## 7. Known limits
 
 - Raw trajectories are not distributed; scripts that read them require

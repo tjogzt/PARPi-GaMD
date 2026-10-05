@@ -128,6 +128,7 @@ panel_b <- ggplot() +
     axis.title        = element_text(size = 8),
     axis.text         = element_text(size = 8)
   ) +
+  theme_open +
   guides(color = guide_legend(nrow = 2, byrow = TRUE),
          linetype = guide_legend(nrow = 2, byrow = TRUE))
 

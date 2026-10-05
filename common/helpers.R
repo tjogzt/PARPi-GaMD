@@ -14,6 +14,14 @@
 # User hard rule: minimum in-figure character size >= 8 pt. Raised from 7 pt
 # base / 6 pt text (2026-09-30 figure audit).
 # Fully namespace-qualified so scripts without library(ggplot2) can still source us.
+# Open-frame panel style for single-panel figures (figure-style policy,
+# 2026-10-05): left/bottom axis lines only, no top/right borders. Grid/facet
+# figures keep the full panel borders (theme_7pt default).
+theme_open <- ggplot2::theme(
+  panel.border = ggplot2::element_blank(),
+  axis.line    = ggplot2::element_line(color = "grey20", linewidth = 0.4)
+)
+
 theme_7pt <- ggplot2::theme_bw(base_size = 8, base_family = "Arial") +
   ggplot2::theme(
     panel.grid.minor  = ggplot2::element_blank(),

@@ -98,7 +98,8 @@ p <- ggplot(proj, aes(x = PC1, y = PC2)) +
   scale_y_continuous(expand = expansion(mult = 0.18)) +
   labs(x = sprintf("PC1 (%.1f%%)", pct[1]), y = sprintf("PC2 (%.1f%%)", pct[2])) +
   coord_cartesian(clip = "off") +
-  theme_7pt + theme(plot.margin = ggplot2::margin(1, 1, 1, 3, unit = "mm"))
+  theme_7pt + theme(plot.margin = ggplot2::margin(1, 1, 1, 3, unit = "mm")) +
+  theme_open
 
 cairo_pdf(out_fig, width = 124/25.4, height = 99.2/25.4, pointsize = 8)
 print(p)

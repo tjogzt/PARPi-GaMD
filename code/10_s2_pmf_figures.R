@@ -88,7 +88,7 @@ p_cv1 <- ggplot(pmf_cv1, aes(x = RC, y = PMF_norm, color = label, linetype = lab
   scale_linetype_manual(values = setNames(sys_meta$lty, sys_meta$label)) +
   labs(x = "Protein-DNA COM Distance (Å)", y = "PMF (kcal/mol)",
        color = "System", linetype = "System") +
-  theme_pmf
+  theme_pmf + theme_open
 
 # ---- Fig B: CV2 HD-ART overlay ---------------------------------------------
 p_cv2 <- ggplot(pmf_cv2, aes(x = RC, y = PMF_norm, color = label, linetype = label)) +
@@ -97,7 +97,7 @@ p_cv2 <- ggplot(pmf_cv2, aes(x = RC, y = PMF_norm, color = label, linetype = lab
   scale_linetype_manual(values = setNames(sys_meta$lty, sys_meta$label)) +
   labs(x = "HD-ART COM Distance (Å)", y = "PMF (kcal/mol)",
        color = "System", linetype = "System") +
-  theme_pmf
+  theme_pmf + theme_open
 
 # ---- Fig C: CV1 multi-panel (one per system) -------------------------------
 p_cv1_list <- lapply(ligand_order, function(lig) {

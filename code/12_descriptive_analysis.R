@@ -167,7 +167,8 @@ p_ratio <- ggplot(ratio_df, aes(x = well_depth_S2, y = well_depth_S1, label = li
   labs(x = "S2 DNA-bound Well Depth (kcal/mol)", 
        y = "S1 CAT-only Well Depth (kcal/mol)") +
   theme_7pt + theme(legend.position = "none",
-                  plot.margin = ggplot2::margin(1, 1, 1, 3, unit = "mm"))
+                  plot.margin = ggplot2::margin(1, 1, 1, 3, unit = "mm")) +
+  theme_open
 
 cairo_pdf("figures/pdf/Fig_S1S2_Ratio.pdf", width = 132/25.4, height = 115.5/25.4, pointsize = 8)
 print(p_ratio)
