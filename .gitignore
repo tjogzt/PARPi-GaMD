@@ -1,3 +1,9 @@
 __pycache__/
 *.pyc
 .DS_Store
+*.log
+
+# Regenerable working outputs (recreate by re-running the documented scripts)
+results/
+runs_s2/
+runs/

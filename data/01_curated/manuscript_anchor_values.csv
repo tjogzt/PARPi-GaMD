@@ -1,0 +1,14 @@
+key,value
+replicate_mean_AZD5305,6.8
+replicate_mean_talazoparib,23.8
+replicate_mean_veliparib,7.1
+replicate_sd_AZD5305,0.6
+replicate_sd_talazoparib,0.1
+replicate_sd_veliparib,0.0
+aai_sd_APO,0.17
+aai_sd_AZD5305,0.27
+aai_sd_olaparib,0.19
+aai_sd_talazoparib,0.15
+aai_sd_veliparib,0.21
+aai_sd_niraparib,0.16
+aai_sd_rucaparib,0.15

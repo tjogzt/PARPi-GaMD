@@ -1,8 +1,16 @@
 # Python dependencies (pip install -r requirements.txt)
+# Core analysis layer (code/ + scripts/):
 numpy>=1.24
-MDAnalysis>=2.4
+pandas>=2.0          # scripts/s01_prepare_ligands.py
+MDAnalysis>=2.4      # trajectory analyses (code/20, code/36, code/45, scripts/s03-s06)
 Pillow>=9.0
-rdkit>=2023.3        # scripts/build_seed_dataset.py only
+rdkit>=2023.3        # scripts/s01_prepare_ligands.py, code/47, code/pipeline/p06
 
-# R dependencies (install.packages(...))
-# ggplot2, dplyr, tidyr, patchwork, tibble, bio3d, igraph, ggrepel
+# Cloud/deployment layer (code/pipeline/, scripts/s04):
+# openmm, parmed, mdtraj installed in the 'gamd' conda environment
+mdtraj>=1.9
+parmed>=4.0
+openmm>=8.0
+
+# R dependencies (install.packages(c(...)))
+# ggplot2, dplyr, tidyr, patchwork, tibble, data.table, ggrepel, bio3d, igraph, reticulate

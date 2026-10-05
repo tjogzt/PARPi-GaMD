@@ -1,0 +1,65 @@
+dir	old_name	new_name	note
+code	01-pmf_apo.R	01_pmf_apo.R	
+code	05-sys1_cv_extract.py	05_sys1_cv_extract.py	
+code	08-ml_pipeline.R	08_ml_pipeline.R	
+code	08-sys1_extract.py	08_sys1_extract.py	
+code	09-s1_pmf_figures.R	09_s1_pmf_figures.R	
+code	10-s2_pmf_figures.R	10_s2_pmf_figures.R	
+code	11-s1_s2_combined_pmf.R	11_s1_s2_combined_pmf.R	
+code	12-descriptive_analysis.R	12_descriptive_analysis.R	
+code	13-mechanism_figure.R	13_mechanism_figure.R	
+code	15-fig1_domain_arch.R	15_fig1_domain_arch.R	
+code	15-fig1_structure.py	15_fig1_structure.py	
+code	16-2d_landscape.R	16_2d_landscape.R	
+code	18-replicate_analysis.R	18_replicate_analysis.R	
+code	18-strip_ligand.py	18_strip_ligand.py	
+code	20-extract_ca_dcd.py	20_extract_ca_dcd.py	
+code	21-spearman_correlation.R	21_spearman_correlation.R	
+code	25-pca_analysis.R	25_pca_analysis.R	
+code	28-pca_features.R	28_pca_features.R	
+code	30-convergence_figure.R	30_convergence_figure.R	
+code	31-extension_convergence_figure.R	31_extension_convergence_figure.R	
+code	32-cumulant_convergence.R	32_cumulant_convergence.R	
+code	34-helix_rmsf_heatmap.R	34_helix_rmsf_heatmap.R	
+code	extract_cv1_wells.py	35_extract_cv1_wells.py	
+code	recompute_all_s2.py	36_recompute_s2_profiles.py	
+code	regen_rmsf_figure.R	37_s2_rmsf_figure.R	
+code	regen_dccm_figure.R	38_dccm_figure.R	
+code	regen_retention_figure.R	39_s2_cv1_retention_figure.R	
+code	regen_rerun_pmf.py	44_rerun_s2_pmf_files.py	
+code	control_tala_rmsf.py	45_talazoparib_rmsf_control.py	
+code	extract_last_frame.py	46_extract_last_frame.py	
+code	add_h_to_pose.py	47_add_hydrogens_to_pose.py	
+code	download_replicates.sh	48_download_replicates.sh	
+code	(workspace)29-d4_consistency_matrix.R	29_d4_consistency_matrix.R	added generator
+code	(workspace)33-d4_diagnostics_figures.R	33_d4_diagnostics_figures.R	added generator
+code	(workspace)regen_sampling_toolkit_figure.R	40_sampling_toolkit_figure.R	added generator
+scripts	prepare_ligands.py	s01_prepare_ligands.py	
+scripts	build_seed_dataset.py	s02_build_seed_dataset.py	
+scripts	build_trajectory_metadata.py	s03_build_trajectory_metadata.py	
+scripts	dihedral_group_energy.py	s04_dihedral_group_energy.py	
+scripts	reweight_s2_dbe.py	s05_reweight_s2_dbe.py	
+scripts	reconstruct_s2_dbe.py	s06_reconstruct_s2_dbe.py	
+scripts	regenerate_s2_pmf_xvgs.py	s07_regenerate_s2_pmf_xvgs.py	
+scripts	consolidate_s2_dbe.py	s08_consolidate_s2_dbe.py	
+scripts	compute_2d_dbe.py	s09_compute_2d_dbe.py	
+scripts	verify_manifest.py	s10_verify_manifest.py	
+scripts	rebuild_all.sh	rebuild_all.sh	entry point exception
+code	archive/*	-	excluded from submission (kept in workspace)
+code/pipeline	build_system2_tleap.py	p01_build_system2_tleap.py	
+code/pipeline	deploy_s2.sh	p02_deploy_s2.sh	
+code/pipeline	deploy_s2_rerun.sh	p03_deploy_s2_rerun.sh	
+code/pipeline	equilibrate.py	p04_equilibrate.py	
+code/pipeline	gen_gamd_config.py	p05_gen_gamd_config.py	
+code/pipeline	rdkit_to_mol2.py	p06_rdkit_to_mol2.py	
+code/pipeline	extract_s2_cv.py	p07_extract_s2_cv.py	
+code/pipeline	extract_new_cv.py	p08_extract_new_cv.py	
+code/pipeline	environment_gamd_min.yml	environment_gamd_min.yml	
+code	gen_extension_convergence_csv.py	41_extension_panel_data_files.py	merged with gen_new_pmf_files.py
+code	gen_new_pmf_files.py	41_extension_panel_data_files.py	merged (see above)
+code	s1_convergence_blocks.py	42_extension_s1_convergence_checks.py	merged with s1_length_sensitivity.py
+code	s1_length_sensitivity.py	42_extension_s1_convergence_checks.py	merged (see above)
+code	s2_new_drugs_pmf.py	43_extension_s2_well_depths.py	merged with s2_new_drugs_pmf_dfw.py
+code	s2_new_drugs_pmf_dfw.py	43_extension_s2_well_depths.py	merged (see above)
+code	s2_new_drugs_aai.py	-	excluded (legacy; superseded values)
+code	s2_weight_protocol_test.py	-	excluded (one-off protocol validation)

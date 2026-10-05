@@ -22,8 +22,13 @@ def data_root():
 
 
 def analysis_dir():
-    """results/analysis under the repository root."""
-    return REPO_ROOT / "results" / "analysis"
+    """data/analysis under the repository root (archived analysis inputs)."""
+    return REPO_ROOT / "data" / "analysis"
+
+
+def results_dir():
+    """results/ under the repository root (regenerable working outputs)."""
+    return REPO_ROOT / "results"
 
 
 def pyrew():

@@ -1,0 +1,8 @@
+ligand,C1,C2,C3,source
+APO,33.5,38.0,48.0,orig24_dbe
+AZD5305,34.1,39.2,59.7,orig24_dbe
+Talazoparib,33.4,42.4,51.4,rep3x24_dbe
+Veliparib,33.8,41.3,62.9,rep3x24_dbe
+Niraparib,33.3,38.0,49.4,rerun24_dbe
+Olaparib,34.5,38.5,51.6,rerun24_dbe
+Rucaparib,33.3,39.1,48.7,rerun24_dbe
