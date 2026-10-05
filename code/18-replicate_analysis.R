@@ -220,29 +220,46 @@ p2 <- ggplot(merged[!is.na(merged$wd_sd) & !is.na(merged$wd_sd_orig), ],
   theme_7pt +
   theme(axis.title.x = element_text(margin = margin(t = -26)))
 
-combined <- results %>%
-  mutate(label = paste0(ligand, "_rep", replicate)) %>%
-  bind_rows(data.frame(
-    ligand = original$ligand,
-    replicate = 0,
-    tag = paste0(original$ligand, "_orig"),
-    well_depth = original$well_depth_orig,
-    rc_min = NA, n_bins = NA,
-    label = paste0(original$ligand, "_orig"),
-    stringsAsFactors = FALSE
-  ))
+# Panel C redesign (2026-10-05): the two pipelines use different collective
+# variables / reweighting and their well depths are not directly comparable.
+# C1: main-pipeline reference (cumulant C3); C2: replicate runs (histogram/CA-CV)
+# shown as individual replicates + mean ± SD (independent y scales).
+shape_map <- c("1" = 16, "2" = 17, "3" = 15)
 
-p3 <- ggplot(combined, aes(x = ligand, y = well_depth, fill = factor(replicate))) +
-  geom_bar(stat = "identity", position = "dodge", width = 0.7) +
-  scale_fill_manual(values = c("0" = "grey50", "1" = "#2166AC", "2" = "#B2182B", "3" = "#5E4FA2"),
-                    labels = c("0" = "Original", "1" = "Rep 1", "2" = "Rep 2", "3" = "Rep 3"),
-                    name = NULL) +
+c1df <- merged[!is.na(merged$well_depth_orig), ]
+c1df$ligand <- factor(c1df$ligand,
+                      levels = c("APO", "AZD5305", "niraparib", "olaparib", "rucaparib",
+                                 "talazoparib", "veliparib"))
+pC1 <- ggplot(c1df, aes(x = ligand, y = well_depth_orig)) +
+  geom_point(size = 2.6, color = "grey45") +
+  coord_cartesian(ylim = c(44, 66)) +
   labs(x = NULL, y = "S1 Well Depth (kcal/mol)",
-       title = "C  Original vs Replicate Well Depths") +
+       title = "C1  Main pipeline (cumulant C3; reference)",
+       subtitle = "independent scale; not directly comparable with C2") +
+  theme_7pt + theme(axis.text.x = element_text(angle = 45, hjust = 1),
+                    plot.subtitle = element_text(color = "grey35", size = 7))
+
+c2df <- results
+c2df$ligand <- factor(c2df$ligand, levels = c("AZD5305", "EB47", "talazoparib", "veliparib"))
+c2s <- c2df %>% group_by(ligand) %>%
+  summarise(m = mean(well_depth), s = sd(well_depth), .groups = "drop")
+pC2 <- ggplot() +
+  geom_point(data = c2df, aes(x = ligand, y = well_depth, color = ligand, shape = factor(replicate)),
+             size = 2.8, position = position_dodge(width = 0.45)) +
+  geom_errorbar(data = c2s, aes(x = ligand, ymin = m - s, ymax = m + s),
+                width = 0.28, linewidth = 0.4, color = "black") +
+  geom_point(data = c2s, aes(x = ligand, y = m), color = "black", size = 1.5) +
+  scale_color_manual(values = color_map, name = "Ligand") +
+  scale_shape_manual(values = shape_map,
+                     labels = c("1" = "Rep 1", "2" = "Rep 2", "3" = "Rep 3"),
+                     name = "Replicate") +
+  coord_cartesian(ylim = c(0, 27)) +
+  labs(x = NULL, y = "S1 Well Depth (kcal/mol)",
+       title = "C2  Replicate runs (histogram/CA-CV; mean ± SD)") +
   theme_7pt + theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-p <- (p1 | p2) / p3 +
-  plot_layout(heights = c(1, 1.2))
+p <- (p1 | p2) / (pC1 | pC2) +
+  plot_layout(heights = c(1, 1.1))
 
 cairo_pdf(file.path(out_dir, "Fig_Replicate_Validation.pdf"),
           width = 170/25.4, height = 152.1/25.4, pointsize = 8)
