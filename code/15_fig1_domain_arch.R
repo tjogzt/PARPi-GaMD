@@ -38,7 +38,7 @@ domain_data$domain <- factor(domain_data$domain, levels = domain_data$domain)
 # Annotation for binding sites
 annotations <- data.frame(
   domain = c("ZnF1", "ZnF3", "WGR", "HD", "ART", "ART"),
-  pos    = c(50, 300, 590, 725, 870, 870),
+  pos    = c(50, 300, 590, 725, 895, 895),
   label  = c("DNA\nbinding", "DNA\nbinding", "DNA\nbinding", "Type I\n(EB-47)", "CAT Pocket\nType II/III", "(this study)"),
   y      = c(1.6, 1.6, 1.6, 1.6, 1.6, 1.3),
   stringsAsFactors = FALSE
@@ -52,12 +52,12 @@ p_a <- ggplot() +
   geom_segment(aes(x = 300, xend = 300, y = 1.25, yend = 1.60), linewidth = 0.25, color = "grey45") +
   geom_segment(aes(x = 590, xend = 590, y = 1.25, yend = 1.60), linewidth = 0.25, color = "grey45") +
   geom_segment(aes(x = 725, xend = 725, y = 1.25, yend = 1.60), linewidth = 0.25, color = "grey45") +
-  geom_segment(aes(x = 870, xend = 870, y = 1.25, yend = 1.60), linewidth = 0.25, color = "grey45") +
+  geom_segment(aes(x = 895, xend = 895, y = 1.25, yend = 1.60), linewidth = 0.25, color = "grey45") +
   annotate("text", x = 12, y = 1.69, label = "DNA\nbinding", size = 3.0, color = "grey30", lineheight = 0.85, hjust = 0, vjust = 0) +
   annotate("text", x = 210, y = 1.69, label = "DNA\nbinding", size = 3.0, color = "grey30", lineheight = 0.85, hjust = 0, vjust = 0) +
   annotate("text", x = 500, y = 1.69, label = "DNA\nbinding", size = 3.0, color = "grey30", lineheight = 0.85, hjust = 0, vjust = 0) +
   annotate("text", x = 640, y = 1.69, label = "Type I\n(EB-47)", size = 3.0, color = "grey30", lineheight = 0.85, hjust = 0, vjust = 0) +
-  annotate("text", x = 780, y = 1.69, label = "CAT Pocket\nType II/III\n(this study)", size = 3.0, color = "grey30", lineheight = 0.85, hjust = 0, vjust = 0) +
+  annotate("text", x = 805, y = 1.69, label = "CAT Pocket\nType II/III\n(this study)", size = 3.0, color = "grey30", lineheight = 0.85, hjust = 0, vjust = 0) +
   scale_fill_manual(values = setNames(domain_data$color, domain_data$domain), guide = "none") +
   scale_x_continuous(limits = c(0, 1020), expand = c(0, 0)) +
   scale_y_continuous(limits = c(0.72, 2.02)) +
@@ -70,12 +70,13 @@ p_a <- ggplot() +
                     axis.text.y = element_blank(), axis.ticks.y = element_blank())
 
 # ---- Panel C (rebuilt, four-team pass): minimal schematic, boxes scaled by system size ----
-# Box areas scale with atom counts (~61.5k vs ~286k; width ratio sqrt(286/61.5) = 2.16);
+# Box widths are indicative of system size (~61.5k vs ~286k atoms); the S1 box is widened
+# slightly beyond the strict sqrt-area ratio so the atom-count line fits inside its frame;
 # CV definitions, conditions and replicates live in the caption (no duplication).
 p_b <- ggplot() +
   annotate("rect", xmin = 0.07, xmax = 1.93, ymin = 0.35, ymax = 1.45,
            fill = "#B2182B", alpha = 0.08, color = "#B2182B", linewidth = 0.5) +
-  annotate("rect", xmin = 0.545, xmax = 1.455, ymin = 1.80, ymax = 2.30,
+  annotate("rect", xmin = 0.40, xmax = 1.60, ymin = 1.80, ymax = 2.30,
            fill = "#2166AC", alpha = 0.10, color = "#2166AC", linewidth = 0.5) +
   annotate("text", x = 1, y = 2.17, label = "S1: CAT-only", size = 3.2,
            fontface = "bold", color = "#2166AC", family = "Arial") +

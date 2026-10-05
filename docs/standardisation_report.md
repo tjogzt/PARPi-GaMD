@@ -219,3 +219,9 @@ Executed after the main round, same approval:
   (``code/18``) displayed the legacy legend term ``Unknown``; it now shows ``Unclassified``
   (display-only via scale ``labels``, same treatment as Fig3). Re-rendered, redistributed;
   the main manuscript was recompiled (57 pp) and re-verified (main ``Unknown`` = 0).
+
+- **Fig1 refinements (user-requested).** Panel C: the S1 box widened (x 0.545-1.455 -> 0.40-1.60)
+  so the atom-count line sits fully inside the frame (measured margins 3.6 / 3.3 pt); Panel A: the
+  ``CAT Pocket`` annotation and its leader line shifted right (780 / 870 -> 805 / 895 data units)
+  to clear the adjacent ``Type I (EB-47)`` label (inter-label gap -2.2 -> +3.0 pt). Re-rendered,
+  redistributed, manuscript recompiled (57 pp).
