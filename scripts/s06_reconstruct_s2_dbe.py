@@ -39,7 +39,7 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from common.paths import analysis_dir
+from common.paths import analysis_dir, REPO_ROOT
 from common.pmf import run_pyrew
 
 BETA = 1.0 / (0.001987 * 300.0)
@@ -57,7 +57,7 @@ def main():
     E1 = E.max() - offset
 
     # w_D series: archived DFW weights, subsampled at stride 10 from frame 0
-    w_all = np.loadtxt(A / f"sys2_{lig}_CV1_cv_weights.dat")[:, 2]
+    w_all = np.loadtxt(REPO_ROOT / "data" / "analysis_weights" / f"sys2_{lig}_CV1_cv_weights.dat")[:, 2]
     w = w_all[::10][: len(E)]
     assert len(w) == len(E), f"{lig}: w {len(w)} vs E {len(E)}"
 

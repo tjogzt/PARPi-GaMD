@@ -20,8 +20,8 @@ import os
 
 import numpy as np
 
-ANALYSIS_DIR = "data/analysis"
-OUT_CSV = os.path.join(ANALYSIS_DIR, "cumulant_wells_C3.csv")
+ANALYSIS_DIR = "data/analysis"   # input xvg directory
+OUT_CSV = "data/cumulant_wells_C3.csv"   # curated output (repository data root)
 
 rows = []
 for cv in ["CV1", "CV2"]:

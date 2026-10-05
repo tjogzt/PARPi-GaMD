@@ -22,6 +22,10 @@ Outputs:   data/extension_s1_convergence.csv
            data/analysis/sys1_<lig>_pmf_c3.xvg
            data/analysis/pmf-c3-sys2_<lig>_CV{1,2}_cv.dat.xvg
 Depends:   numpy; common.pmf (run_pyrew)
+Note:      The xvg snapshots shipped under data/analysis/ are the
+           manuscript-consistent versions; re-running this script refreshes
+           them from the archived weight files (compare against the curation
+           tables before redistribution — see docs/standardisation_report.md).
 Run:       python3 code/41_extension_panel_data_files.py   (from the repo root)
 """
 import csv

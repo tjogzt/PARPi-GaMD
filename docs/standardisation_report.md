@@ -101,6 +101,35 @@ Seeds (e.g. `set.seed(49)`) are retained by design.
 | `code/30` re-run | writes to `results/analysis/` only |
 | Metadata checksum script `scripts/s10_verify_manifest.py` | coherent with the updated `data_manifest.md` (regenerable paths flagged) |
 
+## 8. Post-standardisation re-run verification (2nd pass, 2026-10-05)
+
+All data-only scripts were executed in the standardised tree. Findings and fixes:
+
+- **09 (S1 cumulants)**: two panel inputs (`sys1_*_pmf_c1/c2.xvg`) were missing
+  from the tree; the script silently plotted one order fewer. Inputs added →
+  figure now reproduces pixel-identical.
+- **16 (2D landscapes)**: the per-system CV archives (`sys2_*_cv.npy`, 14 files)
+  were missing; added → both landscape figures reproduce pixel-identical.
+- **28 (PCA)**: the earlier re-run of `41`/`44` had refreshed the pmf-c3 xvg
+  snapshots with drifted values, shifting the PCA features. Snapshots restored
+  to the manuscript-consistent versions → pixel-identical; the PCA CSV outputs
+  now write to `data/pca_*.csv` (canonical location).
+- **35**: output path corrected to `data/cumulant_wells_C3.csv`. The
+  regenerated table now matches the current (S12-corrected) xvg inputs: the
+  previously shipped rows for niraparib/olaparib/rucaparib (42.1/45.3/47.0)
+  were pre-rebuild values; the corrected rows agree with Table S5 within
+  rounding (ruca CV1: 59.465 from the restored archive vs Table S5 59.3).
+- **29 (D4 consistency) and 38 (DCCM)**: current script re-runs (in both the
+  working tree and the standardised tree) do not pixel-reproduce the shipped
+  versions — the shipped files correspond to an earlier data revision. They
+  were kept as shipped to preserve manuscript↔repository figure identity.
+- **41/44 caveat**: their xvg regeneration follows the archived weight files;
+  the snapshots shipped in `data/analysis/` are the manuscript-consistent
+  versions. A note to this effect was added to both scripts' headers.
+- Total: 7 figure chains pixel-verified at 0 diff (09/16/21/28/31/34/39), plus
+  30/32/35 checked against their outputs; `scripts/s10_verify_manifest.py`
+  passes 11/11 checksums with 0 mismatches.
+
 ## 7. Known limits
 
 - Raw trajectories are not distributed; scripts that read them require

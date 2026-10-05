@@ -115,10 +115,13 @@ pip install -r requirements.txt        # Python dependencies
 Deterministic outputs (the ML pipeline seeds at 49) mean re-running a script
 reproduces its outputs. During the 2026-10-05 standardisation the
 manuscript-critical figure chains were verified by re-running them on the
-standardised tree: `code/21`, `code/34`, `code/31`, `code/39` reproduce their
-shipped figures pixel-identical, and `code/32` reproduces
-`data/cumulant_convergence.csv` with maximum cell deviation < 1e-4 (asserts in
-the script). See `docs/standardisation_report.md` for the verification log.
+standardised tree: `code/09`, `code/16`, `code/21`, `code/28`, `code/31`,
+`code/34` and `code/39` reproduce their shipped figures pixel-identical, and
+`code/32` reproduces `data/cumulant_convergence.csv` with maximum cell
+deviation < 1e-4 (asserts in the script). `Fig_D4_ConsistencyMatrix` and
+`Fig_DCCM_Allostery` correspond to an earlier data revision and are kept as
+shipped for manuscript consistency. See `docs/standardisation_report.md` for
+the full verification log and the regeneration caveats for `code/41`/`code/44`.
 
 ## 8. Key output map
 

@@ -22,7 +22,7 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from common.paths import analysis_dir, data_root, pyrew
+from common.paths import analysis_dir, REPO_ROOT, data_root, pyrew
 
 BETA = 1.0 / (0.001987 * 300.0)
 A = analysis_dir()
@@ -35,14 +35,14 @@ def dbe_weights(lig):
     if lig in ("AZD5305", "veliparib", "fluzoparib", "pamiparib", "senaparib"):
         log = D / "s2_new_drugs" / f"sys2_{lig}" / "gamd.log"
         lg = np.loadtxt(log, comments="#")
-        cv1 = np.loadtxt(A / "new_drugs_s2" / lig / "analysis_CV1.dat")
-        cv2 = np.loadtxt(A / "new_drugs_s2" / lig / "analysis_CV2.dat")
+        cv1 = np.loadtxt(REPO_ROOT / "data" / "new_drugs_s2" / lig / "analysis_CV1.dat")
+        cv2 = np.loadtxt(REPO_ROOT / "data" / "new_drugs_s2" / lig / "analysis_CV2.dat")
         off = len(lg) - len(cv1)
         dV = lg[off:, 7]
     elif lig in ("niraparib", "olaparib", "rucaparib"):
         d = np.loadtxt(f"results/dihed_{lig}.csv", delimiter=",", skiprows=1)
         E = d[:, 2]
-        w_all = np.loadtxt(A / f"sys2_{lig}_CV1_cv_weights.dat")[:, 2]
+        w_all = np.loadtxt(REPO_ROOT / "data" / "analysis_weights" / f"sys2_{lig}_CV1_cv_weights.dat")[:, 2]
         n = min(len(E), len(w_all) // 10)
         w = w_all[::10][:n]
         E1 = E[:n].max() - 157.0

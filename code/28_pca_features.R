@@ -17,7 +17,7 @@
 # Purpose:  PCA of the 24-dimensional PMF feature matrix (SI Figure S10).
 # Author:   Tao Zhu (tjogzt@gmail.com)
 # Created:  2026-09-16 (header standardised 2026-10-05)
-# Outputs:  figures/pdf/Fig_Mechanism_Data.csv ; figures/pdf/Fig_PCA_Features.pdf
+# Outputs:  data/analysis/pca_eigenvalues.csv ; data/analysis/pca_projections.csv ; figures/pdf/Fig_PCA_Features.pdf
 # Depends:  data.table, ggplot2
 # Run:      Rscript code/28_pca_features.R   (from the repository root)
 suppressMessages({library(data.table); library(ggplot2)})
@@ -62,19 +62,19 @@ pc <- prcomp(scale(mat))
 pct <- round(pc$sdev^2 / sum(pc$sdev^2) * 100, 1)
 
 write.csv(data.frame(PC = seq_along(pct), Variance = pct),
-          file.path(data_dir, "pca_eigenvalues.csv"), row.names = FALSE)
+          "data/pca_eigenvalues.csv", row.names = FALSE)
 proj <- data.frame(System = X$System,
                    Type = sys_info$Type[match(X$System, sys_info$System)],
                    PC1 = pc$x[, 1], PC2 = pc$x[, 2], PC3 = pc$x[, 3])
-write.csv(proj, file.path(data_dir, "pca_projections.csv"), row.names = FALSE)
+write.csv(proj, "data/pca_projections.csv", row.names = FALSE)
 write.csv(proj[, c("System", "Type", "PC1", "PC2", "PC3")],
-          file.path(data_dir, "pca_system_stats.csv"), row.names = FALSE)
+          "data/pca_system_stats.csv", row.names = FALSE)
 cat(sprintf("PC1 %.1f%% PC2 %.1f%% PC3 %.1f%%\n", pct[1], pct[2], pct[3]))
 
 # PC1 ordering vs the S1 well-depth ranking (manuscript claim, hard assert;
 # archived-boost reanalysis 2026-09: rho = +0.1786, see RERUN_RECONCILIATION.md)
-# Canonical S1 well depths: figures/pdf/Fig_Mechanism_Data.csv (13-mechanism_figure.R)
-mech <- fread("figures/pdf/Fig_Mechanism_Data.csv")
+# Canonical S1 well depths: data/Fig_Mechanism_Data.csv (written by code/13_mechanism_figure.R)
+mech <- fread("data/Fig_Mechanism_Data.csv")
 wd_s1 <- setNames(mech$wd_S1, mech$ligand)[X$System]  # subset to the 7 analyzed systems
 rho_wd <- cor(rank(pc$x[, 1]), rank(wd_s1), method = "spearman")
 cat(sprintf("Spearman rho(PC1, S1 well depth) = %.3f (n = 7; record only)\n", rho_wd))

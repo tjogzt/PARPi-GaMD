@@ -25,7 +25,7 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from common.paths import analysis_dir, data_root
+from common.paths import analysis_dir, REPO_ROOT, data_root
 from common.pmf import run_pyrew, wd_from_pmf
 
 BETA = 1.0 / (0.001987 * 300.0)
@@ -50,7 +50,7 @@ STRIDE = 10
 def exact_weights(lig, log_rel, off, dat_dir):
     lg = np.loadtxt(D / log_rel, comments="#")
     if dat_dir is not None:
-        cv = np.loadtxt(A / dat_dir / "analysis_CV1.dat")
+        cv = np.loadtxt(REPO_ROOT / "data" / dat_dir / "analysis_CV1.dat")
         n = len(cv)
         dV = lg[off:off + n, 7]
     else:
@@ -63,7 +63,7 @@ def exact_weights(lig, log_rel, off, dat_dir):
 def recon_weights(lig, offset=157.0):
     d = np.loadtxt(f"results/dihed_{lig}.csv", delimiter=",", skiprows=1)
     E = d[:, 2]
-    w_all = np.loadtxt(A / f"sys2_{lig}_CV1_cv_weights.dat")[:, 2]
+    w_all = np.loadtxt(REPO_ROOT / "data" / "analysis_weights" / f"sys2_{lig}_CV1_cv_weights.dat")[:, 2]
     # Frame alignment: the dbe_rebuild DCDs are cpptraj-pre-strided
     # (trajin ... 1 last 10 -> stored frames = original 1, 11, ..., 25991),
     # and dihedral_group_energy.py re-strides by 10 -> E row i corresponds to
@@ -81,7 +81,7 @@ def cvs(lig, n, stride=1, dat_dir=None, recon=False):
     out = {}
     for cvn in ["CV1", "CV2"]:
         if dat_dir is not None:
-            out[cvn] = np.loadtxt(A / dat_dir / f"analysis_{cvn}.dat")
+            out[cvn] = np.loadtxt(REPO_ROOT / "data" / dat_dir / f"analysis_{cvn}.dat")
         else:
             f = A / f"sys2_{lig}_{cvn}_cv.npy"
             if f.exists():
@@ -92,7 +92,7 @@ def cvs(lig, n, stride=1, dat_dir=None, recon=False):
                 else:
                     out[cvn] = src[::stride][:n]
             else:
-                out[cvn] = np.loadtxt(A / "new_drugs_s2" / lig / f"analysis_{cvn}.dat")
+                out[cvn] = np.loadtxt(REPO_ROOT / "data" / "new_drugs_s2" / lig / f"analysis_{cvn}.dat")
     return out
 
 

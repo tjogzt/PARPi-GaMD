@@ -28,7 +28,7 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from common.paths import analysis_dir, data_root
+from common.paths import analysis_dir, REPO_ROOT, data_root
 from common.pmf import run_pyrew
 
 BETA = 1.0 / (0.001987 * 300.0)  # 1/kcal/mol at 300 K
@@ -76,7 +76,7 @@ def main():
                   f"{np.mean(vals):>8.1f}+-{np.std(vals):.1f}")
     for lig, log_dir in REBUILT_LOG.items():
         lg = np.loadtxt(D / log_dir / "gamd.log", comments="#")
-        d = A / "new_drugs_s2" / lig
+        d = REPO_ROOT / "data" / "new_drugs_s2" / lig
         for cvn in ["CV1", "CV2"]:
             cv = np.loadtxt(d / f"analysis_{cvn}.dat")
             off = len(lg) - len(cv)
@@ -91,7 +91,7 @@ def main():
             print(f"{lig:<14}{cvn:<5}{vals[0]:>8.1f}{vals[1]:>8.1f}{vals[2]:>8.1f}"
                   f"{np.mean(vals):>8.1f}+-{np.std(vals):.1f}")
     for lig in DAT_SYSTEMS:
-        d = A / "new_drugs_s2" / lig
+        d = REPO_ROOT / "data" / "new_drugs_s2" / lig
         w = np.loadtxt(d / "analysis_weights.dat")
         assert w.shape[1] == 3, f"{lig}: weights not 3-col"
         for cvn in ["CV1", "CV2"]:

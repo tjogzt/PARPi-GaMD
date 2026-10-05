@@ -4,7 +4,7 @@ regen_rerun_pmf.py — regenerate AZD5305/veliparib S2 pmf-c3 files (DFW weights
 
 Purpose:   Rebuild the S2 pmf-c3 xvg files of the two rebuilt systems from the
            rerun data (DFW weights), replacing the 2.6 ns legacy values.
-Inputs:    data/analysis/new_drugs_s2/<drug>/{analysis_CV1,analysis_CV2}.dat,
+Inputs:    data/new_drugs_s2/<drug>/{analysis_CV1,analysis_CV2}.dat,
            analysis_weights_dfw.dat
 Outputs:   data/analysis/pmf-c3-sys2_<drug>_CV{1,2}_cv.dat.xvg
 Depends:   numpy; common (pmf, paths)
@@ -20,11 +20,11 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from common.paths import analysis_dir
+from common.paths import analysis_dir, REPO_ROOT
 from common.pmf import run_pyrew
 
 A = analysis_dir()
-S2 = A / "new_drugs_s2"
+S2 = REPO_ROOT / "data" / "new_drugs_s2"
 
 for d in ["AZD5305", "veliparib"]:
     w = np.loadtxt(S2 / d / "analysis_weights_dfw.dat")
