@@ -101,6 +101,15 @@ Seeds (e.g. `set.seed(49)`) are retained by design.
 | `code/30` re-run | writes to `results/analysis/` only |
 | Metadata checksum script `scripts/s10_verify_manifest.py` | coherent with the updated `data_manifest.md` (regenerable paths flagged) |
 
+## 7. Known limits
+
+- Raw trajectories are not distributed; scripts that read them require
+  `$DATA_ROOT` (documented per script header).
+- `code/pipeline/*` and `scripts/s04–s09` run on the GPU host (conda env
+  `gamd`); they are shipped for reproducibility of the simulation protocol, not
+  for laptop execution.
+- `README.md` and `data_manifest.md` were rewritten/updated to the new layout.
+
 ## 8. Post-standardisation re-run verification (2nd pass, 2026-10-05)
 
 All data-only scripts were executed in the standardised tree. Findings and fixes:
@@ -130,11 +139,3 @@ All data-only scripts were executed in the standardised tree. Findings and fixes
   30/32/35 checked against their outputs; `scripts/s10_verify_manifest.py`
   passes 11/11 checksums with 0 mismatches.
 
-## 7. Known limits
-
-- Raw trajectories are not distributed; scripts that read them require
-  `$DATA_ROOT` (documented per script header).
-- `code/pipeline/*` and `scripts/s04–s09` run on the GPU host (conda env
-  `gamd`); they are shipped for reproducibility of the simulation protocol, not
-  for laptop execution.
-- `README.md` and `data_manifest.md` were rewritten/updated to the new layout.
