@@ -166,8 +166,15 @@ struct_labels <- data.frame(
   label = c("Zn1", "Zn3", "WGR", "HD", "ART", "DNA break"),
   stringsAsFactors = FALSE
 )
+# Sink the structure slightly: scale about the bottom edge, centred horizontally, so the top
+# of the protein clears the note line (user-requested; the sheet top previously overlapped it).
+st_scale <- 0.92
+st_x0 <- 50 * (1 - st_scale)
+struct_labels$x <- st_x0 + struct_labels$x * st_scale
+struct_labels$y <- struct_labels$y * st_scale
 p_struct <- ggplot() +
-  annotation_raster(struct_raster, xmin = 0, xmax = 100, ymin = 0, ymax = 61.24) +
+  annotation_raster(struct_raster, xmin = st_x0, xmax = st_x0 + 100 * st_scale,
+                    ymin = 0, ymax = 61.24 * st_scale) +
   geom_shadowtext(data = struct_labels, aes(x = x, y = y, label = label),
                   size = 3.0, fontface = "bold", family = "Arial",
                   color = "grey10", bg.color = "white", bg.r = 0.13) +

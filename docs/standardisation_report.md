@@ -225,3 +225,6 @@ Executed after the main round, same approval:
   ``CAT Pocket`` annotation and its leader line shifted right (780 / 870 -> 805 / 895 data units)
   to clear the adjacent ``Type I (EB-47)`` label (inter-label gap -2.2 -> +3.0 pt). Re-rendered,
   redistributed, manuscript recompiled (57 pp).
+  Follow-up (same day, user-requested): the 3D structure in Panel B was sunk by scaling it
+  0.92 about its bottom edge (centred), lifting the top of the protein clear of the note line
+  (ink-top to note-bottom gap -2.9 -> +6.9 pt); labels were remapped with the same transform.
