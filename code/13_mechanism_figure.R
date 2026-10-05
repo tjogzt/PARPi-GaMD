@@ -258,7 +258,8 @@ p_2d <- ggplot(plot_df2, aes(x = wd_ratio, y = wd_S1)) +
        y = "S1 HD-ART Well Depth (kcal/mol)") +
   theme_7pt +
   theme(legend.position = "right",
-        plot.margin = ggplot2::margin(1, 4, 1, 3, unit = "mm"))
+        plot.margin = ggplot2::margin(1, 4, 1, 3, unit = "mm")) +
+  theme_open
 
 cairo_pdf(file.path(out_dir, "Fig_2D_Mechanism_Map.pdf"), width = 120/25.4, height = 72.5/25.4, pointsize = 8)
 print(p_2d)

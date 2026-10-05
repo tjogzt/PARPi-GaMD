@@ -109,6 +109,10 @@ Seeds (e.g. `set.seed(49)`) are retained by design.
   (S1/S2/S6/S7/S8/S9/S13/S14 and the S15-S17 base-R panels) intentionally keep
   their existing frames. The SI was recompiled and the submission package
   updated accordingly.
+  Main-manuscript round: open-frame applied to Figure 4 (Fig_Trapping_vs_Allostery,
+  both panels) and Figure 3 (Fig_2D_Mechanism_Map); the D4 diagnostics (Figures
+  5-7) were already in open/minimal styles; grid/composite main figures
+  (Figures 1, 2, 8-10) intentionally unchanged.
 
 ## 7. Known limits
 

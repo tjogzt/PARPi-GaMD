@@ -188,7 +188,8 @@ p_a <- ggplot(plot_df, aes(x = trap_plot, y = s2_cv1, color = class)) +
        subtitle = "neutral: -0.82 (p 0.133)\nniraparib-protonated: -0.21 (p 0.767)\nrucaparib-protonated: -0.36 (p 0.633)",
        color = NULL) +
   theme_7pt + theme(legend.position = c(0.87, 0.87),
-                    plot.subtitle = element_text(size = 8, hjust = 0))
+                    plot.subtitle = element_text(size = 8, hjust = 0)) +
+  theme_open
 
 p_b <- ggplot(plot_df, aes(x = aai, y = trap_plot, color = class)) +
   geom_point(aes(shape = state_f), size = 3.0) +
@@ -211,7 +212,8 @@ p_b <- ggplot(plot_df, aes(x = aai, y = trap_plot, color = class)) +
        subtitle = "neutral: S1 -0.46 | AAI -0.36 (n.s.)\nniraparib-protonated: S1 -0.41 | AAI -0.05 (n.s.)\nrucaparib-protonated: S1 -0.82 | AAI +0.05 (n.s.)",
        color = NULL) +
   theme_7pt + theme(legend.position = "none",
-                    plot.subtitle = element_text(size = 8, hjust = 0))
+                    plot.subtitle = element_text(size = 8, hjust = 0)) +
+  theme_open
 
 cairo_pdf("figures/pdf/Fig_Trapping_vs_Allostery.pdf",
           width = 157/25.4, height = 69.3/25.4, pointsize = 8)
