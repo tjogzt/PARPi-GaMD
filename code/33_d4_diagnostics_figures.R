@@ -1,9 +1,9 @@
 # 33-d4_diagnostics_figures.R -- D4 diagnostic figures (Fig 8 / Fig 10).
 # Windowed-bootstrap noise panel (Fig D4a) and consistency-timescale panel.
-# Reads data/analysis/convergence_diag.csv; the between-system signal of
-# 3.5 kcal/mol is the range of the three re-simulated S2 CV1 C3 spans
-# (62.0 / 58.5 / 59.3 kcal/mol; Table S5). Values are read from CSV, not
-# hard-coded, except the fixed signal anchor documented above.
+# Reads data/analysis/convergence_diag.csv; the between-system signal (the
+# range of the three re-simulated S2 CV1 C3 spans, 62.0 / 58.5 / 59.3
+# kcal/mol; cf. Table S5) is derived from data/analysis/s2_dbe_final.csv,
+# with a guard assert against the original documented anchor (3.5).
 #
 # Purpose:  Render the D4 diagnostics figures: windowed-bootstrap noise panel + consistency-timescale panel.
 # Created:  2026-10-01 (header standardised 2026-10-05)
@@ -18,12 +18,19 @@ d <- fread("data/analysis/convergence_diag.csv")
 d <- d[cv == "CV1"]  # the primary association metric
 d[, system := sub("^s2_", "", system)]
 d[, system := factor(system, levels = unique(d[order(span_sd)]$system))]
-signal <- 3.5  # range of the three re-simulated S2 CV1 spans (62.0/58.5/59.3)
+# Between-system signal: derived from the consolidated table (the three
+# re-simulated systems' S2 CV1 C3 spans; niraparib 62.0 = protonated state,
+# olaparib 58.5, rucaparib 59.3 kcal/mol; cf. SI Table S5).
+# Original hard-coded anchor (3.5) retained as the guard below.
+dbe <- fread("data/analysis/s2_dbe_final.csv")
+sig3 <- dbe[metric == "CV1" & ligand %in% c("niraparib", "olaparib", "rucaparib"), C3]
+signal <- max(sig3) - min(sig3)
+stopifnot(abs(signal - 3.5) < 0.05)
 
 d[, xpos := as.numeric(system) - 0.5]
 p <- ggplot(d, aes(x = xpos, y = span_sd)) +
   geom_hline(yintercept = signal, linetype = "dashed", color = "#9D2933", linewidth = 0.7) +
-  annotate("text", x = -0.015, y = 4.2, label = "between-system signal 3.5",
+  annotate("text", x = -0.015, y = 4.2, label = sprintf("between-system signal %.1f", signal),
            color = "#9D2933", size = 3.0, family = "Arial", angle = 90, hjust = 0, vjust = 0.5) +
   geom_col(fill = "#3D6BA8", alpha = 0.85, width = 0.62) +
   scale_y_continuous(limits = c(0, 18), expand = expansion(mult = c(0, 0.02))) +

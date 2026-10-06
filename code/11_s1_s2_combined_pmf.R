@@ -18,6 +18,13 @@ if (length(grep("^--file=", args_h))) {
   source("common/helpers.R")
 }
 
+# System metadata: single source of truth (labels / classes / colours / linetypes).
+if (length(grep("^--file=", args_h))) {
+  source(file.path(script_dir, "..", "common", "sys_meta.R"))
+} else {
+  source("common/sys_meta.R")
+}
+
 
 # ---- Config ----------------------------------------------------------------
 data_dir  <- "data/analysis"
@@ -26,14 +33,7 @@ stats_dir <- "results/analysis"   # CSV statistics tables (regenerable)
 dir.create(stats_dir, showWarnings = FALSE, recursive = TRUE)
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
-# System metadata with both S1 and S2
-sys_meta <- data.frame(
-  ligand   = c("APO", "AZD5305", "olaparib", "talazoparib", "veliparib", "niraparib", "rucaparib"),
-  label    = c("APO", "AZD5305", "Olaparib", "Talazoparib", "Veliparib", "Niraparib", "Rucaparib"),
-  class    = c("APO", "Unknown", "Type_II", "Type_II", "Type_III", "Type_III", "Type_III"),
-  color    = c("grey40", "darkorange", "#E41A1C", "#FF7F00", "#377EB8", "#4DAF4A", "#984EA3"),
-  stringsAsFactors = FALSE
-)
+# System metadata (both S1 and S2): defined in common/sys_meta.R (single source).
 
 # ---- Load PMF data ---------------------------------------------------------
 

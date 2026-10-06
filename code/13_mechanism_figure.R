@@ -229,9 +229,16 @@ cat("\nSaved: Fig_Mechanism_Master.pdf\n")
 # Niraparib two-state overlay: neutral (original parameterization) + protonated.
 plot_df2 <- combined %>% filter(type != "APO") %>%
   mutate(state = "base", shape2 = type)
+# Neutral niraparib anchor: sourced from the curated two-state table
+# (data/01_curated/two_state_panel_values.csv); previously hard-coded 49.4/53.4.
+tv_nira <- read.csv("data/01_curated/two_state_panel_values.csv",
+                    stringsAsFactors = FALSE)
+tv_nira <- tv_nira[tv_nira$inhibitor == "niraparib", ]
+stopifnot(nrow(tv_nira) == 1L)
 nira_neut <- data.frame(ligand = "niraparib", label = "Niraparib\n(neutral)",
                         type = "Type III", color = "#4DAF4A",
-                        wd_ratio = 49.4 / 53.4, wd_S1 = 49.4,
+                        wd_ratio = tv_nira$s1_neutral / tv_nira$s2cv2_neutral,
+                        wd_S1 = tv_nira$s1_neutral,
                         state = "nira_neutral", shape2 = "nira")
 nira_prot <- combined %>% filter(ligand == "niraparib") %>%
   mutate(label = "Niraparib\n(protonated)", state = "nira_protonated",

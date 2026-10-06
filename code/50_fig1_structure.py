@@ -9,7 +9,7 @@ Purpose:  Render the Figure 1 structural panels (4DQY domain crops via PyMOL).
 Created:  2026-09-15 (header standardised 2026-10-05)
 Outputs:  results/pymol_{name}_low.pml
 Depends:  PIL
-Run:      python3 code/15_fig1_structure.py   (from the repository root)
+Run:      python3 code/50_fig1_structure.py   (from the repository root)
 """
 import subprocess, os
 from pathlib import Path

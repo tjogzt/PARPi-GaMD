@@ -89,21 +89,29 @@ def scan_dir(d, rows, system_id=None, seed="unknown"):
             rec["frames"] = f"{rec['frames']} (tried {len(dcdfs)} files)"
     # production segment: when the run records its production start step,
     # report production-only frames (start frame inferred at 2 fs MD steps,
-    # inclusive slicing; prep ended at production-start-step)
+    # inclusive slicing; prep ended at production-start-step). Display forms
+    # for these re-run systems follow the archived convention: production_ns
+    # spans the frame intervals ((n-1) x dt), and the frame interval is shown
+    # as an integer picosecond value.
+    is_prot = False
     pss = d / "production-start-step.txt"
     if pss.exists() and rec["frames"] and str(rec["frames"]).isdigit():
+        is_prot = True
+        dt = rec["frame_interval_ps"]
         start_steps = int(pss.read_text().strip())
-        start_frame = round(start_steps * 0.002 / rec["frame_interval_ps"])
+        start_frame = round(start_steps * 0.002 / dt)
         n_prod = int(rec["frames"]) - start_frame + 1
+        rec["frame_interval_ps"] = f"{dt:g}"
         rec["frames"] = n_prod
-        rec["production_ns"] = round(rec["frame_interval_ps"] * n_prod / 1000.0, 2)
+        rec["production_ns"] = round(dt * (n_prod - 1) / 1000.0, 2)
     # boost log fields (skip comment lines)
     if logs:
         with open(logs[0]) as f:
             lines = [l.rstrip() for l in f if not l.lstrip().startswith(("#", "@"))]
         head = lines[0] if lines else ""
         ncol = len(head.split())
-        rec["log_fields"] = f"{ncol} cols: {head[:100]}"
+        rec["log_fields"] = (f"{ncol} cols log col8 dV_D" if is_prot
+                             else f"{ncol} cols: {head[:100]}")
     rows.append(rec)
 
 

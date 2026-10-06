@@ -23,7 +23,7 @@
 # Inputs:   data/analysis
 # Outputs:  results/ml ; results/ml/blind_prediction_AZD5305.csv ; results/ml/feature_matrix.csv
 # Depends:  dplyr, ggplot2, lightgbm, shapviz, tibble, tidyr, xgboost
-# Run:      Rscript code/08_ml_pipeline.R   (from the repository root)
+# Run:      Rscript code/49_ml_pipeline.R   (from the repository root)
 library(xgboost)
 library(lightgbm)
 library(shapviz)

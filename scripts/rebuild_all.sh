@@ -30,6 +30,8 @@ if [ -z "$PY" ]; then
   exit 1
 fi
 export RETICULATE_PYTHON="$PY"
+# Deterministic hashing (defensive; no helper in this chain depends on set order).
+export PYTHONHASHSEED=0
 
 echo "== [1/8] trapping seed dataset =="
 "$PY" scripts/s02_build_seed_dataset.py

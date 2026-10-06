@@ -18,6 +18,13 @@ if (length(grep("^--file=", args_h))) {
   source("common/helpers.R")
 }
 
+# System metadata: single source of truth (labels / classes / colours / linetypes).
+if (length(grep("^--file=", args_h))) {
+  source(file.path(script_dir, "..", "common", "sys_meta.R"))
+} else {
+  source("common/sys_meta.R")
+}
+
 
 # ---- Config ----------------------------------------------------------------
 data_dir  <- "data/analysis"
@@ -26,15 +33,7 @@ stats_dir <- "results/analysis"   # CSV statistics tables (regenerable)
 dir.create(stats_dir, showWarnings = FALSE, recursive = TRUE)
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
-# System metadata
-sys_meta <- data.frame(
-  ligand   = c("APO", "AZD5305", "olaparib", "veliparib", "niraparib", "rucaparib", "talazoparib"),
-  label    = c("APO", "AZD5305", "Olaparib", "Veliparib", "Niraparib", "Rucaparib", "Talazoparib"),
-  class    = c("APO", "Unknown", "Type_II", "Type_III", "Type_III", "Type_III", "Type_II"),
-  color    = c("grey40", "darkorange", "#E41A1C", "#377EB8", "#4DAF4A", "#984EA3", "#FF7F00"),
-  lty      = c("dotted", "dashed", "solid", "solid", "solid", "solid", "solid"),
-  stringsAsFactors = FALSE
-)
+# System metadata: sys_meta is defined in common/sys_meta.R (single source).
 
 # ---- Load PMF data ---------------------------------------------------------
 
@@ -63,7 +62,7 @@ pmf_cv1 <- load_s2_pmf("CV1")
 pmf_cv2 <- load_s2_pmf("CV2")
 
 # Factor ordering
-ligand_order <- c("APO", "AZD5305", "olaparib", "talazoparib", "niraparib", "rucaparib", "veliparib")
+ligand_order <- sys_display_order   # panel display order (common/sys_meta.R)
 pmf_cv1$ligand <- factor(pmf_cv1$ligand, levels = ligand_order)
 pmf_cv2$ligand <- factor(pmf_cv2$ligand, levels = ligand_order)
 

@@ -26,6 +26,7 @@ Notes
 
 Purpose:  Consolidate the final 10-system S2 DBE + AAI table from the archived data layer.
 Created:  2026-09-17 (header standardised 2026-10-05; data-layer rewrite 2026-10-06)
+Changelog: scripts/CHANGELOG.md — mandatory for any further change (this table is the manuscript's numerical anchor).
 Depends:  common.paths, numpy
 Run:      python3 scripts/s08_consolidate_s2_dbe.py   (from the repository root)
 """

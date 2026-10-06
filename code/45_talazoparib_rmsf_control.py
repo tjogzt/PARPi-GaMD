@@ -19,6 +19,12 @@ Outputs:  console RMSF summary
 Depends:   MDAnalysis, numpy; DATA_ROOT environment variable
 
 Created:  2026-09-16 (header standardised 2026-10-05)
+Stability: RuntimeWarning ("divide by zero / overflow / invalid encountered
+           in matmul") may appear inside common/kabsch.kabsch_align from this
+           environment. Verified spurious: an Apple-Accelerate BLAS artifact
+           reproducible with random matrices (numpy linked against
+           accelerate; einsum raises nothing) — outputs remain finite and
+           bit-reproducible; no numerical impact. See docs/determinism_notes.md.
 Run:      python3 code/45_talazoparib_rmsf_control.py   (from the repository root)
 """
 import sys

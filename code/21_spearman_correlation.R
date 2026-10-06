@@ -184,7 +184,8 @@ p_a <- ggplot(plot_df, aes(x = trap_plot, y = s2_cv1, color = class)) +
   labs(x = "Trapping Potency (x Olaparib)",
        y = "S2 CV1 Protein–DNA Span (kcal/mol)",
        title = "A  S2 Protein–DNA Span vs Trapping (two-state)",
-       subtitle = "neutral: -0.82 (p 0.133)\nniraparib-protonated: -0.21 (p 0.767)\nrucaparib-protonated: -0.36 (p 0.633)",
+       subtitle = sprintf("neutral: %.2f (p %.3f)\nniraparib-protonated: %.2f (p %.3f)\nrucaparib-protonated: %.2f (p %.3f)",
+                          t1n$rho, t1n$p, t1$rho, t1$p, t1r$rho, t1r$p),
        color = NULL) +
   theme_7pt + theme(legend.position = c(0.87, 0.87),
                     plot.subtitle = element_text(size = 8, hjust = 0)) +
@@ -208,7 +209,8 @@ p_b <- ggplot(plot_df, aes(x = aai, y = trap_plot, color = class)) +
   labs(x = "Allosteric Amplification Index (S1/S2)",
        y = "Trapping Potency (x Olaparib)",
        title = "B  AAI vs Trapping (sensitivity, two-state)",
-       subtitle = "neutral: S1 -0.46 | AAI -0.36 (n.s.)\nniraparib-protonated: S1 -0.41 | AAI -0.05 (n.s.)\nrucaparib-protonated: S1 -0.82 | AAI +0.05 (n.s.)",
+       subtitle = sprintf("neutral: S1 %.2f | AAI %+.2f (n.s.)\nniraparib-protonated: S1 %.2f | AAI %+.2f (n.s.)\nrucaparib-protonated: S1 %.2f | AAI %+.2f (n.s.)",
+                          t2n$rho, t3n$rho, t2$rho, t3$rho, t2r$rho, t3r$rho),
        color = NULL) +
   theme_7pt + theme(legend.position = "none",
                     plot.subtitle = element_text(size = 8, hjust = 0)) +

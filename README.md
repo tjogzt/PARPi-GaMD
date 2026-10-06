@@ -132,7 +132,7 @@ the full verification log and the regeneration caveats for `code/41`/`code/44`.
 | `data/replicate_well_depths.csv` | `code/18_replicate_analysis.R` | per-replicate histogram well depths |
 | `data/cumulant_wells_C3.csv` | `code/35_extract_cv1_wells.py` | S2 CV1/CV2 C3-cumulant well depths |
 | `data/analysis/rmsf_recomp/s2_rmsf_dccm_uniform.csv` | `code/36_recompute_s2_profiles.py` | domain-aligned RMSF + whole-protein DCCM summary |
-| `figures/pdf/*.pdf` + `figures/png/*.png` | `code/*.R`, `code/15_fig1_structure.py` | the 27 in-manuscript figure files |
+| `figures/pdf/*.pdf` + `figures/png/*.png` | `code/*.R`, `code/50_fig1_structure.py` | the 27 in-manuscript figure files |
 
 Superseded or one-off scripts are not distributed in this repository; the
 archived working tree keeps them for provenance.

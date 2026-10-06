@@ -5,7 +5,14 @@ sys1 = CAT domain only (residues 1-345, UniProt 662-1011).
 CV: center-of-mass distance between HD (resid 1-119 CA) and ART (resid 120-345 CA).
 
 Purpose:  Extract the S1 HD-ART collective-variable series + DBE weights for the legacy-system S1 runs.
-Created:  2026-09-15 (header standardised 2026-10-05)
+Status:   superseded-candidate (2026-10-06, code-audit P1-16). The unified S1
+          protocol (scripts/analyze_s1_unified.py) supersedes this script's
+          outputs for the legacy S1 systems. Retirement is gated on:
+          (a) a bit-level comparison of this script's outputs vs the
+          08_sys1_extract.py outputs on the overlapping systems, and
+          (b) a complete downstream-reference inventory.
+          Until both are documented, the script stays as a reproduction-chain carrier.
+Created:  2026-09-15 (header standardised 2026-10-05; status note 2026-10-06)
 Depends:  MDAnalysis, __future__, common.paths, numpy
 Run:      python3 code/05_sys1_cv_extract.py   (from the repository root)
 """

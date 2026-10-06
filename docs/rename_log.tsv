@@ -62,4 +62,7 @@ code	s1_length_sensitivity.py	42_extension_s1_convergence_checks.py	merged (see 
 code	s2_new_drugs_pmf.py	43_extension_s2_well_depths.py	merged with s2_new_drugs_pmf_dfw.py
 code	s2_new_drugs_pmf_dfw.py	43_extension_s2_well_depths.py	merged (see above)
 code	s2_new_drugs_aai.py	-	excluded (legacy; superseded values)
-code	s2_weight_protocol_test.py	-	excluded (one-off protocol validation)
+code	ts2_weight_protocol_test.py	-	excluded (one-off protocol validation)
+code	08_ml_pipeline.R	49_ml_pipeline.R	P1-15 renumber (08 double-occupied)
+code	15_fig1_structure.py	50_fig1_structure.py	P1-15 renumber (15 double-occupied)
+code	18_strip_ligand.py	51_strip_ligand.py	P1-15 renumber (18 double-occupied)

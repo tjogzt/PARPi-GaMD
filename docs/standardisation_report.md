@@ -296,3 +296,17 @@ Executed after the main round, same approval:
   (identical), the reweighted npy (deep-identical) and the regenerated figures (pixel-identical)
   reproduce the shipped artifacts; with the two pre-shipped ``results/analysis`` files restored, the
   manifest checker reports **19 OK / 0 MISMATCH / 0 MISSING** on the shipped tree.
+
+- **P1/P2 audit follow-through (2026-10-06).** The nine P1 and four P2 items from the code-audit
+  plan were executed and verified: figure-subtitle and two-state anchor values now read from data
+  files (`two_state_panel_values.csv`, `s2_dbe_final.csv`) with guard asserts (scripts 21, 13, 33);
+  five frozen-generator scripts plus one companion were packaged into `scripts/` with manifest rows
+  added — the manifest checker now verifies 26 checksums (0 mismatches); scripts 10/11 share a single
+  `common/sys_meta.R` (labels/classes/colours/linetypes, de-forked); file numbering was normalised
+  (08_ml_pipeline → 49, 15_fig1_structure → 50, 18_strip_ligand → 51) with repository-wide reference
+  cleanup; script 05 carries a superseded-candidate status gate; the Kabsch RuntimeWarning was proven
+  a spurious Apple-Accelerate BLAS artifact (annotated; no numerical effect); a clean-copy run of the
+  complete chain is green end-to-end with the manifest fully verified (26 OK / 0 MISMATCH /
+  0 MISSING, "REBUILD COMPLETE"). Determinism properties and comment conventions are documented in
+  `docs/determinism_notes.md` and `docs/comment_conventions.md`; the full audit archive ships in
+  `docs/code_audit_20261005/` (review language; package-internal).
