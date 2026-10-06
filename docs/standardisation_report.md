@@ -241,3 +241,18 @@ Executed after the main round, same approval:
   reduced to 58/54 pt (visual whitespace 22/18 pt), consistent with the journal style. Labels
   re-verified collision-free; all previous S17 fixes (3-decimal p labels, rightmost-label shift,
   two-line title) retained; SI recompiled (25 pp).
+
+- **M1 graph–table data-version unification (protocol-review remediation).** The JCIM pre-submission
+  protocol review found the RMSF/DCCM figure pipeline still reading the 2026-09-23 ``rmsf_recomp``
+  products for the three re-simulated systems (niraparib HD 2.98 Å) while the tables and text used
+  ``rerun_202609`` values (nira 4.56 Å). The three systems' products (``*_rmsf_residue.dat``,
+  ``*_dccm_block.csv``), the ``s2_rmsf_dccm_uniform.csv`` summary and the curated
+  ``helix_rmsf_table_s9.csv`` were rebuilt from ``results/analysis/rmsf_rerun3`` and verified to
+  reproduce the published Tables 2 / 3 / S4 exactly (means ± SD; |r̄|, signed mean, r > 0.3 /
+  r < −0.3 fractions); legacy copies archived in ``review-stage/m1_fix_20261006``. Fig 8, Fig S13
+  and Fig S16 were re-rendered and redistributed (three trees; SI raster copy regenerated,
+  SI 2.39 -> 1.37 MB). Table S9 rows, the Fig 8 / Table 2 / S13 / S16 captions, the
+  bidirectional-residue sentence (89 -> 25/41, recomputed from the final data) and a Methods
+  provenance sentence for ``rerun_202609`` were updated; three ``~\AA`` control-word spacing breaks
+  fixed (main 1, SI 3). Main (57 pp) and SI (25 pp) recompiled 0-error; the manifest row was bumped
+  to v2 with its new checksum.
