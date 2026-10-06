@@ -5,7 +5,6 @@
 # CSV; nothing is hard-coded here except display labels/factors.
 #
 # Purpose:  Render the estimator x metric consistency matrix (Figure 9) from the derived CSV.
-# Author:   Tao Zhu (tjogzt@gmail.com)
 # Created:  2026-10-01 (header standardised 2026-10-05)
 # Inputs:   data/analysis/d4_consistency_matrix.csv
 # Depends:  data.table, ggplot2

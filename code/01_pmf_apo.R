@@ -2,7 +2,6 @@
 # 01-pmf_apo.R — Generate PMF plots for sys2_APO GaMD reweighting
 #
 # Purpose:  Regenerate the S2 APO control PMF panels (protein–DNA CV1 and HD–ART CV2) from the reweighted C3 curves.
-# Author:   Tao Zhu (tjogzt@gmail.com)
 # Created:  2026-09-15 (header standardised 2026-10-05)
 # Inputs:   data/analysis/pmf-c3-sys2_APO_CV1_cv.dat.xvg ; data/analysis/pmf-c3-sys2_APO_CV2_cv.dat.xvg
 # Outputs:  figures/pdf/01-pmf_apo_hd_art.pdf ; figures/pdf/01-pmf_apo_prot_dna.pdf

@@ -11,7 +11,6 @@ Purpose:   Two console diagnostics on the 200 ns extension-inhibitor S1
                  (matched-length sensitivity).
            Merged from the former s1_convergence_blocks.py and
            s1_length_sensitivity.py (same input, single entry point).
-Author:    Tao Zhu (tjogzt@gmail.com)
 Created:   2026-09-15 (original scripts); merged 2026-10-05 (repo standardisation)
 Inputs:    data/new_drugs_s1/sys1_<lig>_{cv,weights}.dat
 Outputs:  console tables (no files written)

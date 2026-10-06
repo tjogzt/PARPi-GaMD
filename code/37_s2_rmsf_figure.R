@@ -3,7 +3,6 @@
 # (A) HD per-residue RMSF profiles  (B) domain-mean bars  (C) Type II-III dRMSF
 #
 # Purpose:  Render Fig_S2_RMSF_All.pdf: unified-protocol per-residue RMSF for the seven S2 systems.
-# Author:   Tao Zhu (tjogzt@gmail.com)
 # Created:  2026-09-15 (header standardised 2026-10-05)
 # Outputs:  figures/pdf/Fig_S2_RMSF_All.pdf
 # Depends:  data.table, ggplot2, patchwork

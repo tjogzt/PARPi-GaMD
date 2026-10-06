@@ -18,7 +18,6 @@
 # =============================================================================
 #
 # Purpose:  Render the extension-panel results figure (SI Figure S15): S1 PMF overlay, well-depth distribution, convergence curves.
-# Author:   Tao Zhu (tjogzt@gmail.com)
 # Created:  2026-09-16 (header standardised 2026-10-05)
 # Run:      Rscript code/31_extension_convergence_figure.R   (from the repository root)
 set.seed(49)

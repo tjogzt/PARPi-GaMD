@@ -3,7 +3,6 @@
 Add hydrogens to a docking pose (RDKit AddHs addCoords=True, heavy atoms untouched)
 
 Purpose:  Add hydrogens to a docking pose (RDKit AddHs, addCoords=True; heavy atoms untouched).
-Author:   Tao Zhu (tjogzt@gmail.com)
 Created:  2026-09-15 (header standardised 2026-10-05)
 Depends:  rdkit
 Run:      python3 code/47_add_hydrogens_to_pose.py   (from the repository root)

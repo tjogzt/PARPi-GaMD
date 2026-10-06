@@ -14,8 +14,12 @@ Usage:
 
 Trajectory formats: anything MDAnalysis reads (DCD/NetCDF).
 
+Chain:    invoked by rebuild_all.sh step [4] with explicit positional
+          arguments (<prmtop> <trajectory> <out.csv> [stride]); running
+          without arguments is not supported (documented mechanical-run
+          exemption).
+
 Purpose:  Per-frame dihedral-group energy via OpenMM (exact gamdRunner definition) for the DBE weights.
-Author:   Tao Zhu (tjogzt@gmail.com)
 Created:  2026-09-17 (header standardised 2026-10-05)
 Depends:  MDAnalysis, numpy, openmm
 Run:      python3 scripts/s04_dihedral_group_energy.py   (from the repository root)

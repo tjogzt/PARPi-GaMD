@@ -5,7 +5,6 @@ Strips atoms from index APO_N (285775) onwards, keeping only
 protein+DNA+water+ions matching APO prmtop.
 
 Purpose:  Strip the ligand from a replicate system (parmed) for the ligand-free control analyses.
-Author:   Tao Zhu (tjogzt@gmail.com)
 Created:  2026-09-15 (header standardised 2026-10-05)
 Depends:  MDAnalysis, common.paths
 Run:      python3 code/18_strip_ligand.py   (from the repository root)

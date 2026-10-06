@@ -2,7 +2,6 @@
 # HD–ART domain distance PMF curves for 7 systems (APO + 6 inhibitors)
 #
 # Purpose:  Render the S1 HD–ART PMF comparison figures for the seven systems (overlay + facet panels).
-# Author:   Tao Zhu (tjogzt@gmail.com)
 # Created:  2026-09-15 (header standardised 2026-10-05)
 # Depends:  dplyr, ggplot2, patchwork
 # Run:      Rscript code/09_s1_pmf_figures.R   (from the repository root)

@@ -6,7 +6,6 @@ Purpose:   Emit the GaMD config XML from the official schema (lower-dual
            variant), parameterised for protein-ligand / protein-DNA-ligand
            systems: boost type, cMD/equilibration/production step counts,
            temperature and sigma0.
-Author:    Tao Zhu (tjogzt@gmail.com)
 Created:   2026-09-15
 Inputs:    --prmtop/--rst7  Amber topology + equilibrated coordinates (p04)
 Outputs:   the config XML at --out; gamdRunner then writes to --outdir

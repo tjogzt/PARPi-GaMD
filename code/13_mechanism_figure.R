@@ -7,7 +7,6 @@
 #   D: Comparison: talazoparib vs veliparib extreme S1 PMF + structural inset
 #
 # Purpose:  Compose the core mechanism figure (trapping vs allostery master panel).
-# Author:   Tao Zhu (tjogzt@gmail.com)
 # Created:  2026-09-15 (header standardised 2026-10-05)
 # Inputs:   data/cumulant_convergence.csv
 # Depends:  data.table, dplyr, ggplot2, patchwork, tibble, tidyr

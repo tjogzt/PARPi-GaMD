@@ -5,7 +5,6 @@
 #            only 2.6 ns) to 26 ns production, matching the other legacy S2
 #            systems. Run on the same workstation after p02 finishes.
 # GPU:       AZD5305=GPU0, veliparib=GPU1 (300 K, consistent with legacy S2).
-# Author:    Tao Zhu (tjogzt@gmail.com)
 # Created:   2026-09-17
 # Inputs:    ../../data/01_modeling/parp1_dna_complex/PARPi_full_DNA_Zn.pdb
 #            ../../data/01_modeling/docking_system2/mol2/<drug>_best.mol2

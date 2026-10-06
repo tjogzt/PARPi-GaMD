@@ -4,7 +4,6 @@
 Purpose:   Chunk-streamed extraction of the HD-ART centre-of-mass distance CV
            and the DBE weights (gamd.log column 8) for the three extension
            inhibitors' S1 runs. Memory footprint < 500 MB (2 GB container limit).
-Author:    Tao Zhu (tjogzt@gmail.com)
 Created:   2026-09-16
 Inputs:    runs/s1_<drug>/{s1_<drug>.prmtop, gamd_out/output.dcd, gamd_out/gamd.log}
 Outputs:   runs/s1_<drug>/analysis_cv.dat + analysis_weights.dat

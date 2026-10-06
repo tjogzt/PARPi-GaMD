@@ -27,8 +27,11 @@ Usage:
 Validated first on APO/talazoparib (reconstruction vs logged dV_D), then
 applied to niraparib/olaparib/rucaparib.
 
+Chain:    positional-arg CLI (<ligand> <E_csv> <e1_offset>); not invoked by
+          rebuild_all.sh — the consolidated table (s08) reads the curated
+          re-run products directly (nira_prot / rerun_cumulant_wells).
+
 Purpose:  Reconstruct S2 DBE weights for systems whose gamd.log was not archived.
-Author:   Tao Zhu (tjogzt@gmail.com)
 Created:  2026-09-17 (header standardised 2026-10-05)
 Depends:  common.paths, common.pmf, numpy
 Run:      python3 scripts/s06_reconstruct_s2_dbe.py   (from the repository root)

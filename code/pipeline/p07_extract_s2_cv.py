@@ -7,7 +7,6 @@ Purpose:   Chunk-streamed extraction of the two collective variables for the
              CV2 = HD(662-787) CA COM - ART(788-1011) CA COM distance
            Weights come from gamd.log column 8 (DBE); the production segment
            starts at step >= 6.1M (cMD 1M + prep 100K + equil 5M).
-Author:    Tao Zhu (tjogzt@gmail.com)
 Created:   2026-09-15
 Inputs:    <runs_dir>/sys2_<drug>/{build/<drug>_best.prmtop, gamd_out/output.dcd,
            gamd_out/gamd.log}

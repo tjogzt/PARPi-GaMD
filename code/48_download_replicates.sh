@@ -6,7 +6,6 @@
 
 #
 # Purpose:  Pull the replicate analysis data from the simulation host via environment-variable parameters.
-# Author:   Tao Zhu (tjogzt@gmail.com)
 # Created:  2026-09-16 (header standardised 2026-10-05)
 # Run:      bash code/48_download_replicates.sh   (from the repository root)
 : "${HOST:?Set HOST (e.g. user@host) to the simulation host}"

@@ -1,17 +1,31 @@
 #!/usr/bin/env python3
-"""Consolidate the final 10-system S2 DBE + AAI table (P0-2 reanalysis).
+"""Consolidate the final 10-system S2 DBE + AAI table (data-layer version).
 
-Writes data/analysis/s2_dbe_final.csv (per-system S2 CV1/CV2 C1-C3 well
-depths + source: exact log DBE vs reconstructed+bias-corrected) and
-data/analysis/aai_dbe_final.csv (AAI = S1-C3 / S2-CV2-C3).
+Reads (archived data layer; no hard-coded well depths)
+------------------------------------------------------
+- data/analysis/s2_dbe_well_depths.npy      7 exact-log systems (CV1/CV2 C1-C3)
+- data/01_curated/nira_prot_dbe.csv         niraparib S2 rows + S1 C3, protonated re-run
+- data/01_curated/rerun_cumulant_wells.csv  olaparib/rucaparib S2 rows, exact re-runs
+- data/analysis/s1_dbe_unified_wells.csv    unified S1 C3, seven original systems
+- data/01_curated/extension_s1_wells.csv    extension trio S1 C3
 
-Sources: 7 systems exact (scripts/reweight_s2_dbe.py, s2_dbe_well_depths.npy);
-3 systems reconstructed (scripts/reconstruct_s2_dbe.py + C3 bias correction
-+7.7 kcal, validated end-to-end on APO/talazoparib).
+Writes
+------
+- data/analysis/s2_dbe_final.csv  (ligand, metric, C1, C2, C3, source)
+  CV1/CV2 rows: well depths in the archived display forms (1-decimal from the
+  npy panel; source strings passed through from the curated CSVs).
+  AAI rows: S1 C3 / S2 CV2 C3 at 6 decimals.
+  Source tags: exact_log_dbe | nira_prot_dbe | rerun_exact_dbe.
 
-Purpose:  Consolidate the final 10-system S2 DBE + AAI table.
-Author:   Tao Zhu (tjogzt@gmail.com)
-Created:  2026-09-17 (header standardised 2026-10-05)
+Notes
+-----
+- The niraparib rows inside rerun_cumulant_wells.csv are superseded drafts;
+  the final niraparib values come from nira_prot_dbe.csv.
+- Anchors asserted below match the manuscript display values
+  (AAI talazoparib ~0.83, AZD5305 ~1.19; niraparib CV1 62.0; olaparib CV2 48.0).
+
+Purpose:  Consolidate the final 10-system S2 DBE + AAI table from the archived data layer.
+Created:  2026-09-17 (header standardised 2026-10-05; data-layer rewrite 2026-10-06)
 Depends:  common.paths, numpy
 Run:      python3 scripts/s08_consolidate_s2_dbe.py   (from the repository root)
 """
@@ -22,39 +36,74 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from common.paths import analysis_dir
+from common.paths import analysis_dir, REPO_ROOT
 
 A = analysis_dir()
+CUR = REPO_ROOT / "data" / "01_curated"
 
-EXACT = {
-    # lig: {CV1: [C1,C2,C3], CV2: [C1,C2,C3]}  (from s2_dbe_well_depths.npy)
-    "APO":        {"CV1": [34.0, 39.4, 47.6], "CV2": [34.0, 40.1, 44.0]},
-    "talazoparib": {"CV1": [34.6, 42.5, 53.1], "CV2": [34.9, 43.1, 61.9]},
-    "AZD5305":    {"CV1": [34.8, 45.1, 79.4], "CV2": [34.2, 40.9, 50.3]},
-    "veliparib":  {"CV1": [34.6, 42.8, 58.9], "CV2": [34.4, 48.7, 72.9]},
-    "fluzoparib": {"CV1": [33.2, 41.3, 56.9], "CV2": [33.5, 38.8, 46.9]},
-    "pamiparib":  {"CV1": [34.1, 42.4, 58.1], "CV2": [34.0, 40.4, 51.8]},
-    "senaparib":  {"CV1": [33.7, 44.0, 66.3], "CV2": [34.1, 42.5, 49.4]},
-}
-C3_BIAS = 7.7  # reconstructed-C3 bias correction (kcal/mol), see validation
-RECON = {
-    # raw reconstruction C1/C2/C3; C3 stored bias-corrected
-    "niraparib": {"CV1": [31.2, 33.2, 34.4 + C3_BIAS], "CV2": [31.4, 33.5, 32.2 + C3_BIAS]},
-    "olaparib":  {"CV1": [32.0, 35.5, 37.6 + C3_BIAS], "CV2": [33.1, 36.4, 39.8 + C3_BIAS]},
-    "rucaparib": {"CV1": [32.2, 35.9, 39.3 + C3_BIAS], "CV2": [32.2, 36.5, 32.5 + C3_BIAS]},
-}
-S1_C3 = {"talazoparib": 30.4, "olaparib": 68.9, "niraparib": 51.6,
-         "rucaparib": 53.4, "veliparib": 101.1, "AZD5305": 28.2,
-         "APO": 42.5, "fluzoparib": 54.0, "pamiparib": 48.7, "senaparib": 52.2}
 
+def read_rows(p):
+    """Read a small curated CSV into a list of dicts (exact display strings)."""
+    with open(p, newline="") as fh:
+        return list(csv.DictReader(fh))
+
+
+wells = np.load(str(A / "s2_dbe_well_depths.npy"), allow_pickle=True).item()
+nira = read_rows(CUR / "nira_prot_dbe.csv")
+rerun = read_rows(CUR / "rerun_cumulant_wells.csv")
+unified = read_rows(A / "s1_dbe_unified_wells.csv")
+ext = read_rows(CUR / "extension_s1_wells.csv")
+
+
+def d1(v):
+    """1-decimal display form used by the exact-log panel."""
+    return f"{float(v):.1f}"
+
+
+# --- CV rows ------------------------------------------------------------------
+EXACT = ["APO", "talazoparib", "AZD5305", "veliparib",
+         "fluzoparib", "pamiparib", "senaparib"]
+rows_cv = {}
+for lig in EXACT:
+    rows_cv[lig] = {cvn: [d1(x) for x in wells[f"{lig}_{cvn}"]] for cvn in ("CV1", "CV2")}
+for lig, key, src in [("niraparib", "sys2_niraparib_prot", nira),
+                      ("olaparib", "sys2_olaparib", rerun),
+                      ("rucaparib", "sys2_rucaparib", rerun)]:
+    # column-name case differs between the two curated sources (c1/c2/c3 vs C1/C2/C3)
+    rows_cv[lig] = {r["cv"]: [r.get("C1", r.get("c1")), r.get("C2", r.get("c2")),
+                              r.get("C3", r.get("c3"))]
+                    for r in src if r["system"] == key}
+
+# --- S1 C3 numerators (display forms preserved from the sources) --------------
+s1 = {r["ligand"].lower(): r["C3"] for r in unified}
+s1["niraparib"] = next(r["c3"] for r in nira if r["system"] == "sys1_niraparib_prot")
+for r in ext:
+    s1[r["ligand"].lower()] = d1(r["C3"])
+
+# --- assemble -----------------------------------------------------------------
+ORDER = ["APO", "talazoparib", "AZD5305", "veliparib", "fluzoparib",
+         "pamiparib", "senaparib", "niraparib", "olaparib", "rucaparib"]
+TAG = {l: "exact_log_dbe" for l in EXACT}
+TAG.update({"niraparib": "nira_prot_dbe", "olaparib": "rerun_exact_dbe",
+            "rucaparib": "rerun_exact_dbe"})
 rows = []
-for lig, vals in {**EXACT, **RECON}.items():
-    src = "exact_log_dbe" if lig in EXACT else "reconstructed_bias_corrected"
-    for cvn in ["CV1", "CV2"]:
-        c1, c2, c3 = vals[cvn]
-        rows.append([lig, cvn, c1, c2, c3, src])
-    aai = S1_C3[lig] / vals["CV2"][2]
-    rows.append([lig, "AAI", S1_C3[lig], vals["CV2"][2], aai, src])
+for lig in ORDER:
+    for cvn in ("CV1", "CV2"):
+        rows.append([lig, cvn, *rows_cv[lig][cvn], TAG[lig]])
+    s1v = float(s1[lig.lower()])
+    s2v = float(rows_cv[lig]["CV2"][2])
+    rows.append([lig, "AAI", s1[lig.lower()], rows_cv[lig]["CV2"][2],
+                 f"{s1v / s2v:.6f}", TAG[lig]])
+
+# --- manuscript anchors -------------------------------------------------------
+anch = {(r[0], r[1]): r for r in rows}
+assert len(rows) == 30
+assert anch[("niraparib", "CV1")][4] == "62.0"
+assert anch[("niraparib", "CV2")][4] == "50.5"
+assert anch[("olaparib", "CV2")][4] == "48.0"
+assert anch[("rucaparib", "CV1")][4] == "59.3"
+assert anch[("talazoparib", "AAI")][4].startswith("0.830")
+assert anch[("AZD5305", "AAI")][4].startswith("1.186")
 
 with open(A / "s2_dbe_final.csv", "w", newline="") as fh:
     w = csv.writer(fh)

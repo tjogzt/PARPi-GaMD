@@ -8,7 +8,6 @@ Inputs:    $DATA_ROOT/sys2_<drug>/output.dcd (CHARMM/X-PLOR DCD)
 Outputs:   results/<drug>_last_xyz.npy (natoms x 3 float32)
 Depends:   MDAnalysis; common.paths (DATA_ROOT)
 
-Author:   Tao Zhu (tjogzt@gmail.com)
 Created:  2026-09-15 (header standardised 2026-10-05)
 Run:      python3 code/46_extract_last_frame.py   (from the repository root)
 """

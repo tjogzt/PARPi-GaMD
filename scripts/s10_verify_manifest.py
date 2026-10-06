@@ -9,7 +9,6 @@ or '(see notes)' are reported but not enforced.
 Usage: python3 scripts/verify_manifest.py [--root <repo root>]
 
 Purpose:  Cross-check data_manifest.md checksums against the files on disk.
-Author:   Tao Zhu (tjogzt@gmail.com)
 Created:  2026-09-16 (header standardised 2026-10-05)
 Depends:  argparse, hashlib
 Run:      python3 scripts/s10_verify_manifest.py   (from the repository root)

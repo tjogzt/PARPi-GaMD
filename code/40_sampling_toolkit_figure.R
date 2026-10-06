@@ -2,7 +2,6 @@
 # Fig_SI_Sampling_Toolkit: sampling-resolution synthesis (Figure S17)
 #
 # Purpose:  Render the sampling-resolution synthesis figure (Fig_SI_Sampling_Toolkit): truncation scan + timescale scaling.
-# Author:   Tao Zhu (tjogzt@gmail.com)
 # Created:  2026-10-04 (header standardised 2026-10-05)
 # Inputs:   data/analysis/p0_2_trunc_scan.csv ; data/analysis/s2_window_timescale.csv ; data/analysis/timescale_scaling.csv
 # Run:      Rscript code/40_sampling_toolkit_figure.R   (from the repository root)

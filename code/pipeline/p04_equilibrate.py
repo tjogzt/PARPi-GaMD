@@ -5,7 +5,6 @@ p04_equilibrate.py — pre-GaMD equilibration (OpenMM: minimisation -> NVT -> NP
 Purpose:   Read an Amber prmtop/inpcrd -> energy minimisation -> restrained NVT
            heating (10 -> 300 K) -> unrestrained NPT density equilibration ->
            write the equilibrated rst7 (fed to gamdRunner) + pdb.
-Author:    Tao Zhu (tjogzt@gmail.com)
 Created:   2026-09-15
 Inputs:    --prmtop/--inpcrd  Amber topology + coordinates (from p01)
 Outputs:   <out>.rst7 + <out>.pdb (equilibrated state)

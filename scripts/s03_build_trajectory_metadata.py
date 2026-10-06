@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 """Build trajectory metadata table (reviewer Section 8 minimum verification package).
 
-For every system directory under DATA_ROOT: topology hash, trajectory frames,
-frame interval, boost log fields, restart history, timestamps. Emits
-data/trajectory_metadata.csv.
+For every system directory under DATA_ROOT (top level) and the protonated
+re-run roots (rerun_202609/runs_{nira,ruca}_prot), collect the topology hash,
+trajectory frames, frame interval, boost log fields, restart history and
+timestamps. Emits results/analysis/trajectory_metadata.csv (15 archival
+systems; directory names of the protonated re-runs are canonicalised to
+sys{1,2}_{nira,ruca}_prot).
 
 Purpose:  Build the trajectory metadata table (frame counts, lengths, protocols) for all production runs.
-Author:   Tao Zhu (tjogzt@gmail.com)
-Created:  2026-09-17 (header standardised 2026-10-05)
+Created:  2026-09-17 (header standardised 2026-10-05; coverage fix 2026-10-06)
 Depends:  MDAnalysis, common.paths, hashlib
 Run:      python3 scripts/s03_build_trajectory_metadata.py   (from the repository root)
 """
@@ -17,12 +19,14 @@ import sys
 import csv
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from common.paths import data_root
 
 DATA_ROOT = data_root()
 OUT = Path(__file__).resolve().parents[1] / "results" / "analysis" / "trajectory_metadata.csv"
 
 import MDAnalysis as mda  # noqa: E402
+
 
 def md5(p, chunk=1 << 20):
     h = hashlib.md5()
@@ -31,18 +35,19 @@ def md5(p, chunk=1 << 20):
             h.update(b)
     return h.hexdigest()[:12]
 
-rows = []
-for d in sorted(DATA_ROOT.iterdir()):
-    if not d.is_dir():
-        continue
+
+def scan_dir(d, rows, system_id=None, seed="unknown"):
+    """Collect one metadata record for a directory containing *.prmtop."""
     prmtops = list(d.glob("*.prmtop"))
     if not prmtops:
-        continue
+        return
     prmtop = prmtops[0]
     dcdfs = list(d.glob("*.dcd")) + list(d.glob("*.nc"))
     logs = list(d.glob("gamd.log"))
-    system_id = d.name
+    if system_id is None:
+        system_id = d.name
     compound = system_id.split("_", 1)[1] if "_" in system_id else "?"
+    compound = compound.removesuffix("_prot")
     rec = {
         "system_id": system_id,
         "compound_id": compound,
@@ -56,7 +61,7 @@ for d in sorted(DATA_ROOT.iterdir()):
         "boost_log": logs[0].name if logs else "NONE",
         "log_fields": "",
         "restart_history": "",
-        "random_seed": "unknown",
+        "random_seed": seed,
         "software_commit": "see release env file",
         "analysis_config": "see data_manifest.md",
     }
@@ -80,8 +85,18 @@ for d in sorted(DATA_ROOT.iterdir()):
                 break
             except Exception as e:  # noqa: BLE001
                 rec["frames"] = f"ERR:{type(e).__name__}"
-        if not opened and rec["frames"].startswith("ERR"):
-            rec["frames"] += f" (tried {len(dcdfs)} files)"
+        if not opened and str(rec["frames"]).startswith("ERR"):
+            rec["frames"] = f"{rec['frames']} (tried {len(dcdfs)} files)"
+    # production segment: when the run records its production start step,
+    # report production-only frames (start frame inferred at 2 fs MD steps,
+    # inclusive slicing; prep ended at production-start-step)
+    pss = d / "production-start-step.txt"
+    if pss.exists() and rec["frames"] and str(rec["frames"]).isdigit():
+        start_steps = int(pss.read_text().strip())
+        start_frame = round(start_steps * 0.002 / rec["frame_interval_ps"])
+        n_prod = int(rec["frames"]) - start_frame + 1
+        rec["frames"] = n_prod
+        rec["production_ns"] = round(rec["frame_interval_ps"] * n_prod / 1000.0, 2)
     # boost log fields (skip comment lines)
     if logs:
         with open(logs[0]) as f:
@@ -90,6 +105,26 @@ for d in sorted(DATA_ROOT.iterdir()):
         ncol = len(head.split())
         rec["log_fields"] = f"{ncol} cols: {head[:100]}"
     rows.append(rec)
+
+
+rows = []
+for d in sorted(DATA_ROOT.iterdir()):
+    if d.is_dir():
+        scan_dir(d, rows)
+
+# Protonated re-run segments: canonical system ids differ from the on-disk
+# directory layout (runs_{nira,ruca}_prot/{sys1,sys2}).
+PROT_ROOTS = [
+    (DATA_ROOT / "rerun_202609" / "runs_nira_prot" / "sys1", "sys1_nira_prot"),
+    (DATA_ROOT / "rerun_202609" / "runs_nira_prot" / "sys2", "sys2_nira_prot"),
+    (DATA_ROOT / "rerun_202609" / "runs_ruca_prot" / "sys1", "sys1_ruca_prot"),
+    (DATA_ROOT / "rerun_202609" / "runs_ruca_prot" / "sys2", "sys2_ruca_prot"),
+]
+for d, sid in PROT_ROOTS:
+    if d.is_dir():
+        scan_dir(d, rows, system_id=sid, seed="42")
+
+rows.sort(key=lambda r: r["system_id"])
 
 OUT.parent.mkdir(parents=True, exist_ok=True)
 with open(OUT, "w", newline="") as f:

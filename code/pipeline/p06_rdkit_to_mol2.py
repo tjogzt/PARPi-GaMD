@@ -6,7 +6,6 @@ Purpose:   RDKit has no mol2 writer; this script hand-writes the TRIPOS
            atom types are mapped simply (antechamber reassigns them with
            '-at gaff2' later). Aromatic-aliphatic DOUBLE bonds left over from
            Kekule input are demoted to SINGLE.
-Author:    Tao Zhu (tjogzt@gmail.com)
 Created:   2026-09-15
 Inputs:    data/01_modeling/docking_system2/<lig>_best.sdf (or _bestH.sdf)
 Outputs:   data/01_modeling/docking_system2/mol2/<lig>_best.mol2

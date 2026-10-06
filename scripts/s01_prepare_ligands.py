@@ -9,7 +9,6 @@ writes SDF + PDB to data/01_modeling/docking_ligands/, then converts to PDBQT wi
 Stereochemistry is preserved from the isomeric SMILES (talazoparib dual stereocenters are critical).
 
 Purpose:  Ligand 3D preparation (docking-ready): isomeric SMILES -> RDKit conformers -> SDF/PDB/PDBQT.
-Author:   Tao Zhu (tjogzt@gmail.com)
 Created:  2026-09-16 (header standardised 2026-10-05)
 Depends:  __future__, pandas, rdkit, rdkit.Chem
 Run:      python3 scripts/s01_prepare_ligands.py   (from the repository root)

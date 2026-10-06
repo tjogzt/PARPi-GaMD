@@ -8,7 +8,6 @@
 # This script is the reproducible figure layer (CSV -> figure).
 #
 # Purpose:  Reproducible figure layer for the SI PMF convergence plot (CSV -> figure).
-# Author:   Tao Zhu (tjogzt@gmail.com)
 # Created:  2026-09-16 (header standardised 2026-10-05)
 # Inputs:   data/pmf_convergence.csv
 # Outputs:  results/analysis/Fig_SI_PMF_Convergence.pdf

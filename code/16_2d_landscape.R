@@ -5,7 +5,6 @@
 #   RETICULATE_PYTHON=/opt/anaconda3/bin/python3 Rscript code/16-2d_landscape.R
 #
 # Purpose:  Render the 2D free-energy landscapes (CV1 x CV2): talazoparib-vs-veliparib main panel + all-system SI variant.
-# Author:   Tao Zhu (tjogzt@gmail.com)
 # Created:  2026-09-15 (header standardised 2026-10-05)
 # Depends:  MASS, dplyr, ggplot2, patchwork, reticulate
 # Run:      Rscript code/16_2d_landscape.R   (from the repository root)

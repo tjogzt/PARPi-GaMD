@@ -2,12 +2,10 @@
 # Regenerate Fig_DCCM_Allostery.pdf — 7-system HDxART DCCM block heatmap (whole-protein superposition, unified protocol)
 #
 # Output: vector PDF (figures/pdf/Fig_DCCM_Allostery.pdf) — canonical, text-searchable.
-# SI compilation copy: manuscripts/jcim/si_figures/Fig_DCCM_Allostery.pdf is a 300-dpi raster
-# version of the same figure (keeps the combined SI PDF under the 2 MB submission limit);
-# regenerate it with scripts/rasterize_si_figures.sh after any change to this script.
+# Fig_DCCM_Allostery.pdf: 300-dpi raster, compiled for the Supporting Information.
+# See the SI figure build section in README for the generation workflow.
 #
 # Purpose:  Render Fig_DCCM_Allostery.pdf: the seven-system HDxART DCCM block heatmap.
-# Author:   Tao Zhu (tjogzt@gmail.com)
 # Created:  2026-09-15 (header standardised 2026-10-05)
 # Depends:  data.table, ggplot2, patchwork
 # Run:      Rscript code/38_dccm_figure.R   (from the repository root)

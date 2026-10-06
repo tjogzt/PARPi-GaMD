@@ -2,7 +2,6 @@
 # 10-s2_pmf_figures.R — S2 PMF figures (Protein–DNA + HD–ART, 7 systems)
 #
 # Purpose:  Render the S2 PMF figures (protein–DNA and HD–ART, seven systems: overlay + facet panels).
-# Author:   Tao Zhu (tjogzt@gmail.com)
 # Created:  2026-09-15 (header standardised 2026-10-05)
 # Depends:  dplyr, ggplot2, patchwork
 # Run:      Rscript code/10_s2_pmf_figures.R   (from the repository root)

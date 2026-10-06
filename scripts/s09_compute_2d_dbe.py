@@ -9,8 +9,9 @@ code/16-2d_landscape.R.
 Outputs: data/analysis/2d_c3_<lig>.npz (arrays: X, Y, F)
 
 Purpose:  Compute 2D cumulant-expansion PMFs for the S2 landscape figure.
-Author:   Tao Zhu (tjogzt@gmail.com)
-Created:  2026-09-17 (header standardised 2026-10-05)
+Created:  2026-09-17 (header standardised 2026-10-05; chain-order note 2026-10-06)
+Chain:    rebuild_all.sh step [7]; writes the C3 grid files consumed by
+          code/16_2d_landscape.R.
 Depends:  common.paths, numpy, tempfile
 Run:      python3 scripts/s09_compute_2d_dbe.py   (from the repository root)
 """
@@ -43,12 +44,18 @@ def dbe_weights(lig):
         d = np.loadtxt(f"results/dihed_{lig}.csv", delimiter=",", skiprows=1)
         E = d[:, 2]
         w_all = np.loadtxt(REPO_ROOT / "data" / "analysis_weights" / f"sys2_{lig}_CV1_cv_weights.dat")[:, 2]
-        n = min(len(E), len(w_all) // 10)
-        w = w_all[::10][:n]
-        E1 = E[:n].max() - 157.0
-        dV = np.clip(0.5 * (E[:n] - E1) * (1 - w), 0.0, None)
-        cv1 = np.load(A / f"sys2_{lig}_CV1_cv.npy")[::10][:n]
-        cv2 = np.load(A / f"sys2_{lig}_CV2_cv.npy")[::10][:n]
+        # Frame alignment (same convention as s07_regenerate_s2_pmf_xvgs.py):
+        # the dbe_rebuild DCDs are cpptraj-pre-strided (stored frames = original
+        # 1, 11, ..., 25991) and s04 re-strides by 10, so E row i corresponds
+        # to original frame 1 + 100*i. The CV/weight series must be sliced
+        # [1::100], NOT [::10].
+        n = min(len(E), (len(w_all) - 1) // 100 + 1)
+        E = E[:n]
+        w = w_all[1::100][:n]
+        E1 = E.max() - 157.0
+        dV = np.clip(0.5 * (E - E1) * (1 - w), 0.0, None)
+        cv1 = np.load(A / f"sys2_{lig}_CV1_cv.npy")[1::100][:n]
+        cv2 = np.load(A / f"sys2_{lig}_CV2_cv.npy")[1::100][:n]
     else:
         log = D / f"sys2_{lig}" / "gamd.log"
         lg = np.loadtxt(log, comments="#")

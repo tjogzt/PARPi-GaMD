@@ -1,0 +1,10 @@
+system,cv,C1,C2,C3,source
+sys2_niraparib,CV1,34.2,44.1,56.6,rerun_exact_dbe
+sys2_niraparib,CV2,34.1,41.3,52.4,rerun_exact_dbe
+sys1_niraparib,CV,38.9,47.9,88.7,rerun_exact_dualboost
+sys2_olaparib,CV1,34.5,46.6,58.5,rerun_exact_dbe
+sys2_olaparib,CV2,33.8,43.3,48.0,rerun_exact_dbe
+sys1_olaparib,CV,40.3,50.0,80.3,rerun_exact_dualboost
+sys2_rucaparib,CV1,35.8,42.0,59.3,rerun_exact_dbe
+sys2_rucaparib,CV2,34.5,40.2,52.6,rerun_exact_dbe
+sys1_rucaparib,CV,39.4,49.8,63.4,rerun_exact_dualboost

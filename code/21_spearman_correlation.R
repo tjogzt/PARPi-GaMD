@@ -17,7 +17,6 @@
 # the end), the single machine-readable table for the association analysis.
 #
 # Purpose:  Two-state Spearman correlation analysis (n=5, tie-aware exact permutation), Table S1/S5 C3 convention.
-# Author:   Tao Zhu (tjogzt@gmail.com)
 # Created:  2026-09-15 (header standardised 2026-10-05)
 # Inputs:   data/01_curated/two_state_panel_values.csv ; data/01_curated/trapping_potency.csv ; data/analysis/s2_dbe_final.csv ; data/analysis/s1_dbe_unified_wells.csv
 # Outputs:  figures/pdf/Fig_Trapping_vs_Allostery.pdf ; data/analysis/association_input_table.csv

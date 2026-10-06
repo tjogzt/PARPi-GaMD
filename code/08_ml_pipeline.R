@@ -19,7 +19,6 @@
 # 0. Setup
 # ==============================================================================
 #
-# Author:   Tao Zhu (tjogzt@gmail.com)
 # Created:  2026-09-15 (header standardised 2026-10-05)
 # Inputs:   data/analysis
 # Outputs:  results/ml ; results/ml/blind_prediction_AZD5305.csv ; results/ml/feature_matrix.csv

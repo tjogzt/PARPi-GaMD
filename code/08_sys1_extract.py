@@ -5,7 +5,6 @@ Fixes: proper gamd.log column detection with leading tab handling.
 Output: CV file (1 col) + weight file (3 col: dV*beta, 0, dV) for PyReweighting.
 
 Purpose:  Extract the S1 CV series and DBE weights for the seven legacy S1 systems (chunk-streamed).
-Author:   Tao Zhu (tjogzt@gmail.com)
 Created:  2026-09-15 (header standardised 2026-10-05)
 Depends:  MDAnalysis, common.paths, numpy
 Run:      python3 code/08_sys1_extract.py   (from the repository root)

@@ -18,7 +18,6 @@
 # broke the Table S1 r>0.80 claim); the collect_s1 CSV is the single source.
 #
 # Purpose:  Regenerate data/cumulant_convergence.csv (per-window cumulant well depths used by the diagnostic figures).
-# Author:   Tao Zhu (tjogzt@gmail.com)
 # Created:  2026-09-16 (header standardised 2026-10-05)
 # Inputs:   data/analysis
 # Depends:  data.table

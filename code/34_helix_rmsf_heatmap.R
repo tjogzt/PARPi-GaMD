@@ -12,7 +12,6 @@
 #          expanded), symmetric ±2.5 Å; signed cell values annotated;
 #          Arial >= 8 pt. (Δ version adopted by the user 2026-10-05, replacing
 #          the earlier absolute-means rendering of the same data.)
-# Author:  Tao Zhu (tjogzt@gmail.com)
 # Created: 2026-10-05
 # Run:     Rscript code/34_helix_rmsf_heatmap.R   (from the repository root)
 # =============================================================================

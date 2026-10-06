@@ -10,7 +10,6 @@ Inputs:    data/analysis/pmf-c3-sys2_<system>_CV{1,2}_cv.dat.xvg
 Outputs:   data/cumulant_wells_C3.csv
 Depends:   numpy. Run from the repository root.
 
-Author:   Tao Zhu (tjogzt@gmail.com)
 Created:  2026-09-15 (header standardised 2026-10-05)
 Run:      python3 code/35_extract_cv1_wells.py   (from the repository root)
 """

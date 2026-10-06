@@ -8,7 +8,6 @@
 # Protocol:  300 K (consistent with the legacy S1/S2 runs; legacy S2 weights
 #            beta=1.677571 -> 300.15 K verified), 22 ns production, 50 ps
 #            frames, lower-dual boost, seed 42.
-# Author:    Tao Zhu (tjogzt@gmail.com)
 # Created:   2026-09-15
 # Inputs:    ../../data/01_modeling/parp1_dna_complex/PARPi_full_DNA_Zn.pdb
 #            ../../data/01_modeling/docking_system2/mol2/<drug>_best.mol2

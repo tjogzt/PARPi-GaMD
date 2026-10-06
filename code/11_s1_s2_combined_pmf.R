@@ -2,7 +2,6 @@
 # 11-s1_s2_combined_pmf.R — S1 vs S2 HD–ART PMF comparison (13 trajectories)
 #
 # Purpose:  Render the combined S1-vs-S2 HD–ART PMF comparison across the 13 trajectories.
-# Author:   Tao Zhu (tjogzt@gmail.com)
 # Created:  2026-09-15 (header standardised 2026-10-05)
 # Depends:  dplyr, ggplot2, patchwork
 # Run:      Rscript code/11_s1_s2_combined_pmf.R   (from the repository root)

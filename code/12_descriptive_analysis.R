@@ -2,7 +2,6 @@
 # 12-descriptive_analysis.R — Descriptive comparison & AZD5305 anomaly analysis
 #
 # Purpose:  Descriptive comparison tables and the AZD5305 scale-anomaly analysis (console + CSV).
-# Author:   Tao Zhu (tjogzt@gmail.com)
 # Created:  2026-09-15 (header standardised 2026-10-05)
 # Inputs:   data/analysis/S1_S2_ratios.csv ; data/analysis/pmf_features_summary.csv ; data/analysis/sys1_APO_pmf_c3.xvg
 # Outputs:  figures/pdf/Fig_Feature_Comparison.pdf

@@ -2,7 +2,6 @@
 # Fig 1: PARP1 domain architecture + system schematics + inhibitor panel
 #
 # Purpose:  Compose Figure 1 (PARP1 domain architecture + system schematics + inhibitor panel).
-# Author:   Tao Zhu (tjogzt@gmail.com)
 # Created:  2026-09-15 (header standardised 2026-10-05)
 # Inputs:   data/01_curated/trapping_potency.csv
 # Outputs:  figures/pdf/Fig1_System_Architecture.pdf ; figures/png/Fig1_struct_4DQY_crop.png

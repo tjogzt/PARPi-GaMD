@@ -18,7 +18,6 @@ Data sources:
 Outputs:  per-system C1-C3 well depths for CV1 and CV2.
 Depends: numpy; common (pmf, paths); DATA_ROOT logs on the data volume.
 
-Author:   Tao Zhu (tjogzt@gmail.com)
 Created:  2026-09-17 (header standardised 2026-10-05)
 Run:      python3 scripts/s05_reweight_s2_dbe.py   (from the repository root)
 """

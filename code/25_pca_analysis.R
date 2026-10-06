@@ -5,7 +5,6 @@
 
 #
 # Purpose:  Structural PCA (CA Cartesian coordinates) of the S2 trajectories; writes projections + variance tables.
-# Author:   Tao Zhu (tjogzt@gmail.com)
 # Created:  2026-09-15 (header standardised 2026-10-05)
 # Depends:  bio3d, dplyr, ggplot2, patchwork, tidyr
 # Run:      Rscript code/25_pca_analysis.R   (from the repository root)

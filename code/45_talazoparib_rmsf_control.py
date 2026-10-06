@@ -18,7 +18,6 @@ Inputs:    $DATA_ROOT/sys2_talazoparib/{sys2_talazoparib.prmtop, output.dcd}
 Outputs:  console RMSF summary
 Depends:   MDAnalysis, numpy; DATA_ROOT environment variable
 
-Author:   Tao Zhu (tjogzt@gmail.com)
 Created:  2026-09-16 (header standardised 2026-10-05)
 Run:      python3 code/45_talazoparib_rmsf_control.py   (from the repository root)
 """

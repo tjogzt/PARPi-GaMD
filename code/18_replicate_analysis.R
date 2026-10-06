@@ -17,7 +17,6 @@
 # and is reported through the main data table footnote (22.2 kcal/mol).
 
 #
-# Author:   Tao Zhu (tjogzt@gmail.com)
 # Created:  2026-09-15 (header standardised 2026-10-05)
 # Run:      Rscript code/18_replicate_analysis.R   (from the repository root)
 library(data.table)

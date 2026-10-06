@@ -9,7 +9,6 @@ Purpose:   C1-C3 well depths for the three extension-inhibitor S2 systems
                analysis_weights_dfw.dat; reproduces talazoparib CV2 = 30.6).
            Merged from the former s2_new_drugs_pmf.py and s2_new_drugs_pmf_dfw.py
            (identical logic, weight file as a parameter).
-Author:    Tao Zhu (tjogzt@gmail.com)
 Created:   2026-09-16 (original scripts); merged 2026-10-05 (repo standardisation)
 Inputs:    data/new_drugs_s2/<lig>/analysis_{CV1,CV2}.dat
            data/new_drugs_s2/<lig>/analysis_weights{,_dfw}.dat

@@ -6,7 +6,6 @@
 # hard-coded, except the fixed signal anchor documented above.
 #
 # Purpose:  Render the D4 diagnostics figures: windowed-bootstrap noise panel + consistency-timescale panel.
-# Author:   Tao Zhu (tjogzt@gmail.com)
 # Created:  2026-10-01 (header standardised 2026-10-05)
 # Inputs:   data/analysis/convergence_diag.csv ; data/analysis/timescale_scaling.csv
 # Outputs:  figures/pdf/Fig_D4_Timescale.pdf ; figures/pdf/Fig_D4_WindowNoise.pdf

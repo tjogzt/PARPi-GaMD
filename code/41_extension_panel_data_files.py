@@ -13,7 +13,6 @@ Purpose:   Produce the derived data files for the three extension inhibitors
                  CV1/CV2 C3 PMF curves (DFW weights, 22 ns).
            Merged from the former gen_extension_convergence_csv.py and
            gen_new_pmf_files.py (identical logic, single entry point).
-Author:    Tao Zhu (tjogzt@gmail.com)
 Created:   2026-09-16 (original scripts); merged 2026-10-05 (repo standardisation)
 Inputs:    data/new_drugs_s1/sys1_<lig>_{cv,weights}.dat
            data/new_drugs_s2/<lig>/analysis_{CV1,CV2}.dat

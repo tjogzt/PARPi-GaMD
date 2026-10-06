@@ -7,7 +7,6 @@ Legacy systems (1 ps frame rate): stride 50; rebuilt systems (50 ps): last 517
 production frames.
 
 Purpose:  Unified-protocol recomputation of all seven S2 systems: per-residue RMSF (HD/ART) + DCCM (HDxART) profiles.
-Author:   Tao Zhu (tjogzt@gmail.com)
 Created:  2026-09-15 (header standardised 2026-10-05)
 Depends:  MDAnalysis, common.kabsch, common.paths, numpy
 Run:      python3 code/36_recompute_s2_profiles.py   (from the repository root)

@@ -17,7 +17,6 @@ Notes:
 - time_split: train = first disclosure <= 2021; test = 2022+ (blind test of
   next-generation selective PARP1 inhibitors).
 
-Author:   Tao Zhu (tjogzt@gmail.com)
 Created:  2026-09-16 (header standardised 2026-10-05)
 Run:      python3 scripts/s02_build_seed_dataset.py   (from the repository root)
 """

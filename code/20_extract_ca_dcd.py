@@ -4,7 +4,6 @@
 Much more reliable than cpptraj for our stripped trajectories.
 
 Purpose:  Extract CA-atom trajectory frames (DCD) for the downstream RMSF/DCCM analyses.
-Author:   Tao Zhu (tjogzt@gmail.com)
 Created:  2026-09-15 (header standardised 2026-10-05)
 Depends:  MDAnalysis, common.paths, numpy
 Run:      python3 code/20_extract_ca_dcd.py   (from the repository root)

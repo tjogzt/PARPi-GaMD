@@ -256,3 +256,25 @@ Executed after the main round, same approval:
   provenance sentence for ``rerun_202609`` were updated; three ``~\AA`` control-word spacing breaks
   fixed (main 1, SI 3). Main (57 pp) and SI (25 pp) recompiled 0-error; the manifest row was bumped
   to v2 with its new checksum.
+
+- **P0 code-audit remediation batch (9 items, four-team audit follow-up).** Executed item by item with
+  a pre-batch snapshot (``review-stage/code_audit_20261005/snapshots/``) and per-item verification.
+  (i) ``s08_consolidate_s2_dbe.py`` v2 rebuilds the S2/S1 well table from the reweighted npy plus
+  four curated CSVs (no hard-coded depths); validated value-equivalent to the published table
+  (wells identical to 0.000000; max AAI delta 8.3e-5 vs 5e-4 tolerance) with the downstream guard
+  chain (code/13, 18, 21) green. (ii) The four re-run engines (``analyze_nira_prot``,
+  ``analyze_ruca_prot``, ``analyze_rerun_exact``, ``analyze_s1_unified``) were packaged into
+  ``scripts/`` with standard headers. (iii) ``rebuild_all.sh`` v2: 8-step chain with ``set -euo
+  pipefail``, output-dir bootstrap, renamed targets and ``[n/m]`` progress. (iv) ``s03`` gained a
+  sys.path bootstrap and ``runs_{nira,ruca}_prot`` coverage (production-start-step slicing; frames
+  481/521); regenerated ``trajectory_metadata.csv`` matches the archived row set 15/15 (all 11
+  legacy rows byte-identical; 4 re-run rows differ only in display-level formatting, recorded).
+  (v) Dependency/chain-order notes added to s04/s06/s07/s09. (vi) Manifest finalised: PCA row
+  switched to the text-layer digest, the nine TBD/see-notes rows carry computed checksums, one
+  retired glob row; ``s10`` now reports 19 OK / 0 MISMATCH / 0 MISSING (rc 0). (vii) Identity
+  sweep: 52 ``Author`` lines removed across code/, code/pipeline/ and scripts/ (0 residual name
+  hits); figure script 38 path/script references modernised. (viii) s04/s06 mechanical-run
+  exemption documented. (ix) ``44_rerun_s2_pmf_files.py`` gained the same skip-guard as s07
+  (dry-run verified; ``--force`` escape hatch). The fixed chain was re-run end-to-end in a sandbox
+  copy (``review-stage/code_audit_20261005/verify_sandbox/``); all steps completed and the final
+  table reproduced the published values.

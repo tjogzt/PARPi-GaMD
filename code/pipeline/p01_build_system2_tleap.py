@@ -5,7 +5,6 @@ p01_build_system2_tleap.py — System 2 GaMD build pipeline (tleap-based)
 Purpose:   Build a full-length PARP1-DNA-Zn system (optionally + ligand) for
            OpenMM/GaMD: protein(ff19SB) + DNA(OL15) + Zn (ZAFF, unbonded Zn2+
            model) + ligand(GAFF2/AM1-BCC) + TIP3P water + Na+/Cl- ions.
-Author:    Tao Zhu (tjogzt@gmail.com)
 Created:   2026-09-15
 Inputs:    --receptor PDB of the PARP1-DNA-Zn complex (chain A protein, B/C DNA)
            --ligand   docked ligand mol2 (omit with --apo for the APO system)

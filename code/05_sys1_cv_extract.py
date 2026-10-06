@@ -5,7 +5,6 @@ sys1 = CAT domain only (residues 1-345, UniProt 662-1011).
 CV: center-of-mass distance between HD (resid 1-119 CA) and ART (resid 120-345 CA).
 
 Purpose:  Extract the S1 HD-ART collective-variable series + DBE weights for the legacy-system S1 runs.
-Author:   Tao Zhu (tjogzt@gmail.com)
 Created:  2026-09-15 (header standardised 2026-10-05)
 Depends:  MDAnalysis, __future__, common.paths, numpy
 Run:      python3 code/05_sys1_cv_extract.py   (from the repository root)

@@ -6,7 +6,6 @@ Final production script: PARP1 structural panels with PIL text overlay.
 - Output: RGB PNG, 600 DPI, white background, publication-ready
 
 Purpose:  Render the Figure 1 structural panels (4DQY domain crops via PyMOL).
-Author:   Tao Zhu (tjogzt@gmail.com)
 Created:  2026-09-15 (header standardised 2026-10-05)
 Outputs:  results/pymol_{name}_low.pml
 Depends:  PIL

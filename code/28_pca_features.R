@@ -15,7 +15,6 @@
 #       (the main text no longer cites this paragraph); it is not asserted.
 #
 # Purpose:  PCA of the 24-dimensional PMF feature matrix (SI Figure S10).
-# Author:   Tao Zhu (tjogzt@gmail.com)
 # Created:  2026-09-16 (header standardised 2026-10-05)
 # Outputs:  data/analysis/pca_eigenvalues.csv ; data/analysis/pca_projections.csv ; figures/pdf/Fig_PCA_Features.pdf
 # Depends:  data.table, ggplot2
