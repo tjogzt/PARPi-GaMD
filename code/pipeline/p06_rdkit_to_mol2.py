@@ -58,8 +58,11 @@ def ATOMTYPE_MAP(sym, atom):
 
 
 if __name__ == '__main__':
-    # The AZD5305/veliparib docked SDFs lack hydrogens (older docking); run
-    # code/47_add_hydrogens_to_pose.py first to produce _bestH.sdf
+    # The AZD5305/veliparib docked SDFs lack hydrogens (older docking). Their
+    # _bestH.sdf are the protonated poses from the docking exercise
+    # (docking/results_system2/, 56/34 atoms); 47_add_hydrogens_to_pose.py
+    # refuses valence-saturated no-op inputs — do not overwrite these two files
+    # with its output.
     for lig in ['fluzoparib', 'pamiparib', 'senaparib', 'AZD5305', 'veliparib']:
         sdf = f'data/01_modeling/docking_system2/{lig}_best.sdf'
         sdf_h = f'data/01_modeling/docking_system2/{lig}_bestH.sdf'

@@ -3,10 +3,15 @@
 Add hydrogens to a docking pose (RDKit AddHs addCoords=True, heavy atoms untouched)
 
 Purpose:  Add hydrogens to a docking pose (RDKit AddHs, addCoords=True; heavy atoms untouched).
+          Refuses no-op (valence-saturated heavy-atom) inputs instead of silently
+          writing an H-less _bestH.sdf; those poses' protonated originals live in
+          docking/results_system2/ (AZD5305_bestH.sdf, veliparib_bestH.sdf).
 Created:  2026-09-15 (header standardised 2026-10-05)
 Depends:  rdkit
 Run:      python3 code/47_add_hydrogens_to_pose.py   (from the repository root)
 """
+import sys
+
 from rdkit import Chem
 
 for lig in ['AZD5305', 'veliparib']:
@@ -16,6 +21,12 @@ for lig in ['AZD5305', 'veliparib']:
     conf = mol.GetConformer()
     heavy_xyz = {a.GetIdx(): list(conf.GetAtomPosition(a.GetIdx())) for a in mol.GetAtoms() if a.GetAtomicNum() > 1}
     mol_h = Chem.AddHs(mol, addCoords=True)
+    n_added = mol_h.GetNumAtoms() - mol.GetNumAtoms()
+    if n_added == 0:
+        print(f'{lig}: AddHs added 0 hydrogens — pose valences are already saturated '
+              f'(unprotonated heavy-atom pose). Refusing to overwrite _bestH.sdf; '
+              f'use the protonated pose from the docking results instead.')
+        sys.exit(1)
     # verify heavy atoms did not move
     conf2 = mol_h.GetConformer()
     moved = 0

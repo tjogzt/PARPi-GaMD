@@ -11,13 +11,15 @@ Created:   2026-09-15
 Inputs:    <runs_dir>/sys2_<drug>/{build/<drug>_best.prmtop, gamd_out/output.dcd,
            gamd_out/gamd.log}
 Outputs:   analysis_CV1.dat / analysis_CV2.dat / analysis_weights.dat (per system)
+           + analysis_weights_dfw.dat (log col 6 legacy archive consumed by
+             s05/41/44)
 Depends:   mdtraj, numpy
 Run:       python3 code/pipeline/p07_extract_s2_cv.py <runs_dir> <drug> [<drug> ...]
 """
 import mdtraj as md
 import numpy as np
 
-beta = 1.0 / 0.596  # 300 K
+beta = 1.677571  # 1/(0.001987 kcal/mol/K * 300 K) as rounded in the archived weight archives
 
 def main(runs_dir, drug, prod_step=6100000, prod_frames=None):
     base = f'{runs_dir}/sys2_{drug}'
@@ -48,6 +50,7 @@ def main(runs_dir, drug, prod_step=6100000, prod_frames=None):
 
     log = np.loadtxt(logpath)
     steps, mode, dbe = log[:, 1], log[:, 0], log[:, 7]
+    w6 = log[:, 5]  # legacy dfw weight variable (consumed by s05/41/44)
     n = min(len(cv1), len(log))
     prod = (steps[:n] >= prod_step) & (mode[:n] == 1)
     if prod_frames:
@@ -56,10 +59,13 @@ def main(runs_dir, drug, prod_step=6100000, prod_frames=None):
     assert prod.sum() > 200, f'too few production frames: {prod.sum()}'
 
     cv1p, cv2p, dbep = cv1[:n][prod], cv2[:n][prod], dbe[:n][prod]
+    w6p = w6[:n][prod]
     np.savetxt(f'{base}/analysis_CV1.dat', cv1p, fmt='%.4f')
     np.savetxt(f'{base}/analysis_CV2.dat', cv2p, fmt='%.4f')
     np.savetxt(f'{base}/analysis_weights.dat',
                np.column_stack([dbep * beta, np.zeros(len(dbep)), dbep]), fmt='%.4f')
+    np.savetxt(f'{base}/analysis_weights_dfw.dat',
+               np.column_stack([w6p * beta, np.zeros(len(w6p)), w6p]), fmt='%.6f')
     print(f'[{drug}] saved: CV1={cv1p.mean():.2f}±{cv1p.std():.2f} '
           f'CV2={cv2p.mean():.2f}±{cv2p.std():.2f} DBE={dbep.mean():.2f}±{dbep.std():.2f}', flush=True)
 

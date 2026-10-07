@@ -17,7 +17,7 @@ cross-correlations (DCCM), PCA landscapes, and replicate reproducibility.
 | `data/` | The archived data layer: `01_curated/` (literature/curated inputs), `analysis/` (analysis inputs: CV series, PMF curves, derived tables), plus replicate, per-frame and weight archives |
 | `figures/` | The 27 in-manuscript figures: `pdf/` (vector) + `png/` (150-dpi previews) |
 | `scripts/` | Build chain, numbered `sNN_` (`s01`–`s10`) + `rebuild_all.sh`: seed dataset, DBE reweighting chain, metadata, validation |
-| `tools/` | Bundled PyReweighting tools |
+| `tools/` | Bundled tools: PyReweighting + the vendored GaMD engine (`gamd-openmm/`; provenance in `tools/gamd-openmm/VENDOR_INFO.md`) |
 | `docs/` | `rename_log.tsv` (full old→new name mapping), `standardisation_report.md` |
 | `results/` | Regenerable working outputs (not tracked; created on demand) |
 
@@ -50,6 +50,7 @@ Amber (GaMD), MDAnalysis, PyReweighting, R/ggplot2.
 - R ≥ 4.0 with the packages listed in `requirements.txt` (R section)
 - AmberTools (cpptraj) for H-bond analysis (`CPPTRAJ` env var or PATH)
 - PyReweighting (bundled under `tools/PyReweighting/`)
+- GaMD engine: gamd-openmm (bundled under `tools/gamd-openmm/`; run via `PYTHONPATH` or `pip install`; MIT)
 - ~1 TB storage for the raw trajectories (not distributed in this repository)
 
 ## 4. Installation
