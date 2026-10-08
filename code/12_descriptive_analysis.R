@@ -161,8 +161,6 @@ p_ratio <- ggplot(ratio_df, aes(x = well_depth_S2, y = well_depth_S1, label = li
                                  "Olaparib" = "#E41A1C", "Talazoparib" = "#FF7F00",
                                  "Veliparib" = "#377EB8",
                                  "Niraparib" = "#4DAF4A", "Rucaparib" = "#984EA3")) +
-  annotate("text", x = 29, y = 85, label = "DNA-free amplifies\ntrapping differences",
-           size = 3.0, color = "grey40", hjust = 0) +
   labs(x = "S2 DNA-bound Well Depth (kcal/mol)", 
        y = "S1 CAT-only Well Depth (kcal/mol)") +
   theme_7pt + theme(legend.position = "none",

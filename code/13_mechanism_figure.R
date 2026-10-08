@@ -197,7 +197,7 @@ p_c <- ggplot(combined, aes(x = wd_ratio, y = wd_S1, color = label, shape = type
   geom_vline(xintercept = 1, linetype = "dashed", color = "grey50", linewidth = 0.3) +
   labs(x = "S1/S2 Well Depth Ratio (Allosteric Amplification)",
        y = "S1 Well Depth (kcal/mol)",
-       title = "C  Two-Dimensional Allosteric Mechanism Map") +
+       title = "C  AAI versus S1 span") +
   theme_f2 +
   theme(legend.position = "bottom", legend.title = element_blank(),
         legend.box = "vertical") +
@@ -211,7 +211,7 @@ p_d <- ggplot(extreme_df, aes(x = RC, y = PMF_norm, color = label)) +
   geom_line(linewidth = 0.6) +
   scale_color_manual(values = c("APO" = "grey40", "Talazoparib" = "#FF7F00", "Veliparib" = "#377EB8")) +
   labs(x = "HD–ART Distance (Å)", y = "Free Energy (kcal/mol)",
-       title = "D  Same CAT Pocket,\nOpposite Allosteric Fate") +
+       title = "D  Endpoint contrast of two S1 profiles") +
   theme_f2 +
   theme(legend.position = "bottom", legend.title = element_blank())
 
