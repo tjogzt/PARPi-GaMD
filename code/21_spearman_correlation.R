@@ -135,7 +135,7 @@ if (length(grep("^--file=", args_h))) {
   source("common/helpers.R")
 }
 
-df$label <- c(talazoparib = "Talazoparib", niraparib = "Niraparib\n(>1x, rank-only)",
+df$label <- c(talazoparib = "Talazoparib", niraparib = "Niraparib",
               olaparib = "Olaparib", rucaparib = "Rucaparib",
               veliparib = "Veliparib")[df$inhibitor]
 df$class <- ifelse(df$inhibitor %in% c("talazoparib", "olaparib"), "Type II", "Type III")
@@ -167,7 +167,7 @@ ann_b <- sprintf(
   "S1:   %.2f (p %.3f) / %.2f (p %.3f) / %.2f (p %.3f)\nAAI: %.2f / %.2f / %.2f (all n.s.)\n(neutral / nira +1 / ruca +1)",
   t2n$rho, t2n$p, t2$rho, t2$p, t2r$rho, t2r$p, t3n$rho, t3$rho, t3r$rho)
 
-p_a <- ggplot(plot_df, aes(x = trap_plot, y = s2_cv1, color = class)) +
+p_a <- ggplot(plot_df, aes(x = trap_rank, y = s2_cv1, color = class)) +
   geom_point(aes(shape = state_f), size = 3.0) +
   scale_shape_manual(values = c("neutral" = 16, "protonated" = 1), guide = "none") +
   geom_text_repel(aes(label = ifelse(is_nira & state == "protonated", "Niraparib-\nprotonated",
@@ -177,11 +177,11 @@ p_a <- ggplot(plot_df, aes(x = trap_plot, y = s2_cv1, color = class)) +
   geom_segment(data = data.frame(x = 2, y1 = s2_cv1_neu["niraparib"], y2 = s2_cv1_c3["niraparib"]),
                aes(x = x, y = y1, xend = x, yend = y2),
                inherit.aes = FALSE, linetype = "dashed", linewidth = 0.3) +
-  scale_x_log10(breaks = c(0.01, 0.1, 1, 10, 100),
-                labels = c("0.01", "0.1", "1", "10", "100")) +
+  scale_x_continuous(breaks = c(1, 2.5, 4, 5),
+                labels = c("1", "2.5", "4", "5")) +
   scale_color_manual(values = c("Type II" = "#E41A1C", "Type III" = "#377EB8")) +
   coord_cartesian(ylim = c(50, 66)) +
-  labs(x = "Trapping Potency (x Olaparib)",
+  labs(x = "Trapping rank (1 = weakest, 5 = most potent)",
        y = "S2 CV1 Protein–DNA Span (kcal/mol)",
        title = "A  S2 Protein–DNA Span vs Trapping (two-state)",
        subtitle = sprintf("neutral: %.2f (p %.3f)\nniraparib-protonated: %.2f (p %.3f)\nrucaparib-protonated: %.2f (p %.3f)",
@@ -191,7 +191,7 @@ p_a <- ggplot(plot_df, aes(x = trap_plot, y = s2_cv1, color = class)) +
                     plot.subtitle = element_text(size = 8, hjust = 0)) +
   theme_open
 
-p_b <- ggplot(plot_df, aes(x = aai, y = trap_plot, color = class)) +
+p_b <- ggplot(plot_df, aes(x = aai, y = trap_rank, color = class)) +
   geom_point(aes(shape = state_f), size = 3.0) +
   scale_shape_manual(values = c("neutral" = 16, "protonated" = 1), guide = "none") +
   geom_text_repel(aes(label = ifelse(is_nira & state == "protonated", "Niraparib-\nprotonated",
@@ -202,12 +202,12 @@ p_b <- ggplot(plot_df, aes(x = aai, y = trap_plot, color = class)) +
                                  x2 = s1_pro["niraparib"] / s2_cv2_pro["niraparib"], y = 2),
                aes(x = x1, y = y, xend = x2, yend = y),
                inherit.aes = FALSE, linetype = "dashed", linewidth = 0.3) +
-  scale_y_log10(breaks = c(0.01, 0.1, 1, 10, 100),
-                labels = c("0.01", "0.1", "1", "10", "100")) +
+  scale_y_continuous(breaks = c(1, 2.5, 4, 5),
+                labels = c("1", "2.5", "4", "5")) +
   scale_color_manual(values = c("Type II" = "#E41A1C", "Type III" = "#377EB8")) +
   xlim(0.7, 1.3) +
   labs(x = "Allosteric Amplification Index (S1/S2)",
-       y = "Trapping Potency (x Olaparib)",
+       y = "Trapping rank (1 = weakest, 5 = most potent)",
        title = "B  AAI vs Trapping (sensitivity, two-state)",
        subtitle = sprintf("neutral: S1 %.2f | AAI %+.2f (n.s.)\nniraparib-protonated: S1 %.2f | AAI %+.2f (n.s.)\nrucaparib-protonated: S1 %.2f | AAI %+.2f (n.s.)",
                           t2n$rho, t3n$rho, t2$rho, t3$rho, t2r$rho, t3r$rho),

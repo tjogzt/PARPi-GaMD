@@ -24,7 +24,7 @@ vals$metric <- factor(vals$metric,
   levels=rev(c("S2_CV1_C3","S2_CV2_C3","S1_C3","S1_C3_tab","AAI","AAI_tab")))
 p <- ggplot(vals, aes(est, metric, fill=rho)) +
   geom_tile(color="white", size=0.8) +
-  geom_text(aes(label=sprintf("%+.2f", rho)), size=4.5, family="Arial") +
+  geom_text(aes(label=ifelse(is.na(rho), "n.d.", sprintf("%+.2f", rho))), size=4.5, family="Arial") +
   scale_fill_gradient2(low="#C23531", mid="#F7F3EE", high="#177CB0",
                        midpoint=0, limits=c(-1,1), name="Spearman \u03c1") +
   scale_x_discrete(labels=c(mm="min\u2013max", q90="5\u201395%", trunc95="95% trunc",
