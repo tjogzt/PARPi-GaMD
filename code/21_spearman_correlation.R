@@ -180,7 +180,7 @@ p_a <- ggplot(plot_df, aes(x = trap_rank, y = s2_cv1, color = class)) +
   scale_x_continuous(breaks = c(1, 2.5, 4, 5),
                 labels = c("1", "2.5", "4", "5")) +
   scale_color_manual(values = c("Type II" = "#E41A1C", "Type III" = "#377EB8")) +
-  coord_cartesian(ylim = c(50, 66)) +
+  coord_cartesian(ylim = c(19, 53)) +
   labs(x = "Trapping rank (1 = weakest, 5 = most potent)",
        y = "S2 CV1 Protein–DNA Span (kcal/mol)",
        title = "A  S2 Protein–DNA Span vs Trapping (two-state)",
@@ -205,7 +205,7 @@ p_b <- ggplot(plot_df, aes(x = aai, y = trap_rank, color = class)) +
   scale_y_continuous(breaks = c(1, 2.5, 4, 5),
                 labels = c("1", "2.5", "4", "5")) +
   scale_color_manual(values = c("Type II" = "#E41A1C", "Type III" = "#377EB8")) +
-  xlim(0.7, 1.3) +
+  xlim(0.4, 3.8) +
   labs(x = "Allosteric Amplification Index (S1/S2)",
        y = "Trapping rank (1 = weakest, 5 = most potent)",
        title = "B  AAI vs Trapping (sensitivity, two-state)",
