@@ -4,7 +4,7 @@
 suppressMessages({library(ggplot2); library(patchwork); library(data.table)})
 
 source("code/33-d4_diagnostics_figures.R")
-wp <- p + labs(title = "A  Window noise vs between-system signal")
+wp <- p + labs(title = "A  Window noise vs between-system separations")
 wq <- q + labs(title = "B  Span SD vs window length")
 
 fig4 <- (wp | wq) + plot_layout(widths = c(1, 1))

@@ -1,6 +1,6 @@
-inhibitor,trap_potency,s1_neutral,s1_nira_prot,s1_ruca_prot,s2cv1_neutral,s2cv1_nira_prot,s2cv1_ruca_prot,s2cv2_neutral,s2cv2_nira_prot,s2cv2_ruca_prot
-talazoparib,100,42.2,42.2,42.2,22.9,22.9,22.9,36.3,36.3,36.3
-niraparib,2,50.8,59.2,50.8,26.9,34.1,26.9,21.9,19.2,21.9
-olaparib,1,55.4,55.4,55.4,28.8,28.8,28.8,16.6,16.6,16.6
-rucaparib,1,27.6,27.6,27.7,28.7,28.7,48.7,20.1,20.1,45.1
-veliparib,0.1,40.3,40.3,40.3,28.1,28.1,28.1,41.2,41.2,41.2
+inhibitor,trap_potency,s1_neutral,s1_nira_prot,s1_ruca_prot,s2cv1_neutral,s2cv1_nira_prot,s2cv1_ruca_prot,s2cv2_neutral,s2cv2_nira_prot,s2cv2_ruca_prot,s1_veli_prot,s2cv1_veli_prot,s2cv2_veli_prot
+talazoparib,100,42.2,42.2,42.2,22.9,22.9,22.9,36.3,36.3,36.3,42.2,22.9,36.3
+niraparib,2,50.8,59.2,50.8,26.9,34.1,26.9,21.9,19.2,21.9,50.8,26.9,21.9
+olaparib,1,55.4,55.4,55.4,28.8,28.8,28.8,16.6,16.6,16.6,55.4,28.8,16.6
+rucaparib,1,27.6,27.6,27.7,28.7,28.7,48.7,20.1,20.1,45.1,27.6,28.7,20.1
+veliparib,0.1,40.3,40.3,40.3,28.1,28.1,28.1,41.2,41.2,41.2,23.7,25.5,16.8

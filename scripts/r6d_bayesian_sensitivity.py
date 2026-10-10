@@ -28,6 +28,11 @@ PANELS = {
     "neutral":   {"S2CV1": {}, "S1": {}, "AAI": {}},
     "nira_prot": {"S2CV1": {"niraparib": 34.1}, "S1": {"niraparib": 59.2}, "AAI": {"niraparib": 3.08}},
     "ruca_prot": {"S2CV1": {"rucaparib": 48.7}, "S1": {"rucaparib": 27.7}, "AAI": {"rucaparib": 0.61}},
+    # R9: audited-dominant panel — all three corrected ligands protonated
+    # (niraparib + rucaparib + veliparib(+1), 2026-10-11)
+    "combined":  {"S2CV1": {"niraparib": 34.1, "rucaparib": 48.7, "veliparib": 25.5},
+                  "S1": {"niraparib": 59.2, "rucaparib": 27.7, "veliparib": 23.7},
+                  "AAI": {"niraparib": 3.08, "rucaparib": 0.61, "veliparib": 1.41}},
 }
 # uncertainty grids: spans absolute (kcal/mol); AAI relative fraction of value
 S_GRID = {"S2CV1": [6.0, 12.0, 18.0], "S1": [6.0, 12.0, 18.0], "AAI": [0.15, 0.30, 0.45]}
@@ -70,7 +75,8 @@ rows = []
 print("── deterministic (s=0) checks vs r6c grid ──")
 EXPECT = {("neutral", "S2CV1"): -0.667, ("nira_prot", "S2CV1"): -0.051, ("ruca_prot", "S2CV1"): -0.667,
           ("neutral", "S1"): +0.308, ("nira_prot", "S1"): +0.462, ("ruca_prot", "S1"): +0.308,
-          ("neutral", "AAI"): +0.205, ("nira_prot", "AAI"): +0.205, ("ruca_prot", "AAI"): +0.308}
+          ("neutral", "AAI"): +0.205, ("nira_prot", "AAI"): +0.205, ("ruca_prot", "AAI"): +0.308,
+          ("combined", "S2CV1"): -0.205, ("combined", "S1"): +0.616, ("combined", "AAI"): -0.103}
 for panel in PANELS:
     for metric in ("S2CV1", "S1", "AAI"):
         v = panel_vals(metric, panel)

@@ -40,6 +40,18 @@ s2_cv1_neu  <- getc("s2cv1_neutral")      # S2 CV1 (protein–DNA), neutral
 s2_cv1_c3   <- getc("s2cv1_nira_prot")    # niraparib-protonated panel
 s2_cv1_ruca <- getc("s2cv1_ruca_prot")    # rucaparib-protonated panel
 aai_ruca    <- (s1_ruca / s2_cv2_ruca)
+s2_cv1_veli <- getc("s2cv1_veli_prot")    # veliparib-protonated panel (R9)
+s1_veli     <- getc("s1_veli_prot")
+s2_cv2_veli <- getc("s2cv2_veli_prot")
+# Audited-dominant panel (R9): all three audit-corrected ligands protonated
+# (niraparib, rucaparib, veliparib); the others keep their current state.
+aud_s2cv1 <- s2_cv1_neu; aud_s2cv1[c("niraparib", "rucaparib", "veliparib")] <-
+  c(s2_cv1_c3["niraparib"], s2_cv1_ruca["rucaparib"], s2_cv1_veli["veliparib"])
+aud_s1 <- s1_neu; aud_s1[c("niraparib", "rucaparib", "veliparib")] <-
+  c(s1_pro["niraparib"], s1_ruca["rucaparib"], s1_veli["veliparib"])
+aud_s2cv2 <- s2_cv2_c3; aud_s2cv2[c("niraparib", "rucaparib", "veliparib")] <-
+  c(s2_cv2_pro["niraparib"], s2_cv2_ruca["rucaparib"], s2_cv2_veli["veliparib"])
+aud_aai   <- aud_s1 / aud_s2cv2
 
 # --- Assert the protonated panels against the primary DBE pipeline tables ----
 chk1 <- setNames(round(s2_dbe$C3[s2_dbe$metric == "CV1"], 1), s2_dbe$ligand[s2_dbe$metric == "CV1"])
@@ -49,6 +61,11 @@ s1u_c3 <- setNames(round(s1u$C3, 1), tolower(s1u$ligand))
 stopifnot(all(s2_cv1_c3[s5] == chk1[s5]),
           all(s2_cv2_pro[s5] == chk2[s5]),
           all(s1_neu[s5]    == s1u_c3[s5]))
+# veliparib(+1) panel (R9): asserted against the source-tagged rows
+chk_v <- s2_dbe[s2_dbe$source == "veli_prot_dbe", ]
+stopifnot(nrow(chk_v) > 0,
+          abs(s2_cv1_veli["veliparib"] - chk_v$C3[chk_v$metric == "CV1"]) < 0.05,
+          abs(s2_cv2_veli["veliparib"] - chk_v$C3[chk_v$metric == "CV2"]) < 0.05)
 
 df <- data.frame(
   inhibitor = trapping$inhibitor,
@@ -106,9 +123,14 @@ t3r <- spearman_exact(aai_ruca[df$inhibitor], df$trap_rank)
 t1n <- spearman_exact(df$s2_neutral, df$trap_rank)  # neutral panel
 t2n <- spearman_exact(df$wd_neutral, df$trap_rank)
 t3n <- spearman_exact(df$aai_neutral, df$trap_rank)
+t1a <- spearman_exact(aud_s2cv1[df$inhibitor], df$trap_rank)  # audited-dominant (R9)
+t2a <- spearman_exact(aud_s1[df$inhibitor], df$trap_rank)
+t3a <- spearman_exact(aud_aai[df$inhibitor], df$trap_rank)
 
 cat(sprintf("\nProtonated: S2 rho=%.3f p=%.3f | S1 rho=%.3f p=%.3f | AAI rho=%+.3f p=%.3f\n",
             t1$rho, t1$p, t2$rho, t2$p, t3$rho, t3$p))
+cat(sprintf("Audited:    S2 rho=%.3f p=%.3f | S1 rho=%.3f p=%.3f | AAI rho=%+.3f p=%.3f\n",
+            t1a$rho, t1a$p, t2a$rho, t2a$p, t3a$rho, t3a$p))
 cat(sprintf("Neutral:    S2 rho=%.3f p=%.3f | S1 rho=%.3f p=%.3f | AAI rho=%+.3f p=%.3f\n",
             t1n$rho, t1n$p, t2n$rho, t2n$p, t3n$rho, t3n$p))
 cat(sprintf("Rucap-prot: S2 rho=%.3f p=%.3f | S1 rho=%.3f p=%.3f | AAI rho=%+.3f p=%.3f\n",
@@ -121,6 +143,11 @@ loo <- sapply(seq_len(nrow(df)), function(i) {
 cat(sprintf("LOO (protonated): %+.3f to %+.3f; all negative: %s\n",
             min(loo), max(loo), all(loo < 0)))
 print(data.frame(excluded = df$inhibitor, rho_loo = round(loo, 3)), row.names = FALSE)
+loo_a <- sapply(seq_len(nrow(df)), function(i) {
+  cor(aud_s2cv1[df$inhibitor][-i], df$trap_rank[-i], method = "spearman")
+})
+cat(sprintf("LOO (audited): %+.3f to %+.3f\n", min(loo_a), max(loo_a)))
+print(data.frame(excluded = df$inhibitor, rho_loo_aud = round(loo_a, 3)), row.names = FALSE)
 
 # --- Figure --------------------------------------------------------------------
 library(ggplot2)
@@ -156,25 +183,39 @@ ruca_prot$s2_cv1 <- s2_cv1_ruca["rucaparib"]; ruca_prot$well_depth <- s1_ruca["r
 ruca_prot$aai <- s1_ruca["rucaparib"] / s2_cv2_ruca["rucaparib"]
 plot_df <- plot_df[plot_df$inhibitor != "rucaparib", ]
 plot_df <- rbind(plot_df, ruca_neut, ruca_prot)
+# veliparib dual state (protonated re-simulation, R9)
+veli_neut <- df[df$inhibitor == "veliparib", ]; veli_neut$state <- "neutral"
+veli_prot <- veli_neut; veli_prot$state <- "protonated"
+veli_prot$s2_cv1 <- s2_cv1_veli["veliparib"]; veli_prot$well_depth <- s1_veli["veliparib"]
+veli_prot$aai <- s1_veli["veliparib"] / s2_cv2_veli["veliparib"]
+veli_neut$s2_cv1 <- s2_cv1_neu["veliparib"]; veli_neut$well_depth <- s1_neu["veliparib"]
+veli_neut$aai <- s1_neu["veliparib"] / s2_cv2_c3["veliparib"]
+plot_df <- plot_df[plot_df$inhibitor != "veliparib", ]
+plot_df <- rbind(plot_df, veli_neut, veli_prot)
+plot_df$is_veli <- plot_df$inhibitor == "veliparib"
 plot_df$is_nira <- plot_df$inhibitor == "niraparib"
 plot_df$is_ruca <- plot_df$inhibitor == "rucaparib"
 plot_df$state_f <- factor(plot_df$state, levels = c("neutral", "protonated"))
 
 ann_a <- sprintf(
-  "original:    rho = %.2f, p = %.3f\nnira +1:  rho = %.2f, p = %.3f\nruca +1:  rho = %.2f, p = %.3f\n(exact permutation, n = 5)",
-  t1n$rho, t1n$p, t1$rho, t1$p, t1r$rho, t1r$p)
+  "original:    rho = %.2f, p = %.3f\nnira +1:  rho = %.2f, p = %.3f\nruca +1:  rho = %.2f, p = %.3f\nall three +1: rho = %.2f, p = %.3f\n(exact permutation, n = 5)",
+  t1n$rho, t1n$p, t1$rho, t1$p, t1r$rho, t1r$p, t1a$rho, t1a$p)
 ann_b <- sprintf(
-  "S1:   %.2f (p %.3f) / %.2f (p %.3f) / %.2f (p %.3f)\nAAI: %.2f / %.2f / %.2f (all n.s.)\n(neutral / nira +1 / ruca +1)",
-  t2n$rho, t2n$p, t2$rho, t2$p, t2r$rho, t2r$p, t3n$rho, t3$rho, t3r$rho)
+  "S1:   %.2f (p %.3f) / %.2f (p %.3f) / %.2f (p %.3f) / %.2f (p %.3f)\nAAI: %.2f / %.2f / %.2f / %.2f (all n.s.)\n(neutral / nira +1 / ruca +1 / all three +1)",
+  t2n$rho, t2n$p, t2$rho, t2$p, t2r$rho, t2r$p, t2a$rho, t2a$p, t3n$rho, t3$rho, t3r$rho, t3a$rho)
 
 p_a <- ggplot(plot_df, aes(x = trap_rank, y = s2_cv1, color = class)) +
   geom_point(aes(shape = state_f), size = 3.0) +
   scale_shape_manual(values = c("neutral" = 16, "protonated" = 1), guide = "none") +
   geom_text_repel(aes(label = ifelse(is_nira & state == "protonated", "Niraparib-\nprotonated",
-               ifelse(is_ruca & state == "protonated", "Rucaparib-\nprotonated", label))),
+               ifelse(is_ruca & state == "protonated", "Rucaparib-\nprotonated",
+               ifelse(is_veli & state == "protonated", "Veliparib-\nprotonated", label)))),
                   size = 2.9, max.overlaps = Inf, seed = 49,
                   min.segment.length = 0.3, box.padding = 0.35, force = 2, family = "Arial") +
   geom_segment(data = data.frame(x = 2, y1 = s2_cv1_neu["niraparib"], y2 = s2_cv1_c3["niraparib"]),
+               aes(x = x, y = y1, xend = x, yend = y2),
+               inherit.aes = FALSE, linetype = "dashed", linewidth = 0.3) +
+  geom_segment(data = data.frame(x = 1, y1 = s2_cv1_neu["veliparib"], y2 = s2_cv1_veli["veliparib"]),
                aes(x = x, y = y1, xend = x, yend = y2),
                inherit.aes = FALSE, linetype = "dashed", linewidth = 0.3) +
   scale_x_continuous(breaks = c(1, 2.5, 4, 5),
@@ -183,9 +224,9 @@ p_a <- ggplot(plot_df, aes(x = trap_rank, y = s2_cv1, color = class)) +
   coord_cartesian(ylim = c(19, 53)) +
   labs(x = "Trapping rank (1 = weakest, 5 = most potent)",
        y = "S2 CV1 Protein–DNA Span (kcal/mol)",
-       title = "A  S2 Protein–DNA Span vs Trapping (two-state)",
-       subtitle = sprintf("neutral: %.2f (p %.3f)\nniraparib-protonated: %.2f (p %.3f)\nrucaparib-protonated: %.2f (p %.3f)",
-                          t1n$rho, t1n$p, t1$rho, t1$p, t1r$rho, t1r$p),
+       title = "A  S2 CV1 Span vs Trapping (state panels)",
+       subtitle = sprintf("neutral: %.2f (p %.3f)\nniraparib-protonated: %.2f (p %.3f)\nrucaparib-protonated: %.2f (p %.3f)\naudited-dominant (all three): %.2f (p %.3f)",
+                          t1n$rho, t1n$p, t1$rho, t1$p, t1r$rho, t1r$p, t1a$rho, t1a$p),
        color = NULL) +
   theme_7pt + theme(legend.position = c(0.87, 0.87),
                     plot.subtitle = element_text(size = 8, hjust = 0)) +
@@ -202,15 +243,19 @@ p_b <- ggplot(plot_df, aes(x = aai, y = trap_rank, color = class)) +
                                  x2 = s1_pro["niraparib"] / s2_cv2_pro["niraparib"], y = 2),
                aes(x = x1, y = y, xend = x2, yend = y),
                inherit.aes = FALSE, linetype = "dashed", linewidth = 0.3) +
+  geom_segment(data = data.frame(x1 = s1_neu["veliparib"] / s2_cv2_c3["veliparib"],
+                                 x2 = s1_veli["veliparib"] / s2_cv2_veli["veliparib"], y = 1),
+               aes(x = x1, y = y, xend = x2, yend = y),
+               inherit.aes = FALSE, linetype = "dashed", linewidth = 0.3) +
   scale_y_continuous(breaks = c(1, 2.5, 4, 5),
                 labels = c("1", "2.5", "4", "5")) +
   scale_color_manual(values = c("Type II" = "#E41A1C", "Type III" = "#377EB8")) +
   xlim(0.4, 3.8) +
   labs(x = "Allosteric Amplification Index (S1/S2)",
        y = "Trapping rank (1 = weakest, 5 = most potent)",
-       title = "B  AAI vs Trapping (sensitivity, two-state)",
-       subtitle = sprintf("neutral: S1 %.2f | AAI %+.2f (n.s.)\nniraparib-protonated: S1 %.2f | AAI %+.2f (n.s.)\nrucaparib-protonated: S1 %.2f | AAI %+.2f (n.s.)",
-                          t2n$rho, t3n$rho, t2$rho, t3$rho, t2r$rho, t3r$rho),
+       title = "B  AAI vs Trapping (sensitivity, state panels)",
+       subtitle = sprintf("neutral: S1 %.2f | AAI %+.2f (n.s.)\nniraparib-protonated: S1 %.2f | AAI %+.2f (n.s.)\nrucaparib-protonated: S1 %.2f | AAI %+.2f (n.s.)\naudited-dominant: S1 %.2f | AAI %+.2f (n.s.)",
+                          t2n$rho, t3n$rho, t2$rho, t3$rho, t2r$rho, t3r$rho, t2a$rho, t3a$rho),
        color = NULL) +
   theme_7pt + theme(legend.position = "none",
                     plot.subtitle = element_text(size = 8, hjust = 0)) +
@@ -229,6 +274,12 @@ out <- data.frame(
   s2_cv1_prot = df$s2_cv1, s2_cv1_neutral = df$s2_neutral,
   s1_prot     = df$well_depth, s1_neutral = df$wd_neutral,
   aai_prot    = df$aai, aai_neutral = df$aai_neutral,
+  s2_cv1_veli_prot = s2_cv1_veli[df$inhibitor],
+  s1_veli_prot     = s1_veli[df$inhibitor],
+  aai_veli_prot    = (s1_veli / s2_cv2_veli)[df$inhibitor],
+  s2_cv1_audited   = aud_s2cv1[df$inhibitor],
+  s1_audited       = aud_s1[df$inhibitor],
+  aai_audited      = aud_aai[df$inhibitor],
   stringsAsFactors = FALSE
 )
 write.csv(out, "data/analysis/association_input_table.csv", row.names = FALSE)

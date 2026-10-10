@@ -29,3 +29,6 @@ olaparib,AAI,55.4,16.6,3.337349,rerun_exact_dbe
 rucaparib,CV1,6.8,11.3,28.7,rerun_exact_dbe
 rucaparib,CV2,2.4,7.7,20.1,rerun_exact_dbe
 rucaparib,AAI,27.6,20.1,1.373134,rerun_exact_dbe
+veliparib,CV1,4.2,11.9,25.5,veli_prot_dbe
+veliparib,CV2,3.3,9.5,16.8,veli_prot_dbe
+veliparib,AAI,23.7,16.8,1.410714,veli_prot_dbe
