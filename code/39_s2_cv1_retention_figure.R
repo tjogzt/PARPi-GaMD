@@ -6,8 +6,7 @@
 #     (niraparib file restored 2026-10-05 from archived neutral per-frame data —
 #      validated to the official span 56.64927809233839)
 # (B) CV1 sampled-range spans (C1 vs C3) for the seven original-panel systems
-#     Values: data/01_curated/s2cv1_spans_table_s5.csv (Table S5 convention).
-#     Palette: common/palette_si.csv (single source).
+#     Values transcribed from Table S5 (final log-DBE convention).
 #
 # 2026-10-05 fix: the former fread()-based reader silently parsed the xvg files
 # into all-NA values, so ggplot dropped every point and rendered an empty frame.
@@ -16,10 +15,13 @@
 # without an error.
 # =============================================================================
 #
-# Purpose:  Render Fig_S2_CV1_Retention.pdf: S2 CV1 (protein–DNA) retention summary with the C1/C3 span panel.
+# Purpose:  Render Fig_S2_CV1_Retention: S2 CV1 (protein-DNA) retention summary with the
+#           C1/C3 sampled-range span panel (SI Figure S12).
 # Created:  2026-09-15 (header standardised 2026-10-05)
+# Inputs:   data/analysis/pmf-c3-sys2_<sys>_CV1_cv.dat.xvg ;
+#           data/01_curated/s2cv1_spans_table_s5.csv ; common/palette_si.csv
 # Outputs:  figures/pdf/Fig_S2_CV1_Retention.pdf
-# Depends:  ggplot2, patchwork
+# Depends:  ggplot2, patchwork, common/helpers.R
 # Run:      Rscript code/39_s2_cv1_retention_figure.R   (from the repository root)
 set.seed(49)
 suppressMessages({library(ggplot2); library(patchwork)})
@@ -27,12 +29,12 @@ suppressMessages({library(ggplot2); library(patchwork)})
 theme_set(theme_bw(base_size = 8, base_family = "Arial") +
   theme(panel.grid.minor = element_blank(),
         panel.grid.major = element_line(color = "grey92", linewidth = 0.2),
-        panel.border = element_blank(),                      # open frame:
-        axis.line = element_line(color = "black", linewidth = 0.5),  # left+bottom only
-        axis.text = element_text(size = 8, color = "black"),
-        axis.title = element_text(size = 8),
-        legend.text = element_text(size = 8),
-        legend.title = element_text(size = 8)))
+        # (2026-10-15) full-width layout: sizes tuned for the 178-mm canvas
+        # displayed at \textwidth in the SI; legend.text explicit (the former
+        # 0.8x-base default rendered at 6.4 pt, below the 8-pt hard rule).
+        axis.text = element_text(size = 9, color = "black"),
+        axis.title = element_text(size = 9),
+        legend.text = element_text(size = 9)))
 
 dir <- "data/analysis"
 sys_names <- c("APO", "talazoparib", "niraparib", "olaparib", "rucaparib", "veliparib", "AZD5305")
@@ -59,13 +61,12 @@ pmf_all$system <- factor(pmf_all$system, levels = sys_names)
 pA <- ggplot(pmf_all, aes(rc, pmf, color = system)) +
   geom_line(linewidth = 0.5) +
   scale_color_manual(values = cols, labels = short) +
-  labs(x = "CV1: Protein–DNA COM Distance (\u00C5)", y = "PMF (kcal/mol)",
+  labs(x = "CV1: protein\u2013DNA COM distance (\u00C5)", y = "PMF (kcal/mol)",
        title = "A  S2 CV1 PMF overlay (C3 cumulant)", color = NULL) +
-  theme(plot.title = element_text(hjust = 0, face = "bold", size = 9),
-        legend.key.size = unit(0.25, "cm"))
+  theme(plot.title = element_text(hjust = 0, face = "bold", size = 10),
+        legend.key.size = unit(0.35, "cm"))
 
 # ---- Panel B: CV1 sampled-range spans (C1 vs C3), Table S5 values ----------
-# Values live in data/01_curated/s2cv1_spans_table_s5.csv (Table S5 convention).
 sp <- read.csv("data/01_curated/s2cv1_spans_table_s5.csv", stringsAsFactors = FALSE)
 bars <- rbind(
   data.frame(system = sp$label, order = "C1", span = sp$C1, stringsAsFactors = FALSE),
@@ -83,18 +84,18 @@ lbl <- bars[bars$order == "C3", ]
 pB <- ggplot(bars, aes(xpos, span)) +
   geom_col(aes(fill = fillc), width = 0.36) +
   geom_text(data = lbl, aes(x = xpos, y = span + 1.8, label = sprintf("%.1f", span)),
-            size = 2.9, vjust = 0) +
+            size = 3.0, vjust = 0) +
   scale_fill_identity() +
   scale_x_continuous(breaks = 1:7, labels = levels(bars$system)) +
-  coord_cartesian(ylim = c(0, 90)) +
+  coord_cartesian(ylim = c(0, 56)) +
   labs(x = NULL, y = "CV1 span (kcal/mol)",
        title = "B  CV1 sampled-range spans: near-uniform C1 (gray), larger C3 variation") +
-  theme(plot.title = element_text(hjust = 0, face = "bold", size = 9),
+  theme(plot.title = element_text(hjust = 0, face = "bold", size = 10),
         axis.text.x = element_text(angle = 30, hjust = 1))
 
 p <- pA / pB + plot_layout(heights = c(1.25, 1))
 cairo_pdf("figures/pdf/Fig_S2_CV1_Retention.pdf",
-          width = 149/25.4, height = 95.2/25.4, pointsize = 8)
+          width = 178/25.4, height = 114/25.4, pointsize = 9)
 print(p)
 invisible(dev.off())
 

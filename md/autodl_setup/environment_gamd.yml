@@ -1,0 +1,38 @@
+# GaMD/MD environment — AutoDL GPU instance (CUDA)
+# usage: mamba env create -f environment_gamd.yml  (one-shot; see README)
+# design: OpenMM (CUDA) as the main GaMD engine; AmberTools only for force-field/ligand parameterisation and tleap; open-source/commercially usable.
+name: gamd
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.10
+  # --- MD engine (CUDA) ---
+  - openmm>=8.1            # conda-forge ships cuda118/cuda12x builds; cuda-version pins 11.8 below
+  - cuda-version=11.8      # aligns with the AutoDL image (CUDA 11.8) + RTX 4090 (sm_89, native since 11.8); pulls cudatoolkit 11.8
+  # --- force fields / system building / ligand parameterisation ---
+  - ambertools>=23         # tleap, antechamber, parmchk2 (GAFF2), pdb4amber
+  - pdbfixer               # missing-atom/loop completion, hydrogen addition, water removal
+  - parmed                 # topology conversion amber<->openmm
+  - openff-toolkit         # OpenFF 2.x ligand force field (GAFF2 fallback)
+  - openff-interchange
+  - openmmforcefields      # SystemGenerator: protein (ff19SB) + ligand (GAFF2/OpenFF auto) + water in one step
+  - rdkit>=2024            # ligand handling
+  - openbabel              # format conversion / charges
+  # --- trajectory analysis ---
+  - mdanalysis>=2.7
+  - mdtraj
+  - numpy
+  - pandas
+  - scipy
+  # --- interpretable ML (Step 4) ---
+  - scikit-learn
+  - xgboost
+  - shap
+  - matplotlib
+  - seaborn
+  - jupyterlab
+  - pip
+  - pip:
+      - gamd                # MiaoLab gamd-openmm (GaMD on OpenMM); if the pip name differs install from git (see README)
+      - pyemma              # free energy / MSM (optional)

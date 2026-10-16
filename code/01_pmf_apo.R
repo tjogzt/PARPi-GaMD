@@ -1,10 +1,10 @@
 #!/usr/bin/env Rscript
-# 01-pmf_apo.R — Generate PMF plots for sys2_APO GaMD reweighting
+# 01_pmf_apo.R — Generate PMF plots for sys2_APO GaMD reweighting
 #
 # Purpose:  Regenerate the S2 APO control PMF panels (protein–DNA CV1 and HD–ART CV2) from the reweighted C3 curves.
 # Created:  2026-09-15 (header standardised 2026-10-05)
 # Inputs:   data/analysis/pmf-c3-sys2_APO_CV1_cv.dat.xvg ; data/analysis/pmf-c3-sys2_APO_CV2_cv.dat.xvg
-# Outputs:  figures/pdf/01-pmf_apo_hd_art.pdf ; figures/pdf/01-pmf_apo_prot_dna.pdf
+# Outputs:  figures/pdf/01_pmf_apo_hd_art.pdf ; figures/pdf/01_pmf_apo_prot_dna.pdf
 # Depends:  ggplot2
 # Run:      Rscript code/01_pmf_apo.R   (from the repository root)
 library(ggplot2)
@@ -57,12 +57,12 @@ p2 <- ggplot(pmf_cv2, aes(x = RC, y = PMF)) +
 # Save as PDF (SCI standard: cairo_pdf, 7pt)
 dir.create("figures/pdf", showWarnings = FALSE, recursive = TRUE)
 
-cairo_pdf("figures/pdf/01-pmf_apo_prot_dna.pdf", 
+cairo_pdf("figures/pdf/01_pmf_apo_prot_dna.pdf", 
           width = 3.5, height = 2.5, pointsize = 8)
 print(p1)
 dev.off()
 
-cairo_pdf("figures/pdf/01-pmf_apo_hd_art.pdf", 
+cairo_pdf("figures/pdf/01_pmf_apo_hd_art.pdf", 
           width = 3.5, height = 2.5, pointsize = 8)
 print(p2)
 dev.off()
@@ -71,7 +71,7 @@ dev.off()
 p_combined <- cowplot::plot_grid(p1, p2, labels = c("A", "B"), 
                                   label_size = 8, ncol = 2)
 
-cairo_pdf("figures/pdf/01-pmf_apo_combined.pdf", 
+cairo_pdf("figures/pdf/01_pmf_apo_combined.pdf", 
           width = 7, height = 3, pointsize = 8)
 print(p_combined)
 dev.off()

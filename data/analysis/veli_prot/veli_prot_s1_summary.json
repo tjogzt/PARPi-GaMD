@@ -1,0 +1,24 @@
+{
+  "system": "sys1_veliparib_prot (+1 protonated)",
+  "window": "frames [240:720] = 24 ns production",
+  "cv_frames_total": 720,
+  "log_rows_total": 720,
+  "dV_T_mean_window": 4.246513713623831,
+  "dV_D_mean_window": 5.50244900405714,
+  "mm_C1": 4.7409355823900565,
+  "mm_C2": 20.89573166007121,
+  "mm_C3": 23.692412072591647,
+  "nbins": 16,
+  "empty": 1,
+  "valid_bins": 15,
+  "neutral_ref": {
+    "seeds_C3": [
+      42.2,
+      32.0,
+      46.7
+    ],
+    "mean": 40.3,
+    "sd": 6.1
+  },
+  "control_s123_C3": 46.66917822311822
+}

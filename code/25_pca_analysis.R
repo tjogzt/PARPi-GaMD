@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
-# 25-pca_analysis.R — STRUCTURAL PCA (CA cartesian coordinates) of S2 trajectories
+# 25_pca_analysis.R — STRUCTURAL PCA (CA cartesian coordinates) of S2 trajectories
 # NOTE: this is NOT the manuscript's "24-dimensional PMF feature matrix" PCA (that analysis is
-# code/28-pca_features.R). This script's outputs are named pca_struct_*.csv and are not cited.
+# code/28_pca_features.R). This script's outputs are named pca_struct_*.csv and are not cited.
 
 #
 # Purpose:  Structural PCA (CA Cartesian coordinates) of the S2 trajectories; writes projections + variance tables.

@@ -7,7 +7,7 @@ Purpose:   Diagnostic: whole-protein-aligned, all-frames RMSF for the
            manuscript numbers).
            NOTE: the "legacy table" values quoted by earlier versions of this
            script (HD 3.12 / ART 3.65) were produced by the July-2025 run of
-           19-rmsf_all_systems.py from an earlier version of the on-disk DCD.
+           an earlier RMSF control run against a previous version of the on-disk DCD.
            The current output.dcd (26,000 frames) yields ~6.1/~8.6 A under the
            same whole-protein protocol (production frames give the same), so
            the legacy values are not reproducible from the present trajectory

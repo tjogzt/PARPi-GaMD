@@ -11,8 +11,10 @@ suppressMessages({library(data.table); library(ggplot2); library(patchwork)})
 
 theme_set(theme_bw(base_size = 8, base_family = "Arial") +
   theme(panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 8, color = "black"),
-        axis.title = element_text(size = 8),
+        axis.text = element_text(size = 9, color = "black"),
+        axis.title = element_text(size = 9),
+        legend.text = element_text(size = 9),
+        legend.title = element_text(size = 9),
         legend.position = "right", legend.key.size = unit(0.3, "cm")))
 
 # China-style palette
@@ -46,10 +48,10 @@ hd_prof <- rmsf_all[domain == "HD"]
 pA <- ggplot(hd_prof, aes(resid, rmsf, color = system)) +
   geom_line(linewidth = 0.45) +
   scale_color_manual(values = cols) +
-  labs(x = "HD residue (PARP1)", y = "RMSF (\u00C5)", title = "A  HD per-residue RMSF") +
-  theme(plot.title = element_text(hjust = 0, face = "bold", size = 9),
+  labs(x = "HD residue (PARP1)", y = "RMSF (\u00C5)", title = "B  HD per-residue RMSF") +
+  theme(plot.title = element_text(hjust = 0, face = "bold", size = 10),
         legend.position = "bottom", legend.direction = "horizontal",
-        legend.text = element_text(size = 8))
+        legend.text = element_text(size = 9))
 
 # (B) domain means
 dom_mean <- rmsf_all[domain %in% c("HD", "ART"),
@@ -62,7 +64,7 @@ pB <- ggplot(dom_mean, aes(system, mean, fill = domain)) +
   scale_fill_manual(values = c(HD = "#C23531", ART = "#3D6BA8")) +
   scale_y_continuous(breaks = seq(0, 5, 1), labels = function(x) sprintf("%.1f", x)) +
   labs(x = NULL, y = "Mean RMSF (\u00C5)", fill = "Domain",
-       title = "B  Subdomain mean RMSF") +
+       title = "C  Subdomain mean RMSF") +
   theme(plot.title = element_text(hjust = 0, face = "bold", size = 9),
         axis.text.x = element_text(angle = 30, hjust = 1),
         legend.text = element_text(size = 8),
@@ -79,8 +81,8 @@ pC <- ggplot(dr, aes(resid, drmsf)) +
               fill = "#C23531", alpha = 0.35) +
   geom_line(linewidth = 0.5, color = "#9D2933") +
   labs(x = "HD residue (PARP1)", y = "\u0394RMSF (II \u2212 III) (\u00C5)",
-       title = "C  Type II vs III \u0394RMSF") +
-  theme(plot.title = element_text(hjust = 0, face = "bold", size = 9),
+       title = "D  Type II vs III \u0394RMSF") +
+  theme(plot.title = element_text(hjust = 0, face = "bold", size = 10),
         axis.title.x = element_text(margin = ggplot2::margin(t = -16)))
 
 n_pos <- dr[drmsf > 0.3, .N]
@@ -89,7 +91,11 @@ cat(sprintf("Type III more rigid side (dRMSF<-0.3): %d HD residues\n", dr[drmsf 
 top5 <- dr[order(-drmsf)][1:5]
 cat("Top differentiated residues:\n"); print(top5)
 
-p <- pA / (pB | pC) + plot_layout(heights = c(1, 1))
+# (2026-10-15) open-frame panels (project style): left/bottom axis lines only
+# for panels B/C/D (no top/right panel borders).
+p <- (pA / (pB | pC) + plot_layout(heights = c(1, 1))) &
+  theme(panel.border = element_blank(),
+        axis.line = element_line(color = "black", linewidth = 0.5))
 cairo_pdf("figures/pdf/Fig_S2_RMSF_All.pdf", width = 157/25.4, height = 130.8/25.4, pointsize = 8)
 print(p)
 dev.off()

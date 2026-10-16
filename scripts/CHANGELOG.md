@@ -17,3 +17,11 @@ and must stay traceable to its generator history.
   value-equivalent to the published table (wells identical to 0.000000;
   max AAI delta 8.3e-5 vs the 5e-4 tolerance); the downstream guard chain
   (code/13, 18, 21) is green on the rebuilt table.
+
+- **v3** (2026-10-11, release_v2 reconciliation): rewritten to the corrected-span
+  data layer (r6c_s2_spanfix / r6c_s2_cv2_spanfix / r6_panel_values /
+  r6c_s1_spanfix / s1_dbe_unified_wells / extension_s1_wells + the archived
+  veli_prot R9 summary JSON). The v2 branch was found to recompute the
+  pre-correction convention and failed its own stale anchors; v3 carries updated
+  frozen-state asserts and passes a cell-for-cell golden check against the
+  frozen table (33 rows identical). Changelog discipline retained.

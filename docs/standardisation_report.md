@@ -156,7 +156,7 @@ All data-only scripts were executed in the standardised tree. Findings and fixes
 
 ## 9. Figure-review round 1 (2026-10-05, user-approved; four-team review)
 
-Applied fixes from the full figure-set review (全篇图件审查; full report: workspace `docs/figures_review_round1.md`):
+Applied fixes from the full figure-set review (full report: workspace `docs/figures_review_round1.md`):
 - **Base-R font scale** (S15 `code/31`, S16 `code/34`): device/par pointsize 8 -> 12 with explicit
   ``par(cex = 1)`` after ``layout()`` (base R resets/reduces the base cex on layout); all sub-8pt
   cex values raised to >= 8pt. S15 extras: panel-B note split to two lines (panel-letter collision),

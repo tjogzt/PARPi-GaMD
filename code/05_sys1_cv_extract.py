@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-05-sys1_cv_extract.py — Extract HD-ART COM distance CV for sys1 GaMD trajectories.
+05_sys1_cv_extract.py — Extract HD-ART COM distance CV for sys1 GaMD trajectories.
 sys1 = CAT domain only (residues 1-345, UniProt 662-1011).
 CV: center-of-mass distance between HD (resid 1-119 CA) and ART (resid 120-345 CA).
 
 Purpose:  Extract the S1 HD-ART collective-variable series + DBE weights for the legacy-system S1 runs.
 Status:   superseded-candidate (2026-10-06, code-audit P1-16). The unified S1
-          protocol (scripts/analyze_s1_unified.py) supersedes this script's
+          protocol (scripts/s19_s1_unified_dbe.py) supersedes this script's
           outputs for the legacy S1 systems. Retirement is gated on:
           (a) a bit-level comparison of this script's outputs vs the
           08_sys1_extract.py outputs on the overlapping systems, and

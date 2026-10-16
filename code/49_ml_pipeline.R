@@ -1,5 +1,5 @@
 #!/usr/bin/env Rscript
-# 08-ml_pipeline.R — ML analysis for PARP1 trapping mechanism
+# 49_ml_pipeline.R — ML analysis for PARP1 trapping mechanism
 # 
 # Purpose:
 #   Classify PARP1 inhibitors into Type II (neutral allosteric) vs Type III 
@@ -7,7 +7,7 @@
 #   Blind-predict AZD5305 (saruparib) Type classification.
 #
 # Usage:
-#   Rscript code/08-ml_pipeline.R
+#   Rscript code/49_ml_pipeline.R
 #
 # Input:
 #   data/analysis/*.xvg — PMF curves from GaMD reweighting
@@ -73,7 +73,7 @@ extract_pmf_features <- function(pmf_df) {
   barrier   <- max(left_max, right_max) - pmf[min_idx]
   
   # Number of metastable states (plain local-minimum count).
-  # Note: 12-descriptive_analysis.R / 28-pca_features.R wrap this in a
+  # Note: 12_descriptive_analysis.R / 28_pca_features.R wrap this in a
   # "pmf <= pmf + 0.5" filter that is tautological and never fires — the same quantity
   # results. See data_manifest.md (n_states semantics).
   d1 <- diff(pmf)

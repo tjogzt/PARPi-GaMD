@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-18-strip_ligand.py — Strip ligand atoms from all S2 DCDs.
+51_strip_ligand.py — Strip ligand atoms from all S2 DCDs.
 Strips atoms from index APO_N (285775) onwards, keeping only
 protein+DNA+water+ions matching APO prmtop.
 

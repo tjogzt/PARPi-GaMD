@@ -1,5 +1,5 @@
 #!/usr/bin/env Rscript
-# 10-s2_pmf_figures.R — S2 PMF figures (Protein–DNA + HD–ART, 7 systems)
+# 10_s2_pmf_figures.R — S2 PMF figures (Protein–DNA + HD–ART, 7 systems)
 #
 # Purpose:  Render the S2 PMF figures (protein–DNA and HD–ART, seven systems: overlay + facet panels).
 # Created:  2026-09-15 (header standardised 2026-10-05)
@@ -80,22 +80,26 @@ theme_pmf <- theme_bw(base_size = 8, base_family = "Arial") +
   )
 
 # ---- Fig A: CV1 Protein–DNA overlay ----------------------------------------
+# 2026-10-14 (Figure S3 standard): legend removed from the overlay; colour and
+# linetype are identified by the shared legend in the panel grid instead.
 p_cv1 <- ggplot(pmf_cv1, aes(x = RC, y = PMF_norm, color = label, linetype = label)) +
   geom_line(linewidth = 0.5) +
   scale_color_manual(values = setNames(sys_meta$color, sys_meta$label)) +
   scale_linetype_manual(values = setNames(sys_meta$lty, sys_meta$label)) +
   labs(x = "Protein–DNA COM Distance (Å)", y = "PMF (kcal/mol)",
-       color = "System", linetype = "System") +
-  theme_pmf + theme_open
+       color = NULL, linetype = NULL) +
+  theme_pmf + theme_open + theme(legend.position = "none")
 
 # ---- Fig B: CV2 HD–ART overlay ---------------------------------------------
+# 2026-10-14 (Figure S4 standard): legend removed from the overlay; colour and
+# linetype are identified by the shared legend in the panel grid instead.
 p_cv2 <- ggplot(pmf_cv2, aes(x = RC, y = PMF_norm, color = label, linetype = label)) +
   geom_line(linewidth = 0.5) +
   scale_color_manual(values = setNames(sys_meta$color, sys_meta$label)) +
   scale_linetype_manual(values = setNames(sys_meta$lty, sys_meta$label)) +
   labs(x = "HD–ART COM Distance (Å)", y = "PMF (kcal/mol)",
-       color = "System", linetype = "System") +
-  theme_pmf + theme_open
+       color = NULL, linetype = NULL) +
+  theme_pmf + theme_open + theme(legend.position = "none")
 
 # ---- Fig C: CV1 multi-panel (one per system) -------------------------------
 p_cv1_list <- lapply(ligand_order, function(lig) {
@@ -111,7 +115,7 @@ p_cv1_list <- lapply(ligand_order, function(lig) {
     annotate("text", x = pmf_min, y = max(df$PMF_norm) * 0.85,
              label = sprintf("%.1f", pmf_min), 
              hjust = 1.15, size = 2.9, color = meta$color) +
-    theme_pmf + theme(legend.position = "none")
+    theme_pmf + theme(legend.position = "none", aspect.ratio = 1)   # 2026-10-14: square
 })
 
 # ---- Fig D: CV2 multi-panel ------------------------------------------------
@@ -128,15 +132,19 @@ p_cv2_list <- lapply(ligand_order, function(lig) {
     annotate("text", x = pmf_min, y = max(df$PMF_norm) * 0.85,
              label = sprintf("%.1f", pmf_min), 
              hjust = 1.15, size = 2.9, color = meta$color) +
-    theme_pmf + theme(legend.position = "none")
+    theme_pmf + theme(legend.position = "none", aspect.ratio = 1)   # 2026-10-14: square
 })
 
 # ---- Save figures ----------------------------------------------------------
-cairo_pdf(file.path(out_dir, "Fig_S2_pmf_prot_dna_overlay.pdf"), width = 149/25.4, height = 99.3/25.4, pointsize = 8)
+# CV1 overlay (Figure S3 block B, 2026-10-14 standard): legend-free, full width;
+# stacked in the SI under the grid so rows 1+2 equal the overlay in height.
+cairo_pdf(file.path(out_dir, "Fig_S2_pmf_prot_dna_overlay.pdf"), width = 178/25.4, height = 94/25.4, pointsize = 8)
 print(p_cv1)
 dev.off()
 
-cairo_pdf(file.path(out_dir, "Fig_S2_pmf_hd_art_overlay.pdf"), width = 149/25.4, height = 99.3/25.4, pointsize = 8)
+# CV2 overlay (Figure S4 block B, 2026-10-14 standard): legend-free, full width;
+# stacked in the SI under the grid so rows 1+2 equal the overlay in height.
+cairo_pdf(file.path(out_dir, "Fig_S2_pmf_hd_art_overlay.pdf"), width = 178/25.4, height = 94/25.4, pointsize = 8)
 print(p_cv2)
 dev.off()
 
@@ -146,16 +154,42 @@ cairo_pdf(file.path(out_dir, "Fig_S2_pmf_overlay_combined.pdf"), width = 4.5, he
 print(p_overlay)
 dev.off()
 
-# Multi-panel CV1
-panel_cv1 <- wrap_plots(p_cv1_list, ncol = 4, nrow = 2)
-cairo_pdf(file.path(out_dir, "Fig_S2_pmf_prot_dna_panels.pdf"), width = 157/25.4, height = 78.5/25.4, pointsize = 8)
-print(panel_cv1)
+# Multi-panel CV1 -> 4+3 grid with the shared legend cell (Figure S3 blocks A, 2026-10-14)
+names(p_cv1_list) <- ligand_order
+p_cv1_leg <- p_cv1 + theme(legend.position = "bottom",
+                           legend.text       = element_text(size = 8),
+                           legend.key.size   = unit(0.30, "cm"),
+                           legend.key.width  = unit(0.50, "cm"),
+                           legend.spacing.y  = unit(0.02, "cm")) +
+  guides(color = guide_legend(ncol = 1), linetype = guide_legend(ncol = 1))
+leg_grob <- {
+  g <- ggplot2::ggplotGrob(p_cv1_leg)
+  g$grobs[[which(vapply(g$grobs, function(x) x$name, "") == "guide-box")]]
+}
+row1 <- wrap_plots(p_cv1_list[c("APO", "AZD5305", "olaparib", "talazoparib")], ncol = 4)
+row2 <- wrap_plots(c(p_cv1_list[c("niraparib", "rucaparib", "veliparib")], list(leg_grob)), ncol = 4)
+panel_grid <- wrap_plots(row1, row2, ncol = 1)
+cairo_pdf(file.path(out_dir, "Fig_S2_pmf_prot_dna_grid.pdf"), width = 178/25.4, height = 97/25.4, pointsize = 8)
+print(panel_grid)
 dev.off()
 
-# Multi-panel CV2
-panel_cv2 <- wrap_plots(p_cv2_list, ncol = 4, nrow = 2)
-cairo_pdf(file.path(out_dir, "Fig_S2_pmf_hd_art_panels.pdf"), width = 157/25.4, height = 78.5/25.4, pointsize = 8)
-print(panel_cv2)
+# Multi-panel CV2 -> 4+3 grid with the shared legend cell (Figure S4 blocks A, 2026-10-14)
+names(p_cv2_list) <- ligand_order
+p_cv2_leg <- p_cv2 + theme(legend.position = "bottom",
+                           legend.text       = element_text(size = 8),
+                           legend.key.size   = unit(0.30, "cm"),
+                           legend.key.width  = unit(0.50, "cm"),
+                           legend.spacing.y  = unit(0.02, "cm")) +
+  guides(color = guide_legend(ncol = 1), linetype = guide_legend(ncol = 1))
+leg_grob2 <- {
+  g <- ggplot2::ggplotGrob(p_cv2_leg)
+  g$grobs[[which(vapply(g$grobs, function(x) x$name, "") == "guide-box")]]
+}
+row1b <- wrap_plots(p_cv2_list[c("APO", "AZD5305", "olaparib", "talazoparib")], ncol = 4)
+row2b <- wrap_plots(c(p_cv2_list[c("niraparib", "rucaparib", "veliparib")], list(leg_grob2)), ncol = 4)
+panel_grid2 <- wrap_plots(row1b, row2b, ncol = 1)
+cairo_pdf(file.path(out_dir, "Fig_S2_pmf_hd_art_grid.pdf"), width = 178/25.4, height = 97/25.4, pointsize = 8)
+print(panel_grid2)
 dev.off()
 
 # ---- Summary stats ---------------------------------------------------------

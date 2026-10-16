@@ -46,4 +46,4 @@ for lig in "${LIGANDS[@]}"; do
     done
 done
 
-echo "All downloads complete. Run: Rscript code/18-replicate_analysis.R"
+echo "All downloads complete. Run: Rscript code/18_replicate_analysis.R"

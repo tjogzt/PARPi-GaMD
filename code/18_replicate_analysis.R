@@ -1,5 +1,5 @@
 #!/usr/bin/env Rscript
-# 18-replicate_analysis.R — Process GaMD replicate data (Table 4 reproduction)
+# 18_replicate_analysis.R — Process GaMD replicate data (Table 4 reproduction)
 #
 # Purpose:   Cross-replicate well-depth statistics for the histogram-reweighted
 #            replicate PMFs; reproduces the manuscript table "Replicate GaMD
@@ -174,19 +174,29 @@ cat("\n=== Cross-Replicate Well Depth Statistics ===\n")
 print(as.data.frame(cross_stats), row.names = FALSE)
 
 # ---- Comparison with the original cumulant-pipeline values ----
-# Canonical sources: data/cumulant_convergence.csv (wd_C3, wd_sd) +
-# class from common/ligands.csv
-cc  <- fread("data/cumulant_convergence.csv")
+# Canonical audited source (R9 unified DBE pipeline; identical to main-text
+# Table 1 and SI Table S2): data/analysis/s1_dbe_unified_wells.csv (C1/C2/C3).
+# NOTE (2026-10-15): the previous source (cumulant_convergence.csv) belongs to a
+# superseded pipeline and had produced wrong C1-panel values in this figure.
+cc  <- fread("data/analysis/s1_dbe_unified_wells.csv")
 cls <- fread("common/ligands.csv")
 cls_map <- setNames(gsub("_", " ", cls$class), cls$ligand)
+# Join-key normalisation: file uses capitalised names ("APO", "Talazoparib", ...);
+# cls_map/cross_stats keys are lowercase except "APO" and "AZD5305"
+.key <- ifelse(tolower(cc$ligand) == "apo", "APO",
+        ifelse(tolower(cc$ligand) == "azd5305", "AZD5305", tolower(cc$ligand)))
 
 original <- data.frame(
-  ligand          = cc$ligand,
-  well_depth_orig = cc$wd_C3,
-  wd_sd_orig      = cc$wd_sd,
-  type            = unname(cls_map[cc$ligand]),
+  ligand          = .key,
+  well_depth_orig = cc$C3,
+  wd_sd_orig      = apply(cc[, c("C1", "C2", "C3")], 1, sd),
+  type            = unname(cls_map[.key]),
   stringsAsFactors = FALSE
 )
+# Audit guard: must equal the frozen main-text Table 1 S1 column (R9 values)
+.frozen <- c(APO = 57.9, AZD5305 = 33.9, niraparib = 50.8, olaparib = 55.4,
+             rucaparib = 27.6, talazoparib = 42.2, veliparib = 40.3)
+stopifnot(all(abs(original$well_depth_orig[match(names(.frozen), original$ligand)] - .frozen) < 0.05))
 
 merged <- merge(cross_stats, original, by = "ligand", all = TRUE)
 cat("\n=== Original vs Replicate Comparison ===\n")
@@ -209,7 +219,7 @@ p1 <- ggplot(results, aes(x = ligand_n, y = well_depth, color = ligand,
                                              dodge.width = 0.55,
                                              seed = 49)) +
   scale_color_manual(values = color_map) +
-  labs(x = NULL, y = "S1 Well Depth (kcal/mol)", color = "Ligand",
+  labs(x = NULL, y = "S1 span (kcal/mol)", color = "Ligand",
        title = "A  Replicate Consistency", shape = "Replicate") +
   theme_7pt + theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
@@ -219,8 +229,7 @@ p2 <- ggplot(merged[!is.na(merged$wd_sd) & !is.na(merged$wd_sd_orig), ],
   geom_text(aes(hjust = ifelse(ligand == "veliparib", 1.15, -0.15)),
             vjust = 0.5, size = 3.0, show.legend = FALSE) +
   geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "grey50") +
-  scale_color_manual(values = c("Type II" = "#E41A1C", "Type III" = "#377EB8", "Unknown" = "darkorange"),
-                       labels = c("Type II" = "Type II", "Type III" = "Type III", "Unknown" = "Unclassified")) +
+  scale_color_manual(values = c("Type II" = "#E41A1C", "Type III" = "#377EB8", "Unknown" = "darkorange")) +
   labs(x = "SD across C1-C3 cumulant (original)", y = "SD across replicates",
        title = "B  Cross-Trajectory vs Cumulant Uncertainty") +
   theme_7pt +
@@ -238,12 +247,12 @@ c1df$ligand <- factor(c1df$ligand,
                                  "talazoparib", "veliparib"))
 pC1 <- ggplot(c1df, aes(x = ligand, y = well_depth_orig)) +
   geom_point(size = 2.6, color = "grey45") +
-  coord_cartesian(ylim = c(44, 66)) +
-  labs(x = NULL, y = "S1 Well Depth (kcal/mol)",
+  coord_cartesian(ylim = c(25, 61)) +  # 2026-10-15: matches the R9 frozen value range (27.6-57.9)
+  labs(x = NULL, y = "S1 span (kcal/mol)",
        title = "C1  Main pipeline (cumulant C3; reference)",
        subtitle = "independent scale; not directly comparable with C2") +
   theme_7pt + theme(axis.text.x = element_text(angle = 45, hjust = 1),
-                    plot.subtitle = element_text(color = "grey35", size = 8))
+                    plot.subtitle = element_text(color = "grey35", size = 7))
 
 c2df <- results
 c2df$ligand <- factor(c2df$ligand, levels = c("AZD5305", "EB47", "talazoparib", "veliparib"))
@@ -260,7 +269,7 @@ pC2 <- ggplot() +
                      labels = c("1" = "Rep 1", "2" = "Rep 2", "3" = "Rep 3"),
                      name = "Replicate") +
   coord_cartesian(ylim = c(0, 27)) +
-  labs(x = NULL, y = "S1 Well Depth (kcal/mol)",
+  labs(x = NULL, y = "S1 span (kcal/mol)",
        title = "C2  Replicate runs (histogram/CA-CV; mean ± SD)") +
   theme_7pt + theme(axis.text.x = element_text(angle = 45, hjust = 1))
 

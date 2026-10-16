@@ -1,5 +1,5 @@
 #!/usr/bin/env Rscript
-# 32-cumulant_convergence.R — regenerates data/cumulant_convergence.csv
+# 32_cumulant_convergence.R — regenerates data/cumulant_convergence.csv
 #
 # The original producer of this CSV was lost; this script is the canonical
 # reconstruction (2026-09-16 four-team audit, revised 2026-09-29 code audit).

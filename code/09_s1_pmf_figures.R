@@ -1,4 +1,4 @@
-# 09-s1_pmf_figures.R — S1 PMF comparison figures
+# 09_s1_pmf_figures.R — S1 PMF comparison figures
 # HD–ART domain distance PMF curves for 7 systems (APO + 6 inhibitors)
 #
 # Purpose:  Render the S1 HD–ART PMF comparison figures for the seven systems (overlay + facet panels).
@@ -81,58 +81,65 @@ p_list <- lapply(sys_meta$ligand, function(lig) {
     annotate("text", x = pmf_min, y = max(df$PMF_norm) * 0.85,
              label = sprintf("%.1f Å", pmf_min), 
              hjust = -0.15, size = 2.9, color = meta$color) +
-    theme_pmf
+    theme_pmf +
+    theme(aspect.ratio = 1)   # 2026-10-14: square panel area
 })
 names(p_list) <- sys_meta$ligand
 
-# Arrange in 2×3
-wrap_order <- c("APO", "olaparib", "talazoparib",
-                "veliparib", "niraparib", "rucaparib", "AZD5305")
-panel_a <- wrap_plots(p_list[wrap_order], ncol = 3, nrow = 3)
+# ---- B. Overlay and grid (Figure S2 recomposition, 2026-10-14) -------------
+# The former 3x3 facet figure and the separately sized overlay are replaced by
+# two stacked full-width blocks: this grid (seven square panels, rows 1+2,
+# with a shared legend cell) and the legend-free overlay below. Both blocks
+# share the same 178-mm design width and near-equal content height (rows 1+2
+# together equal the overlay row when stacked in the SI).
+# Overlay fix: colour and linetype are keyed by identical short labels; the
+# previous mixed keys never matched and silently blanked the five
+# reference/extension curves (APO, AZD5305, fluzoparib, pamiparib, senaparib).
+pmf_all$short <- sub("\\n.*$", "", as.character(pmf_all$label))
+short_levels <- sub("\\n.*$", "", sys_meta$label)
+col_map <- setNames(sys_meta$color, short_levels)
+lty_map <- setNames(sys_meta$lty,   short_levels)
+pmf_all$short <- factor(pmf_all$short, levels = short_levels)
 
-ggsave(file.path(out_dir, "Fig_S1_pmf_panels.pdf"), panel_a,
-       width = 157/25.4, height = 104.7/25.4, device = cairo_pdf)
-message("Saved: Fig_S1_pmf_panels.pdf")
-
-# ---- B. Overlay: all systems c3 PMF ----------------------------------------
-overlay_known <- filter(pmf_all, class %in% c("Type_II", "Type_III"))
-overlay_other <- filter(pmf_all, !class %in% c("Type_II", "Type_III"))
-# Short legend labels for the overlay (class is color-coded; long "(Type II)"
-# suffixes overflow the 4.5-in figure width)
-overlay_known$label <- sub(" \\((Type (II|III)|ext\\.)\\)$", "", overlay_known$label)
-overlay_other$label <- sub(" \\((Type (II|III)|ext\\.)\\)$", "", overlay_other$label)
-
-panel_b <- ggplot() +
-  # APO + AZD5305 as reference
-  geom_line(data = overlay_other, 
-            aes(x = RC, y = PMF_norm, color = label, linetype = label),
-            linewidth = 0.5) +
-  # Known inhibitors
-  geom_line(data = overlay_known,
-            aes(x = RC, y = PMF_norm, color = label),
-            linewidth = 0.6) +
-  scale_color_manual(values = setNames(sys_meta$color, sys_meta$label)) +
-  scale_linetype_manual(values = c("APO (no ligand)" = "dotted", 
-                                   "AZD5305 (blind)" = "dashed")) +
+panel_b <- ggplot(pmf_all, aes(x = RC, y = PMF_norm, color = short, linetype = short)) +
+  geom_line(linewidth = 0.5) +
+  scale_color_manual(values = col_map, breaks = short_levels) +
+  scale_linetype_manual(values = lty_map, breaks = short_levels) +
   labs(x = "HD–ART Distance (Å)", y = "PMF (kcal/mol)",
        color = NULL, linetype = NULL) +
   theme_bw(base_size = 8, base_family = "Arial") +
   theme(
     plot.margin       = ggplot2::margin(1, 1, 1, 3, unit = "mm"),
-    legend.position   = "bottom",
-    legend.text       = element_text(size = 8),
-    legend.key.size   = unit(0.35, "cm"),
+    legend.position   = "none",
     panel.grid.minor  = element_blank(),
     plot.title        = element_text(size = 9, face = "bold", hjust = 0.5),
     axis.title        = element_text(size = 8),
     axis.text         = element_text(size = 8)
   ) +
-  theme_open +
-  guides(color = guide_legend(nrow = 2, byrow = TRUE),
-         linetype = guide_legend(nrow = 2, byrow = TRUE))
+  theme_open
+
+# Shared legend (guide-box grob) for the grid's eighth cell
+p_ov_leg <- panel_b + theme(legend.position = "bottom",
+                            legend.text       = element_text(size = 8),
+                            legend.key.size   = unit(0.30, "cm"),
+                            legend.key.width  = unit(0.50, "cm"),
+                            legend.spacing.y  = unit(0.02, "cm")) +
+  guides(color = guide_legend(ncol = 1), linetype = guide_legend(ncol = 1))
+leg_grob <- {
+  g <- ggplot2::ggplotGrob(p_ov_leg)
+  g$grobs[[which(vapply(g$grobs, function(x) x$name, "") == "guide-box")]]
+}
+
+row1 <- wrap_plots(p_list[c("APO", "olaparib", "talazoparib", "veliparib")], ncol = 4)
+row2 <- wrap_plots(c(p_list[c("niraparib", "rucaparib", "AZD5305")], list(leg_grob)), ncol = 4)
+panel_grid <- wrap_plots(row1, row2, ncol = 1)
+
+ggsave(file.path(out_dir, "Fig_S1_pmf_grid.pdf"), panel_grid,
+       width = 178/25.4, height = 104/25.4, device = cairo_pdf)
+message("Saved: Fig_S1_pmf_grid.pdf")
 
 ggsave(file.path(out_dir, "Fig_S1_pmf_overlay.pdf"), panel_b,
-       width = 140/25.4, height = 108.9/25.4, device = cairo_pdf)
+       width = 178/25.4, height = 102/25.4, device = cairo_pdf)
 message("Saved: Fig_S1_pmf_overlay.pdf")
 
 # ---- C. C1/C2/C3 comparison per inhibitor (4 panels) -----------------------
@@ -161,16 +168,30 @@ p_cum <- lapply(inhibitors, function(lig) {
     labs(title = meta$label, x = "HD–ART Distance (Å)", 
          y = "PMF (kcal/mol)", color = "Cumulant") +
     theme_pmf +
-    theme(legend.position = c(0.78, 0.72),
-          legend.text = element_text(size = 8),
-          legend.title = element_text(size = 8),
-          legend.key.size = unit(0.35, "cm"))
+    # 2026-10-14: identical guides across the four panels -> rendered as ONE
+    # unified legend below the figure (assembled in panel_c).
+    theme(legend.position = "bottom")
 })
 
-panel_c <- wrap_plots(p_cum, ncol = 4, nrow = 1)
+panel_c_theme <- theme(legend.position = "bottom",
+                       legend.direction = "horizontal",
+                       legend.title = element_text(size = 8),
+                       legend.text = element_text(size = 8),
+                       legend.key.size = unit(0.30, "cm"),
+                       legend.margin = ggplot2::margin(t = 1, r = 0, b = 0, l = 0, unit = "mm"),
+                       legend.box.margin = ggplot2::margin(0, 0, 0, 0, unit = "mm"))
+panel_c_row <- wrap_plots(lapply(p_cum, function(p) p + theme(legend.position = "none")),
+                          ncol = 4, nrow = 1)
+panel_c_leg <- {
+  g <- ggplot2::ggplotGrob(p_cum[[3]] + panel_c_theme)
+  g$grobs[[which(vapply(g$grobs, function(x) x$name, "") == "guide-box")]]
+}
+panel_c <- wrap_plots(panel_c_row, panel_c_leg, ncol = 1, heights = c(1, 0.135))
 
 ggsave(file.path(out_dir, "Fig_S1_pmf_cumulants.pdf"), panel_c,
-       width = 149/25.4, height = 46.4/25.4, device = cairo_pdf)
+       # 2026-10-14: canvas 149 x 46.4 -> 178 x 62.0 mm (ACS double-column width);
+       # unified bottom legend collected across the four panels.
+       width = 178/25.4, height = 62.0/25.4, device = cairo_pdf)
 message("Saved: Fig_S1_pmf_cumulants.pdf")
 
 # ---- Summary statistics ----------------------------------------------------

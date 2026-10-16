@@ -1,0 +1,27 @@
+Pocket-pKa probe (direction 1) — 6VKK crystal structure (PARP1 CAT + rucaparib)
+PROPKA 3.5.1, apo (ligand removed) vs holo (crystal rucaparib). 2026-09-28.
+
+Binding-coupled pKa shifts of titratable active-site residues:
+  GLU763 A   5.14 -> 3.55   (-1.59)   catalytic-pocket floor, direct ligand contact
+  TYR907 A  11.62 -> 13.08   (+1.46)   catalytic residue (NAD+-site hydrogen bond)
+  HIS862 A   4.56 -> 3.97   (-0.59)   catalytic histidine
+  TYR896 A  13.52 -> 14.08   (+0.56)   pocket rim
+  ASP766 A   6.63 -> 6.34   (-0.29)
+  (ASP770/HIS826/HIS742/GLU988 within +/-0.25)
+
+Interpretation and limits:
+1. These are PROTEIN-residue shifts induced by ligand binding, quantifying the
+   electrostatic perturbation a bound ligand exerts on the pocket: up to ~1.5
+   pKa units. They are NOT the ligand's own pKa shift (which requires
+   constant-pH or lambda-dynamics; future work).
+2. Implication for the niraparib amine (aqueous pKa 9.95): a pocket field of
+   this magnitude could shift the amine pKa by a comparable amount. Even a
+   -1.5-unit shift (pKa -> ~8.4) leaves ~91% protonation at pH 7.4, so the
+   main-text conclusion (protonated state dominates) is robust to
+   first-order pocket effects; a larger desolvation shift, while unlikely for
+   a solvent-exposed amine at this site, would need explicit calculation.
+3. Ligand here is rucaparib (crystal ligand of 6VKK), a reasonable pocket
+   surrogate for the panel compounds sharing the NAD+ site.
+
+Script: scripts/pocket_pka_probe.py (now with 6VKK path); inputs:
+results/analysis/pocket_6vkk_{apo,holo}.pdb; raw .pka files in repo root.

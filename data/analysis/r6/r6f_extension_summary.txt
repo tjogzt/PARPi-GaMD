@@ -1,0 +1,3 @@
+fluzoparib: full C3v=22.77 (master 22.8, OK) | trunc22 C3v=19.47 | C1v/C2v full = 3.01/8.59
+pamiparib: full C3v=16.26 (master 16.3, OK) | trunc22 C3v=19.70 | C1v/C2v full = 4.96/7.99
+senaparib: full C3v=12.50 (master 12.5, OK) | trunc22 C3v=31.28 | C1v/C2v full = 3.24/6.45

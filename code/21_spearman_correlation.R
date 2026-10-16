@@ -225,7 +225,7 @@ p_a <- ggplot(plot_df, aes(x = trap_rank, y = s2_cv1, color = class)) +
   labs(x = "Trapping rank (1 = weakest, 5 = most potent)",
        y = "S2 CV1 Protein–DNA Span (kcal/mol)",
        title = "A  S2 CV1 Span vs Trapping (state panels)",
-       subtitle = sprintf("neutral: %.2f (p %.3f)\nniraparib-protonated: %.2f (p %.3f)\nrucaparib-protonated: %.2f (p %.3f)\naudited-dominant (all three): %.2f (p %.3f)",
+       subtitle = sprintf("neutral: %.2f (p %.3f)\nniraparib-protonated: %.2f (p %.3f)\nrucaparib-protonated: %.2f (p %.3f)\naudit-corrected (all three): %.2f (p %.3f)",
                           t1n$rho, t1n$p, t1$rho, t1$p, t1r$rho, t1r$p, t1a$rho, t1a$p),
        color = NULL) +
   theme_7pt + theme(legend.position = c(0.87, 0.87),
@@ -236,7 +236,8 @@ p_b <- ggplot(plot_df, aes(x = aai, y = trap_rank, color = class)) +
   geom_point(aes(shape = state_f), size = 3.0) +
   scale_shape_manual(values = c("neutral" = 16, "protonated" = 1), guide = "none") +
   geom_text_repel(aes(label = ifelse(is_nira & state == "protonated", "Niraparib-\nprotonated",
-               ifelse(is_ruca & state == "protonated", "Rucaparib-\nprotonated", label))),
+               ifelse(is_ruca & state == "protonated", "Rucaparib-\nprotonated",
+               ifelse(is_veli & state == "protonated", "Veliparib-\nprotonated", label)))),
                   size = 2.9, max.overlaps = Inf, seed = 49,
                   min.segment.length = 0.3, box.padding = 0.35, force = 2, family = "Arial") +
   geom_segment(data = data.frame(x1 = s1_neu["niraparib"] / s2_cv2_c3["niraparib"],
@@ -251,14 +252,14 @@ p_b <- ggplot(plot_df, aes(x = aai, y = trap_rank, color = class)) +
                 labels = c("1", "2.5", "4", "5")) +
   scale_color_manual(values = c("Type II" = "#E41A1C", "Type III" = "#377EB8")) +
   xlim(0.4, 3.8) +
-  labs(x = "Allosteric Amplification Index (S1/S2)",
+  labs(x = "S1/S2 span ratio",
        y = "Trapping rank (1 = weakest, 5 = most potent)",
-       title = "B  AAI vs Trapping (sensitivity, state panels)",
-       subtitle = sprintf("neutral: S1 %.2f | AAI %+.2f (n.s.)\nniraparib-protonated: S1 %.2f | AAI %+.2f (n.s.)\nrucaparib-protonated: S1 %.2f | AAI %+.2f (n.s.)\naudited-dominant: S1 %.2f | AAI %+.2f (n.s.)",
+       title = "B  Span ratio vs Trapping (sensitivity, state panels)",
+       subtitle = sprintf("neutral: S1 %.2f | span ratio %+.2f (n.s.)\nniraparib-protonated: S1 %.2f | span ratio %+.2f (n.s.)\nrucaparib-protonated: S1 %.2f | span ratio %+.2f (n.s.)\naudit-corrected: S1 %.2f | span ratio %+.2f (n.s.)",
                           t2n$rho, t3n$rho, t2$rho, t3$rho, t2r$rho, t3r$rho, t2a$rho, t3a$rho),
        color = NULL) +
   theme_7pt + theme(legend.position = "none",
-                    plot.subtitle = element_text(size = 8, hjust = 0)) +
+                    plot.subtitle = element_text(size = 8, hjust = 0, margin = ggplot2::margin(t = 3))) +
   theme_open
 
 cairo_pdf("figures/pdf/Fig_Trapping_vs_Allostery.pdf",

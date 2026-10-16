@@ -58,7 +58,7 @@ p <- ggplot(cv, aes(x = ns, y = well_depth)) +
            size = 2.9, color = "grey40") +
   scale_color_manual(values = inib_colors, name = NULL) +
   scale_fill_manual(values = inib_colors, guide = "none") +
-  labs(x = "Cumulative production time (ns)", y = "S1 Well Depth (kcal/mol)") +
+  labs(x = "Cumulative production time (ns)", y = "S1 span (kcal/mol)") +
   theme_7pt +
   theme(legend.position = "bottom")
 

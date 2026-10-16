@@ -1,0 +1,3 @@
+estimator,mean_base,mean_spiked,inflation,cv_spiked
+minmax_span,4.5375,5.0553,0.1141,0.1994
+q90_span,3.028,3.0979,0.0231,0.1949

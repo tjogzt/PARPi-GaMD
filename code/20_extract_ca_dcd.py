@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-20-extract_ca_dcd.py — Extract CA-only DCDs using MDAnalysis.
+20_extract_ca_dcd.py — Extract CA-only DCDs using MDAnalysis.
 Much more reliable than cpptraj for our stripped trajectories.
 
 Purpose:  Extract CA-atom trajectory frames (DCD) for the downstream RMSF/DCCM analyses.

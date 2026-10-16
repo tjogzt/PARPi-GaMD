@@ -1,0 +1,18 @@
+name: gamd
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - openmm>=8.1
+  - cuda-version=12.4
+  - numpy
+  - scipy
+  - mdtraj
+  - mdanalysis>=2.7
+  - openbabel
+  - pdbfixer
+  - parmed
+  - openmmforcefields
+  - rdkit>=2024
+  - pandas
+  - matplotlib

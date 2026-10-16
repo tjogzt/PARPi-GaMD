@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-08-sys1_extract.py — Robust CV + dV extraction for sys1 PMF.
+08_sys1_extract.py — Robust CV + dV extraction for sys1 PMF.
 Fixes: proper gamd.log column detection with leading tab handling.
 Output: CV file (1 col) + weight file (3 col: dV*beta, 0, dV) for PyReweighting.
 

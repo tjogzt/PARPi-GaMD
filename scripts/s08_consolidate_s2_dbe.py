@@ -1,113 +1,138 @@
 #!/usr/bin/env python3
-"""Consolidate the final 10-system S2 DBE + AAI table (data-layer version).
+"""Consolidate the frozen S2 DBE + AAI table from the corrected-span data layer.
 
 Reads (archived data layer; no hard-coded well depths)
 ------------------------------------------------------
-- data/analysis/s2_dbe_well_depths.npy      7 exact-log systems (CV1/CV2 C1-C3)
-- data/01_curated/nira_prot_dbe.csv         niraparib S2 rows + S1 C3, protonated re-run
-- data/01_curated/rerun_cumulant_wells.csv  olaparib/rucaparib S2 rows, exact re-runs
-- data/analysis/s1_dbe_unified_wells.csv    unified S1 C3, seven original systems
+- data/analysis/r6/r6c_s2_spanfix.csv        CV1 C1-C3 spans, cutoff-2 convention (R6)
+- data/analysis/r6/r6c_s2_cv2_spanfix.csv    CV2 C1-C3 spans (R6)
+- data/analysis/r6/r6_panel_values.csv       veliparib-protonated S1 C3 (R9)
+- data/analysis/r6/r6c_s1_spanfix.csv        niraparib-protonated S1 C3 (R6)
+- data/analysis/s1_dbe_unified_wells.csv     unified S1 C3, seven original systems
 - data/01_curated/extension_s1_wells.csv    extension trio S1 C3
+- data/analysis/veli_prot/veli_prot_s2_summary.json  veliparib-protonated S2 rows (R9)
 
 Writes
 ------
 - data/analysis/s2_dbe_final.csv  (ligand, metric, C1, C2, C3, source)
-  CV1/CV2 rows: well depths in the archived display forms (1-decimal from the
-  npy panel; source strings passed through from the curated CSVs).
+  CV1/CV2 rows: occupied-support spans at 1-decimal display precision.
   AAI rows: S1 C3 / S2 CV2 C3 at 6 decimals.
-  Source tags: exact_log_dbe | nira_prot_dbe | rerun_exact_dbe.
+  Source tags: exact_log_dbe | nira_prot_dbe | rerun_exact_dbe | veli_prot_dbe.
 
 Notes
 -----
-- The niraparib rows inside rerun_cumulant_wells.csv are superseded drafts;
-  the final niraparib values come from nira_prot_dbe.csv.
-- Anchors asserted below match the manuscript display values
-  (AAI talazoparib ~0.83, AZD5305 ~1.19; niraparib CV1 62.0; olaparib CV2 48.0).
+- Asserts pin the frozen manuscript state; if the frozen table is present, the
+  rebuilt table must match it cell-for-cell (golden-file check) or the script
+  fails loudly (this table is the manuscript's numerical anchor).
 
-Purpose:  Consolidate the final 10-system S2 DBE + AAI table from the archived data layer.
-Created:  2026-09-17 (header standardised 2026-10-05; data-layer rewrite 2026-10-06)
+Purpose:  Consolidate the frozen 11-system S2 DBE + AAI table from the corrected-span data layer.
+Created:  2026-09-16 (header standardised 2026-10-05; corrected-span rewrite 2026-10-11)
 Changelog: scripts/CHANGELOG.md — mandatory for any further change (this table is the manuscript's numerical anchor).
-Depends:  common.paths, numpy
+Depends:  csv, json
 Run:      python3 scripts/s08_consolidate_s2_dbe.py   (from the repository root)
 """
 import csv
+import json
 import sys
 from pathlib import Path
 
-import numpy as np
-
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from common.paths import analysis_dir, REPO_ROOT
-
-A = analysis_dir()
-CUR = REPO_ROOT / "data" / "01_curated"
+ROOT = Path(".")
+A = ROOT / "data/analysis"
+C = ROOT / "data/01_curated"
 
 
-def read_rows(p):
-    """Read a small curated CSV into a list of dicts (exact display strings)."""
+def load_rows(p, key):
     with open(p, newline="") as fh:
-        return list(csv.DictReader(fh))
+        return {r[key]: r for r in csv.DictReader(fh)}
 
 
-wells = np.load(str(A / "s2_dbe_well_depths.npy"), allow_pickle=True).item()
-nira = read_rows(CUR / "nira_prot_dbe.csv")
-rerun = read_rows(CUR / "rerun_cumulant_wells.csv")
-unified = read_rows(A / "s1_dbe_unified_wells.csv")
-ext = read_rows(CUR / "extension_s1_wells.csv")
+def d1(x):
+    """1-decimal display convention used by the frozen table."""
+    return f"{float(x):.1f}"
 
 
-def d1(v):
-    """1-decimal display form used by the exact-log panel."""
-    return f"{float(v):.1f}"
+def pick(d, *keys):
+    for k in keys:
+        if k in d:
+            return d[k]
+    raise KeyError(f"none of {keys} in {sorted(d)}")
 
 
-# --- CV rows ------------------------------------------------------------------
-EXACT = ["APO", "talazoparib", "AZD5305", "veliparib",
-         "fluzoparib", "pamiparib", "senaparib"]
-rows_cv = {}
-for lig in EXACT:
-    rows_cv[lig] = {cvn: [d1(x) for x in wells[f"{lig}_{cvn}"]] for cvn in ("CV1", "CV2")}
-for lig, key, src in [("niraparib", "sys2_niraparib_prot", nira),
-                      ("olaparib", "sys2_olaparib", rerun),
-                      ("rucaparib", "sys2_rucaparib", rerun)]:
-    # column-name case differs between the two curated sources (c1/c2/c3 vs C1/C2/C3)
-    rows_cv[lig] = {r["cv"]: [r.get("C1", r.get("c1")), r.get("C2", r.get("c2")),
-                              r.get("C3", r.get("c3"))]
-                    for r in src if r["system"] == key}
+s2cv1 = load_rows(A / "r6/r6c_s2_spanfix.csv", "system")
+s2cv2 = load_rows(A / "r6/r6c_s2_cv2_spanfix.csv", "system")
+s1sp = load_rows(A / "r6/r6c_s1_spanfix.csv", "system")
+panel = load_rows(A / "r6/r6_panel_values.csv", "ligand")
+uni = {r["ligand"].lower(): r for r in csv.DictReader(open(A / "s1_dbe_unified_wells.csv"))}
+ext = load_rows(C / "extension_s1_wells.csv", "ligand")
+v2 = json.loads((A / "veli_prot/veli_prot_s2_summary.json").read_text())
 
-# --- S1 C3 numerators (display forms preserved from the sources) --------------
-s1 = {r["ligand"].lower(): r["C3"] for r in unified}
-s1["niraparib"] = next(r["c3"] for r in nira if r["system"] == "sys1_niraparib_prot")
-for r in ext:
-    s1[r["ligand"].lower()] = d1(r["C3"])
+# entity -> (display label, source tag) — frozen order (veliparib-prot last)
+ENT = [("APO", "APO", "exact_log_dbe"),
+       ("talazoparib", "talazoparib", "exact_log_dbe"),
+       ("AZD5305", "AZD5305", "exact_log_dbe"),
+       ("veliparib", "veliparib", "exact_log_dbe"),
+       ("fluzoparib", "fluzoparib", "exact_log_dbe"),
+       ("pamiparib", "pamiparib", "exact_log_dbe"),
+       ("senaparib", "senaparib", "exact_log_dbe"),
+       ("niraparib_prot", "niraparib", "nira_prot_dbe"),
+       ("olaparib", "olaparib", "rerun_exact_dbe"),
+       ("rucaparib", "rucaparib", "rerun_exact_dbe")]
 
-# --- assemble -----------------------------------------------------------------
-ORDER = ["APO", "talazoparib", "AZD5305", "veliparib", "fluzoparib",
-         "pamiparib", "senaparib", "niraparib", "olaparib", "rucaparib"]
-TAG = {l: "exact_log_dbe" for l in EXACT}
-TAG.update({"niraparib": "nira_prot_dbe", "olaparib": "rerun_exact_dbe",
-            "rucaparib": "rerun_exact_dbe"})
 rows = []
-for lig in ORDER:
-    for cvn in ("CV1", "CV2"):
-        rows.append([lig, cvn, *rows_cv[lig][cvn], TAG[lig]])
-    s1v = float(s1[lig.lower()])
-    s2v = float(rows_cv[lig]["CV2"][2])
-    rows.append([lig, "AAI", s1[lig.lower()], rows_cv[lig]["CV2"][2],
-                 f"{s1v / s2v:.6f}", TAG[lig]])
+for ent, lab, tag in ENT:
+    cv1 = [lab, "CV1", d1(s2cv1[ent]["c1_valid"]), d1(s2cv1[ent]["c2_valid"]),
+           d1(s2cv1[ent]["c3_valid"]), tag]
+    cv2 = [lab, "CV2", d1(s2cv2[ent]["c1"]), d1(s2cv2[ent]["c2"]),
+           d1(s2cv2[ent]["c3"]), tag]
+    s1 = d1(uni[lab.lower()]["C3"]) if lab.lower() in ("apo", "olaparib", "rucaparib") \
+        else {"talazoparib": d1(uni["talazoparib"]["C3"]),
+              "azd5305": d1(uni["azd5305"]["C3"]),
+              "veliparib": d1(uni["veliparib"]["C3"]),
+              "fluzoparib": d1(ext["fluzoparib"]["C3"]),
+              "pamiparib": d1(ext["pamiparib"]["C3"]),
+              "senaparib": d1(ext["senaparib"]["C3"]),
+              "niraparib": d1(s1sp["niraparib_prot"]["pmf_c3_v2"])}[lab.lower()]
+    rows += [cv1, cv2,
+             [lab, "AAI", s1, cv2[4], f"{float(s1) / float(cv2[4]):.6f}", tag]]
 
-# --- manuscript anchors -------------------------------------------------------
-anch = {(r[0], r[1]): r for r in rows}
-assert len(rows) == 30
-assert anch[("niraparib", "CV1")][4] == "62.0"
-assert anch[("niraparib", "CV2")][4] == "50.5"
-assert anch[("olaparib", "CV2")][4] == "48.0"
-assert anch[("rucaparib", "CV1")][4] == "59.3"
-assert anch[("talazoparib", "AAI")][4].startswith("0.830")
-assert anch[("AZD5305", "AAI")][4].startswith("1.186")
+# veliparib-protonated rows from the archived R9 summary (display label: veliparib)
+vp_s1 = panel["veliparib_prot"]["S1_C3"]
+for cvn in ("CV1", "CV2"):
+    blk = v2[cvn]
+    rows.append(["veliparib", cvn, d1(pick(blk, "C1", "c1")), d1(pick(blk, "C2", "c2")),
+                 d1(pick(blk, "C3", "c3")), "veli_prot_dbe"])
+cv2c3 = rows[-1][4]
+rows.append(["veliparib", "AAI", vp_s1, cv2c3, f"{float(vp_s1) / float(cv2c3):.6f}", "veli_prot_dbe"])
 
-with open(A / "s2_dbe_final.csv", "w", newline="") as fh:
-    w = csv.writer(fh)
-    w.writerow(["ligand", "metric", "C1", "C2", "C3", "source"])
-    w.writerows(rows)
-print(f"wrote {A/'s2_dbe_final.csv'} ({len(rows)} rows)")
+# ---- frozen-state assertions ----
+idx = {(r[0], r[1]): r for r in rows if r[5] == "exact_log_dbe" or r[5] == "nira_prot_dbe"
+       or r[5] == "rerun_exact_dbe"}
+assert len(rows) == 33, len(rows)
+assert idx[("APO", "CV1")][2:5] == ["6.4", "11.3", "19.5"]
+assert idx[("talazoparib", "CV1")][2:5] == ["4.7", "12.2", "22.9"]
+assert idx[("AZD5305", "CV1")][4] == "49.5"
+assert idx[("niraparib", "CV1")][2:5] == ["3.9", "12.1", "34.1"]
+assert idx[("olaparib", "CV2")][4] == "16.6"
+assert idx[("rucaparib", "CV1")][4] == "28.7"
+assert idx[("talazoparib", "AAI")][4].startswith("1.1625")
+assert idx[("AZD5305", "AAI")][4].startswith("1.8423")
+assert idx[("APO", "AAI")][4].startswith("4.2888")
+assert rows[-1][5] == "veli_prot_dbe" and rows[-1][4].startswith("1.410")
+assert rows[-2][4] == "16.8" and rows[-1][:5] == ["veliparib", "AAI", "23.7", "16.8", "1.410714"]
+
+# ---- golden-file check / write ----
+dst = A / "s2_dbe_final.csv"
+if dst.exists():
+    with open(dst, newline="") as fh:
+        cur = [r for r in csv.reader(fh)][1:]
+    if len(cur) != len(rows) or any(a != b for a, b in zip(cur, rows)):
+        for a, b in zip(cur, rows):
+            if a != b:
+                print("MISMATCH:", a, "vs", b, file=sys.stderr)
+        sys.exit("golden-file check failed")
+    print(f"golden check passed ({len(rows)} rows identical to the frozen table)")
+else:
+    with open(dst, "w", newline="") as fh:
+        w = csv.writer(fh)
+        w.writerow(["ligand", "metric", "C1", "C2", "C3", "source"])
+        w.writerows(rows)
+    print(f"wrote {dst} ({len(rows)} rows)")

@@ -4,7 +4,7 @@
 Computes the 2D free-energy surfaces (PyReweighting-2D, amdweight_CE,
 T = 300 K) for talazoparib, veliparib (rebuilt), and APO from the CV series
 and the textbook DBE weights, and writes the C3 PMF grids as npy files for
-code/16-2d_landscape.R.
+code/16_2d_landscape.R.
 
 Outputs: data/analysis/2d_c3_<lig>.npz (arrays: X, Y, F)
 
