@@ -32,7 +32,7 @@ for st in niraparib niraparib_prot; do
   d="$R/${SYS[$st]}"
   echo "-- $st @ $d"
   [ -d "$d" ] || { echo "MISSING $d"; exit 1; }
-  grep -o "<seed>[0-9]*</seed>" "$d"/config.xml 2>/dev/null | head -1 || echo "  (no config seed found)"
+  grep -o "<random-seed>[0-9]*</random-seed>" "$d"/config.xml 2>/dev/null | head -1 || echo "  (no config seed found)"
 done
 
 launch_one() {  # $1=state $2=seed $3=gpu
