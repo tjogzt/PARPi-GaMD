@@ -91,6 +91,7 @@ Notes:
 | artifact | generating_script | upstream_data | consumers | note |
 |---|---|---|---|---|
 | data/analysis/r6/r6c_estimatrix.csv | scripts/s38_estimator_matrix.py | data/analysis/r6/series/*.npy (canonical [240:720] window dumps) | code/29, code/53 | estimator × metric matrix (mm / q90 / t95 / eff-support rows) |
+| data/analysis/r6/r9_state_lattice.csv | scripts/s54_state_combinations.py | frozen master span values (identical to s38) | SI Table S8 | eight-combination chemical-state lattice, 8 panels × 4 metrics, tie-aware exact permutation |
 | data/analysis/r6/r6_panel_values.csv | R6 audit recompute (standardisation_report_v2) | archived cv/weights (PyReweighting DBE) | codes 12/13/28/33 | audited panel values incl. veliparib-protonated |
 | data/analysis/r6/r6c_window_timescale.csv | scripts/s44_window_timescale.py | per-frame archives (rerun + protonated S2) | code/33 | C3-span window SD vs window length |
 | data/analysis/r6/r6d_ordinal_sensitivity.csv | scripts/s37_bayesian_sensitivity_extended.py | r6_panel_values.csv | manuscript ordinal diagnostic | explicit Monte-Carlo ordinal model (1e6 draws + 120-enumeration prior predictive) |
