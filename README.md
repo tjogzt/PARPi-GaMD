@@ -47,7 +47,7 @@ checksum).
 - Round 2 (2026-10-11) integrated the R6–R10 work: chains extended to the ranges
   above, audit tables added under `data/analysis/r6/`, and eleven dual-edited files
   reconciled by keeping the revision that generated the shipped (frozen) figures —
-  policy and evidence in `docs/standardisation_report_v2.md`. Round 3 (2026-10-16) integrated the R12–R14 audit revisions: terminology unified throughout (sampled-range span; S1/S2 span ratio; audit-corrected), the positive-control benchmark (`scripts/s52_positive_control.py`) and the cross-docking RMSD validation (`scripts/s53_crossdock_rmsd.py`) added, the rerun-based 2D PMF grids for the three re-simulated S2 systems restored to the figure data layer, and every affected figure re-rendered on this tree with figure text layers verified against the manuscript renders.
+  policy and evidence in `docs/standardisation_report_v2.md`. Round 3 (2026-10-16) integrated the R12–R14 audit revisions: terminology unified throughout (sampled-range span; S1/S2 span ratio; audit-corrected), the positive-control benchmark (`scripts/s52_positive_control.py`) and the cross-docking RMSD validation (`scripts/s53_crossdock_rmsd.py`) added, the rerun-based 2D PMF grids for the three re-simulated S2 systems restored to the figure data layer, and every affected figure re-rendered on this tree with figure text layers verified against the manuscript renders. Round 4 (2026-10-17) applies the fourth external review: the positive-control benchmark uses the panel's exact trapping-rank tie structure (olaparib--rucaparib midrank 2.5) with a Δ = 0 null calibration on a five-level σ grid; the estimator-matrix script writes a reproducible copy (`data/analysis/r6/r6c_estimatrix_repro.csv`) that matches the published table identically; the occupied-support and effective-support definitions are stated operationally; and the Fig. 1 simulation-length annotation, the Fig. 6 diagnostic labels, and Fig. S13 were re-rendered accordingly.
 
 ## 3. Citation and system requirements
 
@@ -149,7 +149,7 @@ appended to `docs/standardisation_report_v2.md`. Round 3 (2026-10-16): every R12
 | Output | Script | Description |
 |---|---|---|
 | `data/analysis/Fig_Mechanism_Data.csv` | `code/13_mechanism_figure.R` | S1/S2 sampled-range spans and the S1/S2 span ratio for all 10 systems |
-| `data/analysis/r6/c7g_positive_control.csv` | `scripts/s52_positive_control.py` | planted-association positive control (72 cells, 1,500 worlds/cell) |
+| `data/analysis/r6/c7g_positive_control.csv` | `scripts/s52_positive_control.py` | planted-association positive control (125 cells: 5 σ × 25 Δ; tie-aware reference ranks, Δ = 0 null calibration; 1,500 worlds/cell) |
 | `data/analysis/crossdock_rmsd_results.csv` | `scripts/s53_crossdock_rmsd.py` | cross-docking RMSD vs five co-crystal structures (Table S16) |
 | `data/analysis/association_input_table.csv` | `code/21_spearman_correlation.R` | n = 5 correlation input table (no AZD5305 row) |
 | `data/replicate_well_depths.csv` | `code/18_replicate_analysis.R` | per-replicate histogram-reweighted spans |

@@ -50,13 +50,13 @@ arrow(58.8, 61.2, y0 + h0 / 2); arrow(75.3, 77.7, y0 + h0 / 2)
 # ---- verdict table ----
 rows = [
     ("D1  Windowed estimator variance",
-     "noise vs separations (2.6\u20135.3 kcal/mol); unresolvable at 26 ns"),
+     "variability vs separations (2.6\u20135.3 kcal/mol); no stable order at 26 ns"),
     ("D2  Estimator\u2013consistency matrix",
      "no cell significant (all p \u2265 0.267); sign unstable across estimators"),
     ("D3  Convergence\u2013timescale scaling",
      "no decay over 2\u201324 ns windows; no extrapolated sampling length"),
     ("D4  Ordinal sensitivity model",
-     "no decision-level cell (P \u2264 0.78 across assumed bands)"),
+     "S1 favors positive at narrowest band (P(\u03c1<0)=0.01); band-dependent"),
     ("D5  Counterfactual sensitivity",
      "leave-one-out \u22120.63\u2026+0.63; single-point exclusion flips sign"),
     ("D6  Chemical-state audit",

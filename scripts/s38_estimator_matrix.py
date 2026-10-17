@@ -14,7 +14,7 @@ import numpy as np, itertools, csv
 from pathlib import Path
 
 AUD = Path("data/analysis/r6/series")   # archived per-frame dumps (canonical [240:720] window)
-OUT = Path("results/analysis/r6/r6c_estimatrix.csv")
+OUT = Path("data/analysis/r6/r6c_estimatrix_repro.csv")   # repro copy; the published table is data/analysis/r6/r6c_estimatrix.csv
 OUT.parent.mkdir(parents=True, exist_ok=True)
 
 def load_support(f):
@@ -141,3 +141,10 @@ print("combined (R9 triple) S2CV1 mm =", chk4[3], chk4[4], "✓")
 with open(OUT, "w", newline="") as f:
     w = csv.writer(f); w.writerow(["panel", "metric", "estimator", "rho", "p"]); w.writerows(rows)
 print("WROTE", OUT)
+
+# compare with the published table (byte-identical ordering expected)
+pub = Path("data/analysis/r6/r6c_estimatrix.csv")
+if pub.exists():
+    a = pub.read_text().strip().splitlines()
+    b = OUT.read_text().strip().splitlines()
+    print("diff vs published r6c_estimatrix.csv:", "IDENTICAL" if a == b else f"{sum(1 for x, y in zip(a, b) if x != y)} differing lines")

@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
-# 52_fig_c7_benchmark.R — Figure S18: synthetic benchmark of window-noise diagnostics
+# 52_fig_c7_benchmark.R — Figure S13: synthetic benchmark of window-noise diagnostics
 #
-# Purpose:  SI Figure S18 — synthetic C7 benchmark of window-noise scaling and span-estimator
+# Purpose:  SI Figure S13 — synthetic C7 benchmark of window-noise scaling and span-estimator
 #           tail sensitivity (reads the archived benchmark CSVs).
 # Created:  2026-10-10 (header standardised 2026-10-11)
 # Inputs:   data/analysis/r6/c7_toy_benchmark.csv ; data/analysis/r6/c7_estimator_stats.csv
@@ -69,27 +69,35 @@ pB <- ggplot(b, aes(est, mean, fill = kind)) +
         panel.border = element_blank(),
         axis.line = element_line(color = "black", linewidth = 0.5))
 
-## ---- Panel C: positive control (planted-association recovery) ----
+## ---- Panel C: positive control (planted-association recovery, tie-aware) ----
 c7g <- read.csv("data/analysis/r6/c7g_positive_control.csv")
+sig_levels <- c(2, 4.6, 8, 15, 18.4)
 c7g$sigma_lab <- factor(sprintf("\u03c3 = %g kcal/mol", c7g$sigma_kcal),
-                        levels = sprintf("\u03c3 = %g kcal/mol", c(2, 8, 15)))
-pC <- ggplot(c7g, aes(delta_kcal, detect_rate, color = sigma_lab)) +
+                        levels = sprintf("\u03c3 = %g kcal/mol", sig_levels))
+sig_cols <- setNames(c("#C23531", "#9D2933", "#3D6BA8", "#177CB0", "#4DAF4A"),
+                     sprintf("\u03c3 = %g kcal/mol", sig_levels))
+sig_ltys <- setNames(c("dashed", "solid", "solid", "solid", "solid"),
+                     sprintf("\u03c3 = %g kcal/mol", sig_levels))
+pC <- ggplot(c7g, aes(delta_kcal, detect_rate, color = sigma_lab, linetype = sigma_lab)) +
   annotate("rect", xmin = 2.6, xmax = 5.3, ymin = -Inf, ymax = Inf,
            fill = "grey85", alpha = 0.55) +
+  geom_hline(yintercept = 0.05, linetype = "dotted", color = "grey40", linewidth = 0.5) +
   geom_line(linewidth = 0.8) +
   geom_point(size = 1.0) +
-  scale_color_manual(values = setNames(c("#C23531", "#3D6BA8", "#177CB0"),
-                                       sprintf("\u03c3 = %g kcal/mol", c(2, 8, 15))), name = NULL) +
+  scale_color_manual(values = sig_cols, name = NULL) +
+  scale_linetype_manual(values = sig_ltys, name = NULL) +
+  guides(color = guide_legend(nrow = 1), linetype = guide_legend(nrow = 1)) +
   coord_cartesian(ylim = c(0, 1), xlim = c(0, 50)) +
-  annotate("text", x = 3.95, y = 0.90, label = "this study's separations\n(2.6\u20135.3 kcal/mol)",
-           size = 2.6, family = "Arial", lineheight = 0.9, hjust = 0.5) +
+  annotate("label", x = 6.2, y = 0.55, label = "this study's separations\n(2.6\u20135.3 kcal/mol)",
+           size = 2.6, family = "Arial", lineheight = 0.9, hjust = 0, label.size = 0.12,
+           label.padding = unit(0.08, "lines"), fill = "white", alpha = 0.85) +
   labs(x = "planted separation between adjacent ranks (kcal/mol)",
        y = "detection rate (p < 0.05)",
-       title = "C  Positive control: planted-association recovery (1,500 worlds/cell)") +
+       title = "C  Positive control: planted-association recovery (tie-aware; 1,500 worlds/cell)") +
   theme_bw(base_size = 8, base_family = "Arial") +
   theme(panel.grid.minor = element_blank(),
-        legend.position = c(0.97, 0.40), legend.justification = c(1, 0.5),
-        legend.key.size = unit(0.3, "cm"), legend.text = element_text(size = 9),
+        legend.position = "bottom", legend.direction = "horizontal",
+        legend.key.size = unit(0.3, "cm"), legend.text = element_text(size = 8),
         legend.background = element_blank(),
         legend.key = element_rect(fill = "transparent"),
         axis.text = element_text(size = 9), axis.title = element_text(size = 9),
@@ -98,7 +106,7 @@ pC <- ggplot(c7g, aes(delta_kcal, detect_rate, color = sigma_lab)) +
         axis.line = element_line(color = "black", linewidth = 0.5))
 
 p <- (pA | pB) / pC
-cairo_pdf("figures/pdf/Fig_SI_ToyBenchmark.pdf", width = 170/25.4, height = 118/25.4, pointsize = 8)
+cairo_pdf("figures/pdf/Fig_SI_ToyBenchmark.pdf", width = 170/25.4, height = 124/25.4, pointsize = 8)
 print(p)
 invisible(dev.off())
 cat("Saved: figures/pdf/Fig_SI_ToyBenchmark.pdf\n")

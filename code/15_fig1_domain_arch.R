@@ -77,7 +77,7 @@ p_b <- ggplot() +
            fill = "#2166AC", alpha = 0.10, color = "#2166AC", linewidth = 0.5) +
   annotate("text", x = 1, y = 2.14, label = "S1: CAT-only", size = 3.2,
            fontface = "bold", color = "#2166AC", family = "Arial") +
-  annotate("text", x = 1, y = 1.97, label = "~61.5k atoms \u00b7 24\u2013200 ns", size = 3.0,
+  annotate("text", x = 1, y = 1.97, label = "~61.5k atoms \u00b7 24\u2013412 ns", size = 3.0,
            color = "grey30", family = "Arial") +
   annotate("text", x = 1, y = 1.05, label = "S2: PARP1 + DNA", size = 3.2,
            fontface = "bold", color = "#B2182B", family = "Arial") +
