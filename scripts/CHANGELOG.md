@@ -54,3 +54,6 @@ and must stay traceable to its generator history.
   still contains each quoted formatted number (24 strings). Run from the
   repository root: `python3 scripts/s57_manuscript_number_audit.py --tex-dir
   <manuscript dir>`; exits non-zero on any mismatch. Current state: 62/62 PASS.
+- **v2.4** (2026-10-19): wired into `rebuild_all.sh` as an optional step
+  `[6/6]`; skips cleanly when the manuscript tex tree is absent (fresh
+  checkouts). Tag v2.4 is analysis-tool-only with zero data-layer delta.

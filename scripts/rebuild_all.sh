@@ -5,6 +5,8 @@
 #   [1] s02 seed dataset        [4] figures (13, 21, 12, 16)
 #   [2] s03 trajectory metadata [5] s10 manifest checksum verification
 #   [3] s08 consolidated S2 DBE + AAI table (golden check vs the frozen table)
+#   [6] s57 manuscript-number audit (optional; needs the manuscript tex tree,
+#       skipped automatically in checkouts that do not carry it)
 #
 # History: the pre-R6 steps (s04 dihedral energies, s05 textbook reweighting,
 # s06 reconstruction, s07 xvg regeneration, s09 2D DBE grids) are superseded by
@@ -30,22 +32,31 @@ if [ -z "$PY" ]; then PY="$(command -v python3 || true)"; fi
 if [ -z "$PY" ]; then echo "ERROR: python3 not found; set PYTHON=/abs/path/to/python3" >&2; exit 1; fi
 export RETICULATE_PYTHON="$PY"
 
-echo "== [1/5] trapping seed dataset =="
+echo "== [1/6] trapping seed dataset =="
 "$PY" scripts/s02_build_seed_dataset.py
 
-echo "== [2/5] trajectory metadata (all archival systems) =="
+echo "== [2/6] trajectory metadata (all archival systems) =="
 "$PY" scripts/s03_build_trajectory_metadata.py
 
-echo "== [3/5] consolidated S2 DBE + AAI table (golden check vs frozen) =="
+echo "== [3/6] consolidated S2 DBE + AAI table (golden check vs frozen) =="
 "$PY" scripts/s08_consolidate_s2_dbe.py
 
-echo "== [4/5] figures =="
+echo "== [4/6] figures =="
 Rscript code/13_mechanism_figure.R
 Rscript code/21_spearman_correlation.R
 Rscript code/12_descriptive_analysis.R
 Rscript code/16_2d_landscape.R
 
-echo "== [5/5] manifest verification =="
+echo "== [5/6] manifest verification =="
 "$PY" scripts/s10_verify_manifest.py
+
+echo "== [6/6] manuscript-number audit (optional) =="
+TEX_DIR="${TEX_DIR:-../manuscripts/jcim}"
+if [ -d "$TEX_DIR" ]; then
+  "$PY" scripts/s57_manuscript_number_audit.py --tex-dir "$TEX_DIR"
+else
+  echo "s57 skipped: $TEX_DIR not present in this checkout;"
+  echo "             number audit runs wherever the manuscript tex tree is available."
+fi
 
 echo "REBUILD COMPLETE. figures/pdf/*.pdf regenerated; manifest verified."
