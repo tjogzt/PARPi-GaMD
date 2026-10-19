@@ -91,6 +91,15 @@ pip install -r requirements.txt        # Python dependencies
   (`analysis_CV*.dat`), PMF-c3 curves (`.xvg`, `.npz`), derived tables
   (`s2_dbe_final.csv`, `s1_dbe_unified_wells.csv`, `s1_table1_rows.csv`,
   `d4_consistency_matrix.csv`, …), and the recomputed RMSF/DCCM profiles
+- `data/analysis/s10/` — cross-seed stability of the primary S2 CV1 span
+  (niraparib; SI Table S17): the frozen summary
+  (`s10_crossseed_summary.csv`), the first-principles recomputation
+  (`s10_crossseed_recomputed.csv`; `scripts/s56_s10_crossseed_spanfix.py`
+  asserts it cell-for-cell) and the archive-run manifest
+  (`s10_run_manifest.csv`). The four S10 per-frame records live in
+  `data/per_frame/s10_*_frames.csv.gz` (see `scripts/s55_s10_archive_frame_cvs.py`;
+  pairing is step-based because the seed-123 neutral `gamd.log` lost ~51
+  buffered rows after a mid-run restart — its DCD is complete)
 - `data/01_modeling/docking_system1/` — cross-docking validation inputs: docked
   poses (SDF + PDBQT), ligand templates, and the five co-crystal receptor
   structures (PDB 6VKK/5DS3/4R6E/4UND/2RD6) behind

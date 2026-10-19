@@ -1,0 +1,7 @@
+system,seed,c3_valid_kcal,win_sd_2ns,win_mean_2ns,n_windows,note
+neutral,42,26.9,7.47,19.11,13,published (manuscript table convention)
+neutral,7,25.9,12.38,21.99,13,this work (S10)
+neutral,123,46.1,14.73,19.93,11,this work (S10; 2.55 ns log gap -> 11 windows)
+protonated,42,34.1,4.62,17.02,13,published (manuscript table convention)
+protonated,7,49.3,9.57,17.37,13,this work (S10)
+protonated,123,82.2,18.32,30.81,13,this work (S10)

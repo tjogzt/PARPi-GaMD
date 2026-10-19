@@ -25,3 +25,16 @@ and must stay traceable to its generator history.
   pre-correction convention and failed its own stale anchors; v3 carries updated
   frozen-state asserts and passes a cell-for-cell golden check against the
   frozen table (33 rows identical). Changelog discipline retained.
+
+## s55_s10_archive_frame_cvs.py / s56_s10_crossseed_spanfix.py
+- **v1** (2026-10-19): added with the cross-seed stability analysis (SI Table S17).
+  s55 rebuilds the per-frame records for the two additional seeds (7, 123) of
+  both chemical states of the niraparib S2 system. Pairing is step-based, not
+  row-based: the seed-123 neutral gamd.log lost ~51 buffered rows when the
+  pre-migration process was stopped (steps 16.35-17.60 M; 2.55 ns), while the
+  DCD is complete (760 frames = 38 ns). s56 recomputes the table-convention
+  C3 spans (occupied-support: occupancy >= 2 bins) and the 2-ns window SDs;
+  it reproduces the frozen seed-42 spanfix state exactly (span 26.926294 vs
+  26.926038 kcal/mol; window SD 7.4726 vs 7.4725; occupancy bins 44/5/3) and
+  asserts the frozen cross-seed summary cell-for-cell (six cells, three seeds
+  per state). Outputs: data/analysis/s10/*.
