@@ -139,7 +139,7 @@ pip install -r requirements.txt        # Python dependencies
 
 ## 7. Reproducibility
 
-Deterministic outputs (the ML pipeline seeds at 49) mean re-running a script
+Deterministic outputs (the analysis scripts fix the random seed at 49) mean re-running a script
 reproduces its outputs. During the 2026-10-05 standardisation the
 manuscript-critical figure chains were verified by re-running them on the
 standardised tree: `code/09`, `code/16`, `code/21`, `code/28`, `code/31`,
