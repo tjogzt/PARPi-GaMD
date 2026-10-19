@@ -38,3 +38,19 @@ and must stay traceable to its generator history.
   26.926038 kcal/mol; window SD 7.4726 vs 7.4725; occupancy bins 44/5/3) and
   asserts the frozen cross-seed summary cell-for-cell (six cells, three seeds
   per state). Outputs: data/analysis/s10/*.
+
+## s57_manuscript_number_audit.py
+- **v1** (2026-10-19): added as the manuscript-back-to-data number audit. Three
+  tiers: (A) cell-for-cell value checks against the frozen data layer (Table S5
+  78 cells via the source-tag-aware assembly of `s2_dbe_final.csv` +
+  `r6c_s2_spanfix.csv` + `r6c_s2_cv2_spanfix.csv`; Table S17 six cells;
+  estimator-matrix 14 cells; lattice ranges; positive-control 12 quoted cells;
+  ordinal grid 14 sub-claims; cross-docking RMSDs; S1 13-system ranges), (B)
+  independent re-derivation of every statistical claim with a tie-aware exact
+  permutation engine (rho/p for the neutral and audit panels, LOO bounds, both
+  AZD5305 placements, the veliparib perturbation grid, the p_min enumeration:
+  max attainable |rho| = 0.9747 under the midrank-2.5 tie, four of 120
+  permutations, p_min = 0.033), and (C) a drift tripwire that the LaTeX source
+  still contains each quoted formatted number (24 strings). Run from the
+  repository root: `python3 scripts/s57_manuscript_number_audit.py --tex-dir
+  <manuscript dir>`; exits non-zero on any mismatch. Current state: 62/62 PASS.
