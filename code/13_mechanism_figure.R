@@ -214,7 +214,7 @@ p_d <- ggplot(extreme_df, aes(x = RC, y = PMF_norm, color = label)) +
   geom_line(linewidth = 0.6) +
   scale_color_manual(values = c("APO" = "grey40", "Talazoparib" = "#FF7F00", "Veliparib" = "#377EB8")) +
   labs(x = "HD-ART Distance (Å)", y = "Free Energy (kcal/mol)",
-       title = "D  Trapping-extreme contrast of two S1 profiles") +
+       title = "D  S1 profile contrast of trapping extremes") +
   theme_f2 +
   theme(legend.position = "bottom", legend.title = element_blank())
 

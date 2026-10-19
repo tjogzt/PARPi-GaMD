@@ -109,6 +109,7 @@ meta = list(csv.DictReader(open(DATA / "trajectory_metadata.csv")))
 
 ms = (TEX / "jcim_manuscript.tex").read_text()
 si = (TEX / "si.tex").read_text()
+cv = (TEX / "JCIM_cover_letter.tex").read_text()
 
 # ---------------------------------------------------------------- S5 parse
 LIG = {"APO": "APO", "Talazoparib": "talazoparib", "Niraparib": "niraparib",
@@ -448,9 +449,22 @@ tex_checks = [
     ("frames 25858", si, "25{,}858"),
     ("frames 521", si, "521 records"),
     ("S12 AZD span", si, "49.5~kcal/mol) inserted as a hypothetical sixth"),
+    ("AZD cites Table S5", ms, "C1 5.3, C2 15.2, C3 49.5~kcal/mol; Table~S5"),
+    ("AZD misref gone", ms, "C3 49.5~kcal/mol; Table~S2"),
+    ("three protonated", ms, "three protonated-state re-simulations of niraparib, rucaparib, and veliparib"),
+    ("old two-protonated gone", ms, "two protonated-state re-simulations of niraparib and rucaparib"),
+    ("limitations 0.767", ms, "the exact two-tailed $p = 0.767$ in the full audit-corrected panel"),
+    ("audit-corrected discussion", ms, "which our audit-corrected panel does not resolve"),
+    ("SI table list", si, "List of Supporting Tables"),
+    ("SI figure list", si, "List of Supporting Figures"),
+    ("S2 extension rows", si, "Fluzoparib$^{\\dagger}$"),
+    ("SI extension order", si, "pamiparib $16.3 \\pm 5.9$, and senaparib $12.5 \\pm 4.7$"),
+    ("cover positive control", cv, "planted-association positive controls"),
+    ("cover 62-check", cv, "62 checks, all passing"),
 ]
 for cid, tex, s in tex_checks:
-    rec("C", cid, s in tex, s[:60])
+    neg = cid in ("AZD misref gone", "old two-protonated gone")
+    rec("C", cid, (s not in tex) if neg else (s in tex), s[:60])
 
 # --------------------------------------------- positive control cells
 pc_claims = [

@@ -137,6 +137,7 @@ p_c <- ggplot(inhib_data, aes(x = ligand, y = trap_potency)) +
   scale_fill_manual(values = c("Type II" = "#E41A1C", "Type III" = "#377EB8", "Unknown" = "darkorange"),
                     breaks = c("Type II", "Type III")) +
   guides(fill = guide_legend(title = "HX-MS Type", nrow = 1)) +
+  scale_x_discrete(expand = expansion(add = c(0.45, 1.05))) +
   scale_y_log10(breaks = c(0.01, 0.1, 1, 10, 100), labels = c("0.01", "0.1", "1", "10", "100")) +
   labs(x = NULL, y = "Trapping Potency (× Olaparib, log scale)",
        title = "C  Trapping Potency &\nType Classification",
