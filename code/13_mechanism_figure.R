@@ -163,7 +163,7 @@ bar_data$label <- factor(bar_data$label,
                          levels = c("APO", "AZD5305", "Talazoparib", "Olaparib", "Niraparib", "Rucaparib", "Veliparib"))
 
 label_colors <- setNames(
-  c("grey40", "darkorange", "#FF7F00", "#E41A1C", "#4DAF4A", "#984EA3", "#377EB8"),
+  c("grey40", "#8C510A", "#FF7F00", "#E41A1C", "#4DAF4A", "#984EA3", "#377EB8"),
   c("APO", "AZD5305", "Talazoparib", "Olaparib", "Niraparib", "Rucaparib", "Veliparib")
 )
 
@@ -262,8 +262,8 @@ p_2d <- ggplot(plot_df2, aes(x = wd_ratio, y = wd_S1)) +
                            seed = 49,
                            min.segment.length = 0.3, box.padding = 0.6,
                            force = 4, max.iter = 5000, family = "Arial") +
-  scale_color_manual(values = c("Type II" = "#E41A1C", "Type III" = "#377EB8",
-                                "Extension" = "#C23531", "Unknown" = "darkorange"),
+  scale_color_manual(values = c("Type II" = "#67000D", "Type III" = "#08306B",
+                               "Extension" = "#7F2704", "Unknown" = "#525252"),
                      breaks = c("Type II", "Type III", "Extension", "Unknown"),
                      name = "Classification") +
   geom_vline(xintercept = 1, linetype = "dashed", color = "grey50", linewidth = 0.3) +

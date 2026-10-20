@@ -205,7 +205,7 @@ print(merged[, c("ligand", "type", "well_depth_orig", "wd_sd_orig", "wd_mean", "
 
 # ---- Figure: replicate comparison ----
 color_map <- c(talazoparib = "#FF7F00", veliparib = "#377EB8",
-               AZD5305 = "grey30", EB47 = "#E41A1C",
+               AZD5305 = "#8C510A", EB47 = "#E6AB02",
                olaparib = "#E41A1C", niraparib = "#4DAF4A", rucaparib = "#984EA3")
 
 cnt <- table(results$ligand)
@@ -229,7 +229,7 @@ p2 <- ggplot(merged[!is.na(merged$wd_sd) & !is.na(merged$wd_sd_orig), ],
   geom_text(aes(hjust = ifelse(ligand == "veliparib", 1.15, -0.15)),
             vjust = 0.5, size = 3.0, show.legend = FALSE) +
   geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "grey50") +
-  scale_color_manual(values = c("Type II" = "#E41A1C", "Type III" = "#377EB8", "Unknown" = "darkorange")) +
+  scale_color_manual(values = c("Type II" = "#67000D", "Type III" = "#08306B", "Unknown" = "#525252")) +
   labs(x = "SD across C1-C3 cumulant (original)", y = "SD across replicates",
        title = "B  Cross-Trajectory vs Cumulant Uncertainty") +
   theme_7pt +

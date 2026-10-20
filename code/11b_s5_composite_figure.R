@@ -23,7 +23,7 @@ sys_meta <- data.frame(
   ligand   = c("APO", "AZD5305", "olaparib", "talazoparib", "veliparib", "niraparib", "rucaparib"),
   label    = c("APO", "AZD5305", "Olaparib", "Talazoparib", "Veliparib", "Niraparib", "Rucaparib"),
   class    = c("APO", "Unknown", "Type_II", "Type_II", "Type_III", "Type_III", "Type_III"),
-  color    = c("grey40", "darkorange", "#E41A1C", "#FF7F00", "#377EB8", "#4DAF4A", "#984EA3"),
+  color    = c("grey40", "#8C510A", "#E41A1C", "#FF7F00", "#377EB8", "#4DAF4A", "#984EA3"),
   stringsAsFactors = FALSE
 )
 
@@ -91,7 +91,7 @@ p_ratio <- ggplot(sc, aes(x = x, y = y, label = label)) +
   scale_shape_manual(values = c("base" = 16, "prot" = 1), guide = "none") +
   ggrepel::geom_text_repel(size = 3.0, force = 2, box.padding = 0.35, max.overlaps = Inf,
                            seed = 49, family = "Arial") +
-  scale_color_manual(values = c("APO" = "grey40", "AZD5305" = "darkorange",
+  scale_color_manual(values = c("APO" = "grey40", "AZD5305" = "#8C510A",
                                 "Olaparib" = "#E41A1C", "Talazoparib" = "#FF7F00",
                                 "Veliparib" = "#377EB8", "Niraparib" = "#4DAF4A",
                                 "Rucaparib" = "#984EA3", "Fluzoparib" = "#C23531",
@@ -146,8 +146,8 @@ p_2d <- ggplot(plot_df2, aes(x = wd_ratio, y = wd_S1)) +
   ggrepel::geom_text_repel(aes(label = label), size = 3.0, max.overlaps = Inf,
                            seed = 49, min.segment.length = 0.3, box.padding = 0.6,
                            force = 4, max.iter = 5000, family = "Arial") +
-  scale_color_manual(values = c("Type II" = "#E41A1C", "Type III" = "#377EB8",
-                                "Extension" = "#C23531", "Unknown" = "darkorange"),
+  scale_color_manual(values = c("Type II" = "#67000D", "Type III" = "#08306B",
+                               "Extension" = "#7F2704", "Unknown" = "#525252"),
                      breaks = c("Type II", "Type III", "Extension", "Unknown"),
                      name = "Classification") +
   geom_vline(xintercept = 1, linetype = "dashed", color = "grey50", linewidth = 0.3) +

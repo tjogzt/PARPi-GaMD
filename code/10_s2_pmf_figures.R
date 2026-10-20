@@ -84,8 +84,10 @@ theme_pmf <- theme_bw(base_size = 8, base_family = "Arial") +
 # linetype are identified by the shared legend in the panel grid instead.
 p_cv1 <- ggplot(pmf_cv1, aes(x = RC, y = PMF_norm, color = label, linetype = label)) +
   geom_line(linewidth = 0.5) +
-  scale_color_manual(values = setNames(sys_meta$color, sys_meta$label)) +
-  scale_linetype_manual(values = setNames(sys_meta$lty, sys_meta$label)) +
+  scale_color_manual(values = setNames(sys_meta$color, sys_meta$label),
+                     breaks = sys_meta$label[sys_meta$ligand %in% ligand_order]) +
+  scale_linetype_manual(values = setNames(sys_meta$lty, sys_meta$label),
+                        breaks = sys_meta$label[sys_meta$ligand %in% ligand_order]) +
   labs(x = "Protein–DNA COM Distance (Å)", y = "PMF (kcal/mol)",
        color = NULL, linetype = NULL) +
   theme_pmf + theme_open + theme(legend.position = "none")
@@ -95,8 +97,10 @@ p_cv1 <- ggplot(pmf_cv1, aes(x = RC, y = PMF_norm, color = label, linetype = lab
 # linetype are identified by the shared legend in the panel grid instead.
 p_cv2 <- ggplot(pmf_cv2, aes(x = RC, y = PMF_norm, color = label, linetype = label)) +
   geom_line(linewidth = 0.5) +
-  scale_color_manual(values = setNames(sys_meta$color, sys_meta$label)) +
-  scale_linetype_manual(values = setNames(sys_meta$lty, sys_meta$label)) +
+  scale_color_manual(values = setNames(sys_meta$color, sys_meta$label),
+                     breaks = sys_meta$label[sys_meta$ligand %in% ligand_order]) +
+  scale_linetype_manual(values = setNames(sys_meta$lty, sys_meta$label),
+                        breaks = sys_meta$label[sys_meta$ligand %in% ligand_order]) +
   labs(x = "HD–ART COM Distance (Å)", y = "PMF (kcal/mol)",
        color = NULL, linetype = NULL) +
   theme_pmf + theme_open + theme(legend.position = "none")

@@ -10,14 +10,11 @@
 #
 # Purpose:  Canonical label/class/colour/linetype metadata for the seven S2 systems.
 # Created:  2026-10-06 (extracted from code/10 and code/11 in the P1 refactor)
-sys_meta <- data.frame(
-  ligand = c("APO", "AZD5305", "olaparib", "talazoparib", "veliparib", "niraparib", "rucaparib"),
-  label  = c("APO", "AZD5305", "Olaparib", "Talazoparib", "Veliparib", "Niraparib", "Rucaparib"),
-  class  = c("APO", "Unknown", "Type_II", "Type_II", "Type_III", "Type_III", "Type_III"),
-  color  = c("grey40", "darkorange", "#E41A1C", "#FF7F00", "#377EB8", "#4DAF4A", "#984EA3"),
-  lty    = c("dotted", "dashed", "solid", "solid", "solid", "solid", "solid"),
-  stringsAsFactors = FALSE
-)
-
+.sm_csv <- if (file.exists("common/ligands.csv")) "common/ligands.csv" else {
+  stop("cannot find common/ligands.csv (run scripts from the repository root)")
+}
+.li <- read.csv(.sm_csv, stringsAsFactors = FALSE, na.strings = "")
+sys_meta <- .li[, c("ligand", "label", "class", "color", "lty")]
+sys_meta$class <- gsub("_", " ", sys_meta$class)   # "Type II" / "Type III"
 sys_display_order <- c("APO", "AZD5305", "olaparib", "talazoparib",
                        "niraparib", "rucaparib", "veliparib")

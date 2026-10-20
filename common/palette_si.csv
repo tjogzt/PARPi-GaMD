@@ -1,8 +1,8 @@
 system,label,color
-APO,APO,#7A7A7A
-talazoparib,Talazoparib,#C23531
-niraparib,Niraparib,#9D2933
-olaparib,Olaparib,#3D6BA8
-rucaparib,Rucaparib,#177CB0
-veliparib,Veliparib,#B36B2E
-AZD5305,AZD5305,#5E8C5E
+APO,APO,grey40
+talazoparib,Talazoparib,#FF7F00
+niraparib,Niraparib,#4DAF4A
+olaparib,Olaparib,#E41A1C
+rucaparib,Rucaparib,#984EA3
+veliparib,Veliparib,#377EB8
+AZD5305,AZD5305,#8C510A
