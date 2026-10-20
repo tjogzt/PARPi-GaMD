@@ -1,0 +1,5 @@
+panel,rho,p_exact,cnt120
+harmonized neutral (tala, nira, ola, ruca, veli),-0.154,0.8333,100
+harmonized fully protonated,-0.667,0.2667,32
+harmonized neutral, nira = 3-seed mean,0.154,0.8333,100
+harmonized protonated, nira = 3-seed mean,-0.205,0.7667,92

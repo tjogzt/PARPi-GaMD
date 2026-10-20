@@ -1,0 +1,13 @@
+span_C3,82.23762920515459
+nbins,77
+n_valid,65
+max_bin_index,51
+max_bin_occ,2
+max_bin_edge,False
+min_bin_index,54
+min_bin_occ,6
+min_bin_edge,False
+drop_max_bin_span,137.74721732721883
+drop_max_bin_n_frames_removed,2
+drop_min_bin_span,79.52689562988375
+drop_min_bin_n_frames_removed,6

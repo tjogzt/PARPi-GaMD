@@ -425,7 +425,8 @@ rec("A", "estimatrix cells", not mbad, str(mbad[:4]) or "14/14")
 
 # --------------------------------------------- tex presence (C tier)
 tex_checks = [
-    ("abstract rho", ms, "$\\rho = -0.67$ (exact $p = 0.267$"),
+    ("abstract harmonized rho", ms, "$\\rho = -0.15$ (exact $p = 0.833$"),
+    ("abstract convention-dependent", ms, "both sign and magnitude are convention-dependent"),
     ("abstract audit rho", ms, "$\\rho = -0.21$ ($p = 0.767$)"),
     ("abstract pmin", ms, "four of 120 data permutations"),
     ("abstract window band", ms, "4.6--18.4~kcal/mol"),
@@ -481,6 +482,18 @@ tex_checks = [
     ("old posterior gone", ms, "producing a posterior probability for the direction"),
     ("old reliably gone", cv, "reliably certifies"),
     ("ratio pm gone", ms, "$1.16 \\pm 0.53$"),
+    ("harmonized spans sentence", ms, "30.5 (talazoparib), 18.7 (niraparib), 36.0 (olaparib)"),
+    ("harmonized neutral rho", ms, "$\\rho = -0.15$ (exact $p = 0.833$, $100/120$)"),
+    ("harmonized protonated rho", ms, "gives $\\rho = -0.67$ ($p = 0.267$, $32/120$)"),
+    ("unidentifiable sentence", ms, "at this design it is unidentifiable"),
+    ("limitations harmonized", ms, "re-analysed under a common 50-ps cadence"),
+    ("fig3 archival note", ms, "Panels A--C use the archival convention (Table~S5)"),
+    ("SI table S18", si, "Table S18: Harmonized-convention S2 CV1 spans"),
+    ("SI fig S14", si, "Figure S14: Harmonized-convention association"),
+    ("SI 82.2 diagnosis", si, "removing those two frames raises the recomputed span to 137.7"),
+    ("SI q90 t95", si, "quantile spans (q90 36.9, t95 43.6"),
+    ("SI s62 provenance", si, "harmonized re-analysis (Table~S18, Figure~S14)"),
+    ("cover harmonized", cv, "$\\rho = -0.15$ (exact $p = 0.833$)"),
 ]
 for cid, tex, s in tex_checks:
     neg = cid in ("AZD misref gone", "old two-protonated gone", "old posterior gone",
