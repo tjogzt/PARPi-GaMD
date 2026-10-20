@@ -1,0 +1,54 @@
+<?xml version="1.0" ?>
+<gamd>
+    <temperature>300.0</temperature>
+
+    <system>
+        <nonbonded-method>PME</nonbonded-method>
+        <nonbonded-cutoff>1.0</nonbonded-cutoff>
+        <constraints>HBonds</constraints>
+    </system>
+
+    <barostat>
+        <pressure>1.0</pressure>
+        <frequency>25</frequency>
+    </barostat>
+
+    <run-minimization>False</run-minimization>
+
+    <integrator>
+        <algorithm>langevin</algorithm>
+        <boost-type>lower-dual</boost-type>
+        <sigma0>
+            <primary>6.0</primary>
+            <secondary>6.0</secondary>
+        </sigma0>
+        <random-seed>123</random-seed>
+        <dt>0.002</dt>
+        <friction-coefficient>1.0</friction-coefficient>
+        <number-of-steps>
+            <conventional-md-prep>100000</conventional-md-prep>
+            <conventional-md>1000000</conventional-md>
+            <gamd-equilibration-prep>100000</gamd-equilibration-prep>
+            <gamd-equilibration>5000000</gamd-equilibration>
+            <gamd-production>13000000</gamd-production>
+            <averaging-window-interval>25000</averaging-window-interval>
+        </number-of-steps>
+    </integrator>
+
+    <input-files>
+        <amber>
+            <topology>/root/autodl-tmp/PARPi_design/runs_multiseed/tala_s2/tala.prmtop</topology>
+            <coordinates type="rst7">/root/autodl-tmp/PARPi_design/runs_multiseed/tala_s2/tala_s2_equil12ns.rst7</coordinates>
+        </amber>
+    </input-files>
+
+    <outputs>
+        <directory>/root/autodl-tmp/PARPi_design/runs_multiseed/tala_s2/gamd_out</directory>
+        <overwrite-output>True</overwrite-output>
+        <reporting>
+            <energy><interval>25000</interval></energy>
+            <coordinates><file-type>DCD</file-type></coordinates>
+            <statistics><interval>25000</interval></statistics>
+        </reporting>
+    </outputs>
+</gamd>

@@ -71,9 +71,12 @@ pB <- ggplot(b, aes(est, mean, fill = kind)) +
 
 ## ---- Panel C: positive control (planted-association recovery, tie-aware) ----
 c7g <- read.csv("data/analysis/r6/c7g_positive_control.csv")
+c7gx <- read.csv("data/analysis/r6/c7g_positive_control_extra.csv")
 sig_levels <- c(2, 4.6, 8, 15, 18.4)
 c7g$sigma_lab <- factor(sprintf("\u03c3 = %g kcal/mol", c7g$sigma_kcal),
                         levels = sprintf("\u03c3 = %g kcal/mol", sig_levels))
+c7gx$sigma_lab <- factor(sprintf("\u03c3 = %g kcal/mol", c7gx$sigma_kcal),
+                         levels = sprintf("\u03c3 = %g kcal/mol", sig_levels))
 sig_cols <- setNames(c("#C23531", "#9D2933", "#3D6BA8", "#177CB0", "#4DAF4A"),
                      sprintf("\u03c3 = %g kcal/mol", sig_levels))
 sig_ltys <- setNames(c("dashed", "solid", "solid", "solid", "solid"),
@@ -84,6 +87,7 @@ pC <- ggplot(c7g, aes(delta_kcal, detect_rate, color = sigma_lab, linetype = sig
   geom_hline(yintercept = 0.05, linetype = "dotted", color = "grey40", linewidth = 0.5) +
   geom_line(linewidth = 0.8) +
   geom_point(size = 1.0) +
+  geom_point(data = c7gx, shape = 1, size = 1.7, stroke = 0.8, show.legend = FALSE) +
   scale_color_manual(values = sig_cols, name = NULL) +
   scale_linetype_manual(values = sig_ltys, name = NULL) +
   guides(color = guide_legend(nrow = 1), linetype = guide_legend(nrow = 1)) +
@@ -93,7 +97,8 @@ pC <- ggplot(c7g, aes(delta_kcal, detect_rate, color = sigma_lab, linetype = sig
            label.padding = unit(0.08, "lines"), fill = "white", alpha = 0.85) +
   labs(x = "planted separation between adjacent ranks (kcal/mol)",
        y = "detection rate (p < 0.05)",
-       title = "C  Positive control: planted-association recovery (tie-aware; 1,500 worlds/cell)") +
+       title = "C  Positive control: planted-association recovery (tie-aware; 1,500 worlds/cell)",
+       subtitle = "open circles: extended grid at the panel separations (2.6/3.3/5.3 kcal/mol; 3,000 worlds/cell)") +
   theme_bw(base_size = 8, base_family = "Arial") +
   theme(panel.grid.minor = element_blank(),
         legend.position = "bottom", legend.direction = "horizontal",
@@ -102,6 +107,7 @@ pC <- ggplot(c7g, aes(delta_kcal, detect_rate, color = sigma_lab, linetype = sig
         legend.key = element_rect(fill = "transparent"),
         axis.text = element_text(size = 9), axis.title = element_text(size = 9),
         plot.title = element_text(size = 10),
+        plot.subtitle = element_text(size = 6.6, colour = "grey25"),
         panel.border = element_blank(),
         axis.line = element_line(color = "black", linewidth = 0.5))
 

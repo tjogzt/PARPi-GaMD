@@ -1,0 +1,46 @@
+{
+  "tala": {
+    "system": "talazoparib",
+    "source": "/Volumes/tjogzt4T/PARPi_data/sys2_talazoparib/output.dcd",
+    "prmtop": "/Volumes/tjogzt4T/PARPi_data/sys2_talazoparib/sys2_talazoparib.prmtop",
+    "prmtop_sha256": "442c09214407aa84",
+    "n_frames": 26000,
+    "frame_index": 12000,
+    "step": 6000000,
+    "time_ns": 12.0,
+    "n_atoms": 285796,
+    "box": [
+      139.51824951171875,
+      123.88103485107422,
+      165.5756072998047,
+      90.0,
+      90.0,
+      90.0
+    ],
+    "cv1_A": 63.9,
+    "cv2_A": 22.4,
+    "rst7": "/Users/taozhu/clacky_workspace/PARPi_design/submission/PARPi-GaMD/data/restarts/tala_s2_equil12ns.rst7"
+  },
+  "veli": {
+    "system": "veliparib",
+    "source": "/Volumes/tjogzt4T/PARPi_data/sys2_veliparib/output.dcd",
+    "prmtop": "/Volumes/tjogzt4T/PARPi_data/sys2_veliparib/sys2_veliparib.prmtop",
+    "prmtop_sha256": "aab739b03274cf16",
+    "n_frames": 1931,
+    "frame_index": 1200,
+    "step": 6000000,
+    "time_ns": 12.0,
+    "n_atoms": 285788,
+    "box": [
+      139.5345916748047,
+      123.89554595947266,
+      165.59500122070312,
+      90.0,
+      90.0,
+      90.0
+    ],
+    "cv1_A": 63.57,
+    "cv2_A": 24.09,
+    "rst7": "/Users/taozhu/clacky_workspace/PARPi_design/submission/PARPi-GaMD/data/restarts/veli_s2_equil12ns.rst7"
+  }
+}
