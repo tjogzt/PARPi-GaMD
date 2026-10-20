@@ -114,21 +114,24 @@ draw_all <- function() {
          fill = c("grey30", adjustcolor("grey30", 0.42)), border = "grey20",
          bty = "n", cex = 11/12, seg.len = 0.8, y.intersp = 1.6,
          inset = c(0, 0.02))
-  text(0.18, 55.5, "wells \u00B1 C1\u2013C3 spread;", adj = 0, cex = 11/12, col = "grey30")
-  text(0.18, 50.5, "grey band = 7-system S1 range", adj = 0, cex = 11/12, col = "grey30")
+  par(xpd = FALSE)
+  text(0.25, 56.0, "wells \u00B1 C1\u2013C3 spread", adj = 0, cex = 1.0, col = "grey30")
+  text(0.25, 51.0, "band: 7-system S1 range", adj = 0, cex = 1.0, col = "grey30")
 
   ## ---- Panel C: convergence + 22 ns truncation ----
   par(mar = c(2.7, 3.1, 2.6, 0.7))
-  plot(0, 0, type = "n", xlim = c(0, 205), ylim = c(5, 42), axes = FALSE,
+  plot(0, 0, type = "n", xlim = c(0, 205), ylim = c(38, 92), axes = FALSE,
        xlab = "", ylab = "")
-  axis(1, cex.axis = 11/12); axis(2, at = seq(10, 40, 10), cex.axis = 11/12)
+  axis(1, cex.axis = 11/12); axis(2, at = seq(40, 80, 20), cex.axis = 11/12)
   for (l in ligs) { cd <- conv[conv$ligand == l, ]; cd <- cd[order(cd$time_ns), ]
     lines(cd$time_ns, cd$well_depth, col = cols[l], lwd = 1.0)
     segments(cd$time_ns[nrow(cd)] - 22, tail(cd$well_depth, 1),
              cd$time_ns[nrow(cd)] + 3, tail(cd$well_depth, 1),
-             col = cols[l], lty = 3, lwd = 0.7) }
+             col = cols[l], lty = 3, lwd = 0.7)
+  }
   abline(v = 22, col = "grey35", lty = 2, lwd = 0.8)
-  text(30, 40.5, "22 ns truncation", adj = 0, cex = 11/12, col = "grey35")
+  legend("topright", legend = ligs, col = cols[ligs], lwd = 1.4, bty = "n",
+         cex = 1.0, inset = c(0.01, 0.02))
   mtext("Production time (ns)", 1, line = 1.9, cex = 9/12)
   mtext("Cumulative S1 span (C3)", 2, line = 2.2, cex = 9/12)
   usr <- par("usr")

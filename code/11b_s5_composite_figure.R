@@ -89,8 +89,10 @@ p_ratio <- ggplot(sc, aes(x = x, y = y, label = label)) +
   geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "grey50") +
   geom_point(aes(color = label, shape = fill_key), size = 3.0, stroke = 0.9) +
   scale_shape_manual(values = c("base" = 16, "prot" = 1), guide = "none") +
-  ggrepel::geom_text_repel(size = 3.0, force = 2, box.padding = 0.35, max.overlaps = Inf,
-                           seed = 49, family = "Arial") +
+  ggrepel::geom_text_repel(size = 3.0, force = 7, box.padding = 0.9,
+                           point.padding = 0.9, min.segment.length = 0,
+                           max.overlaps = Inf, seed = 49, max.iter = 10000,
+                           family = "Arial") +
   scale_color_manual(values = c("APO" = "grey40", "AZD5305" = "#8C510A",
                                 "Olaparib" = "#E41A1C", "Talazoparib" = "#FF7F00",
                                 "Veliparib" = "#377EB8", "Niraparib" = "#4DAF4A",
@@ -117,21 +119,21 @@ plot_df2 <- data.frame(
   ligand = b8, label = sys10$label[m10], type = sys10$type[m10],
   wd_ratio = pv$AAI_C3[m8], wd_S1 = pv$S1_C3[m8],
   state = "base", shape2 = sys10$type[m10], stringsAsFactors = FALSE)
-nira_neut <- data.frame(ligand = "niraparib", label = "Niraparib\n(neutral)",
+nira_neut <- data.frame(ligand = "niraparib", label = "Niraparib (neutral)",
                         type = "Type III", wd_ratio = pv$AAI_C3[pv$ligand == "niraparib"],
                         wd_S1 = pv$S1_C3[pv$ligand == "niraparib"],
                         state = "nira_neutral", shape2 = "nira", stringsAsFactors = FALSE)
-nira_prot <- data.frame(ligand = "niraparib", label = "Niraparib\n(protonated)",
+nira_prot <- data.frame(ligand = "niraparib", label = "Niraparib (prot.)",
                         type = "Type III", wd_ratio = pv$AAI_C3[pv$ligand == "niraparib_prot"],
                         wd_S1 = pv$S1_C3[pv$ligand == "niraparib_prot"],
                         state = "nira_protonated", shape2 = "nira", stringsAsFactors = FALSE)
-ruca_prot2 <- data.frame(ligand = "rucaparib", label = "Rucaparib\n(protonated)",
+ruca_prot2 <- data.frame(ligand = "rucaparib", label = "Rucaparib (prot.)",
                          type = "Type III", wd_ratio = pv$AAI_C3[pv$ligand == "rucaparib_prot"],
                          wd_S1 = pv$S1_C3[pv$ligand == "rucaparib_prot"],
                          state = "ruca_protonated", shape2 = "ruca", stringsAsFactors = FALSE)
 # (2026-10-15) veliparib protonated state added: the audited-dominant panel
 # comprises all three state-corrected ligands; this point was missing.
-veli_prot2 <- data.frame(ligand = "veliparib", label = "Veliparib\n(protonated)",
+veli_prot2 <- data.frame(ligand = "veliparib", label = "Veliparib (prot.)",
                          type = "Type III", wd_ratio = pv$AAI_C3[pv$ligand == "veliparib_prot"],
                          wd_S1 = pv$S1_C3[pv$ligand == "veliparib_prot"],
                          state = "veli_protonated", shape2 = "veli", stringsAsFactors = FALSE)
@@ -144,8 +146,9 @@ p_2d <- ggplot(plot_df2, aes(x = wd_ratio, y = wd_S1)) +
                      breaks = c("Type II", "Type III", "Extension", "Unknown"),
                      name = "Classification") +
   ggrepel::geom_text_repel(aes(label = label), size = 3.0, max.overlaps = Inf,
-                           seed = 49, min.segment.length = 0.3, box.padding = 0.6,
-                           force = 4, max.iter = 5000, family = "Arial") +
+                           seed = 49, min.segment.length = 0.2, box.padding = 0.55,
+                           point.padding = 0.45, force = 4, max.iter = 10000,
+                           family = "Arial") +
   scale_color_manual(values = c("Type II" = "#67000D", "Type III" = "#08306B",
                                "Extension" = "#7F2704", "Unknown" = "#525252"),
                      breaks = c("Type II", "Type III", "Extension", "Unknown"),

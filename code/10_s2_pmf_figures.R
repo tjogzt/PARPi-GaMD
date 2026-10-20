@@ -116,9 +116,11 @@ p_cv1_list <- lapply(ligand_order, function(lig) {
     geom_vline(xintercept = pmf_min, color = meta$color, 
                linetype = "dashed", linewidth = 0.3) +
     labs(title = meta$label, x = "Protein–DNA (Å)", y = "PMF (kcal/mol)") +
-    annotate("text", x = pmf_min, y = max(df$PMF_norm) * 0.85,
-             label = sprintf("%.1f", pmf_min), 
-             hjust = 1.15, size = 2.9, color = meta$color) +
+    annotate("label", x = pmf_min, y = max(df$PMF_norm) * 0.85,
+             label = sprintf("%.1f Å", pmf_min), 
+             hjust = 0.5, size = 3.0, colour = meta$color,
+             fill = "white", alpha = 0.9, label.size = 0,
+             label.padding = unit(0.08, "lines"), family = "Arial") +
     theme_pmf + theme(legend.position = "none", aspect.ratio = 1)   # 2026-10-14: square
 })
 
@@ -133,9 +135,11 @@ p_cv2_list <- lapply(ligand_order, function(lig) {
     geom_vline(xintercept = pmf_min, color = meta$color, 
                linetype = "dashed", linewidth = 0.3) +
     labs(title = meta$label, x = "HD–ART (Å)", y = "PMF (kcal/mol)") +
-    annotate("text", x = pmf_min, y = max(df$PMF_norm) * 0.85,
-             label = sprintf("%.1f", pmf_min), 
-             hjust = 1.15, size = 2.9, color = meta$color) +
+    annotate("label", x = pmf_min, y = max(df$PMF_norm) * 0.85,
+             label = sprintf("%.1f Å", pmf_min), 
+             hjust = 0.5, size = 3.0, colour = meta$color,
+             fill = "white", alpha = 0.9, label.size = 0,
+             label.padding = unit(0.08, "lines"), family = "Arial") +
     theme_pmf + theme(legend.position = "none", aspect.ratio = 1)   # 2026-10-14: square
 })
 

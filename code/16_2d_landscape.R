@@ -57,7 +57,6 @@ pmf_apo  <- load_2d_grid("APO", "APO")
 # ---- Panel A: Talazoparib 2D landscape -------------------------------------
 p_a <- ggplot(pmf_tala, aes(x = CV1, y = CV2, fill = PMF, z = PMF)) +
   geom_raster() +
-  geom_contour(color = "white", linewidth = 0.3, bins = 8, alpha = 0.6) +
   scale_fill_gradientn(colors = c("#2166AC", "#92C5DE", "white", "#F4A582", "#B2182B"),
                        name = "PMF (B,C,E)\nkcal/mol", limits = c(0, 8)) +
   labs(x = "CV1: Protein-DNA (Å)", y = "CV2: HD-ART (Å)",
@@ -67,7 +66,6 @@ p_a <- ggplot(pmf_tala, aes(x = CV1, y = CV2, fill = PMF, z = PMF)) +
 # ---- Panel B: Veliparib 2D landscape ---------------------------------------
 p_b <- ggplot(pmf_veli, aes(x = CV1, y = CV2, fill = PMF, z = PMF)) +
   geom_raster() +
-  geom_contour(color = "white", linewidth = 0.3, bins = 8, alpha = 0.6) +
   scale_fill_gradientn(colors = c("#2166AC", "#92C5DE", "white", "#F4A582", "#B2182B"),
                        name = "PMF (B,C,E)\nkcal/mol", limits = c(0, 8)) +
   labs(x = "CV1: Protein-DNA (Å)", y = "CV2: HD-ART (Å)",
@@ -82,7 +80,6 @@ pmf_diff$ligand <- "ΔPMF"
 
 p_c <- ggplot(pmf_diff, aes(x = CV1, y = CV2, fill = PMF, z = PMF)) +
   geom_raster() +
-  geom_contour(color = "grey40", linewidth = 0.3, bins = 8, alpha = 0.5) +
   scale_fill_gradient2(low = "#2166AC", mid = "white", high = "#B2182B",
                        name = "ΔPMF (D)\nkcal/mol", midpoint = 0) +
   labs(x = "CV1: Protein-DNA (Å)", y = "CV2: HD-ART (Å)",
@@ -94,7 +91,6 @@ p_c <- ggplot(pmf_diff, aes(x = CV1, y = CV2, fill = PMF, z = PMF)) +
 # ---- Panel D: APO (ligand-free control) 2D landscape ------------------------
 p_d <- ggplot(pmf_apo, aes(x = CV1, y = CV2, fill = PMF, z = PMF)) +
   geom_raster() +
-  geom_contour(color = "white", linewidth = 0.3, bins = 8, alpha = 0.6) +
   scale_fill_gradientn(colors = c("#2166AC", "#92C5DE", "white", "#F4A582", "#B2182B"),
                        name = "PMF (B,C,E)\nkcal/mol", limits = c(0, 8)) +
   labs(x = "CV1: Protein-DNA (Å)", y = "CV2: HD-ART (Å)",
@@ -170,7 +166,6 @@ if (length(all_pmf) > 0) {
   
   p_all <- ggplot(all_df, aes(x = CV1, y = CV2, fill = PMF, z = PMF)) +
     geom_raster() +
-    geom_contour(color = "white", linewidth = 0.2, bins = 6, alpha = 0.4) +
     scale_fill_gradientn(colors = c("#2166AC", "#92C5DE", "white", "#F4A582", "#B2182B"),
                          name = "kcal/mol") +
     facet_wrap(~ ligand, ncol = 4, scales = "free") +

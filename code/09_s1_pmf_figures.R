@@ -78,9 +78,11 @@ p_list <- lapply(sys_meta$ligand, function(lig) {
     geom_vline(xintercept = pmf_min, color = meta$color, 
                linetype = "dashed", linewidth = 0.3) +
     labs(title = meta$label, x = "HD–ART Distance (Å)", y = "PMF (kcal/mol)") +
-    annotate("text", x = pmf_min, y = max(df$PMF_norm) * 0.85,
+    annotate("label", x = pmf_min, y = max(df$PMF_norm) * 0.85,
              label = sprintf("%.1f Å", pmf_min), 
-             hjust = -0.15, size = 2.9, color = meta$color) +
+             hjust = 0.5, size = 3.0, colour = meta$color,
+             fill = "white", alpha = 0.9, label.size = 0,
+             label.padding = unit(0.08, "lines"), family = "Arial") +
     theme_pmf +
     theme(aspect.ratio = 1)   # 2026-10-14: square panel area
 })

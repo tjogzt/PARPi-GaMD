@@ -224,16 +224,20 @@ p1 <- ggplot(results, aes(x = ligand_n, y = well_depth, color = ligand,
   theme_7pt + theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 p2 <- ggplot(merged[!is.na(merged$wd_sd) & !is.na(merged$wd_sd_orig), ],
-             aes(x = wd_sd_orig, y = wd_sd, label = ligand, color = type)) +
+             aes(x = wd_sd_orig, y = wd_sd, label = ligand, color = ligand)) +
   geom_point(size = 3) +
-  geom_text(aes(hjust = ifelse(ligand == "veliparib", 1.15, -0.15)),
-            vjust = 0.5, size = 3.0, show.legend = FALSE) +
+  ggrepel::geom_text_repel(size = 3.0, max.overlaps = Inf, seed = 49,
+                           box.padding = 0.45, point.padding = 0.3,
+                           min.segment.length = 0.2, family = "Arial",
+                           show.legend = FALSE) +
   geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "grey50") +
-  scale_color_manual(values = c("Type II" = "#67000D", "Type III" = "#08306B", "Unknown" = "#525252")) +
+  coord_cartesian(xlim = c(13.2, 19.6), ylim = c(0, 0.62)) +
+  scale_color_manual(values = color_map, name = "Ligand") +
   labs(x = "SD across C1-C3 cumulant (original)", y = "SD across replicates",
        title = "B  Cross-Trajectory vs Cumulant Uncertainty") +
   theme_7pt +
-  theme(axis.title.x = element_text(margin = margin(t = -26)))
+  theme(axis.title.x = element_text(margin = margin(t = -26)),
+        legend.position = "none")
 
 # Panel C redesign (2026-10-05): the two pipelines use different collective
 # variables / reweighting and their well depths are not directly comparable.

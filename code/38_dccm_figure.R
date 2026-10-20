@@ -2,9 +2,8 @@
 # Regenerate Fig_DCCM_Allostery.pdf — 7-system HDxART DCCM block heatmap (whole-protein superposition, unified protocol)
 #
 # Output: vector PDF (figures/pdf/Fig_DCCM_Allostery.pdf) — canonical, text-searchable.
-# SI compilation copy: manuscripts/jcim/si_figures/Fig_DCCM_Allostery.pdf is a 300-dpi raster
-# version of the same figure (keeps the combined SI PDF under the 2 MB submission limit);
-# regenerate it with scripts/rasterize_si_figures.sh after any change to this script.
+# SI compilation copy: manuscripts/jcim/si_figures/Fig_DCCM_Allostery.pdf is the same vector PDF
+# (copy it after any change to this script).
 #
 # Purpose:  Render the domain cross-correlation matrix (DCCM) allostery figure (SI Figure S13).
 # Created:  2026-10-02 (header standardised 2026-10-05; R6 rebuild 2026-10-10)
@@ -62,8 +61,8 @@ g_ref <- ggplot2::ggplotGrob(plots[[1]])
 leg_shared <- g_ref$grobs[[which(vapply(g_ref$grobs, function(x) x$name, "") == "guide-box")]]
 plots <- lapply(plots, function(p) p + theme(legend.position = "none"))
 
-p <- wrap_plots(c(plots, list(leg_shared)), ncol = 3)
-cairo_pdf("figures/pdf/Fig_DCCM_Allostery.pdf", width = 178/25.4, height = 189/25.4, pointsize = 9)
+p <- wrap_plots(c(plots, list(leg_shared)), ncol = 4)
+cairo_pdf("figures/pdf/Fig_DCCM_Allostery.pdf", width = 178/25.4, height = 112/25.4, pointsize = 9)
 print(p)
 dev.off()
 cat("Saved: figures/pdf/Fig_DCCM_Allostery.pdf\n")
