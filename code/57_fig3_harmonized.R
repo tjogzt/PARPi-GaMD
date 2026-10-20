@@ -122,7 +122,7 @@ pc <- ggplot(mk, aes(panel, row, fill = rho)) +
                 colour = abs(rho) > 0.55), size = 3.0, family = "Arial") +
   scale_colour_manual(values = c(`TRUE` = "white", `FALSE` = "grey15"), guide = "none") +
   scale_fill_gradient2(low = "#3D6BA8", mid = "#F7F7F7", high = "#C23531",
-                       midpoint = 0, limits = c(-1, 1), name = expression(rho)) +
+                       midpoint = 0, limits = c(-1, 1), name = "Spearman r") +
   labs(x = NULL, y = NULL, title = "C  Estimator--state matrix (harmonized)") +
   theme_bw(base_size = 8, base_family = "Arial") +
   theme(panel.grid = element_blank(),

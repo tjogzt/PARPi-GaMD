@@ -98,13 +98,13 @@ p_well_depth <- ggplot(features_df, aes(x = ligand, y = well_depth, fill = syste
 p_rc_min <- ggplot(features_df, aes(x = ligand, y = rc_min, fill = system)) +
   geom_bar(stat = "identity", position = "dodge", width = 0.6) +
   scale_fill_manual(values = c("S1" = "#2166AC", "S2" = "#B2182B")) +
-  labs(x = NULL, y = "RC at Minimum (Å)", title = "Equilibrium Distance") +
+  labs(x = NULL, y = "RC at Minimum (Å)", title = "Equilibrium distance") +
   theme_7pt + theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 p_rc_range <- ggplot(features_df, aes(x = ligand, y = rc_range, fill = system)) +
   geom_bar(stat = "identity", position = "dodge", width = 0.6) +
   scale_fill_manual(values = c("S1" = "#2166AC", "S2" = "#B2182B")) +
-  labs(x = NULL, y = "RC Range (Å)", title = "Sampling Range") +
+  labs(x = NULL, y = "RC Range (Å)", title = "Sampling range") +
   theme_7pt + theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 p_features <- (p_well_depth | p_rc_min | p_rc_range) +

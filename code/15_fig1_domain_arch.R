@@ -123,17 +123,25 @@ inhib_data <- data.frame(
 
 # niraparib enters by rank only: its bar is drawn hollow (non-quantitative
 # placeholder height) and labelled accordingly.
-inhib_data$bar_label[inhib_data$ligand == "Niraparib"] <- ">1\n(rank only;\nnot a fold-change)"
+inhib_data$bar_label[inhib_data$ligand == "Niraparib"] <- NA  # drawn separately, left of the bar
 nira <- inhib_data[inhib_data$ligand == "Niraparib", ]
 
+inhib_data$xf <- as.numeric(inhib_data$ligand)
+nira <- inhib_data[inhib_data$ligand == "Niraparib", ]
 p_c <- ggplot(inhib_data, aes(x = ligand, y = trap_potency)) +
-  geom_bar(data = inhib_data[inhib_data$ligand != "Niraparib", ],
-           aes(fill = type), stat = "identity", width = 0.7,
-           color = "grey30", linewidth = 0.2) +
-  geom_bar(data = nira, stat = "identity", width = 0.7,
-           fill = "white", color = "#377EB8", linetype = "dashed", linewidth = 0.6) +
+  # geom_bar has a zero baseline, which is invalid on a log axis and silently
+  # dropped the two 1.0 bars; draw rectangles from the axis floor instead.
+  geom_rect(data = inhib_data[inhib_data$ligand != "Niraparib", ],
+            aes(xmin = xf - 0.35, xmax = xf + 0.35, ymin = 0.01,
+                ymax = trap_potency, fill = type),
+            color = "grey30", linewidth = 0.2) +
+  geom_rect(data = nira, aes(xmin = xf - 0.35, xmax = xf + 0.35,
+                             ymin = 0.01, ymax = trap_potency),
+            fill = "white", color = "#377EB8", linetype = "dashed", linewidth = 0.6) +
   geom_text(aes(label = bar_label, y = trap_potency * 1.5),
-            size = 3.0, vjust = 0, lineheight = 0.9) +
+            size = 3.0, vjust = 0, lineheight = 0.9, na.rm = TRUE) +
+  annotate("text", x = 4.45, y = 18, label = ">1 (rank only;\nnot a fold-change)",
+           hjust = 1, vjust = 1, size = 3.0, lineheight = 0.9) +
   scale_fill_manual(values = c("Type II" = "#E41A1C", "Type III" = "#377EB8", "Unknown" = "darkorange"),
                     breaks = c("Type II", "Type III")) +
   guides(fill = guide_legend(title = "HX-MS Type", nrow = 1)) +
