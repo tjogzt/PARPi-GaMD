@@ -52,7 +52,7 @@ rows = [
     ("D1  Windowed estimator variance",
      "variability vs separations (2.6\u20135.3 kcal/mol); no stable order at 26 ns"),
     ("D2  Estimator\u2013consistency matrix",
-     "no cell significant (all p \u2265 0.267); sign unstable across estimators"),
+     "no cell significant (all p \u2265 0.133, 48 cells); sign unstable"),
     ("D3  Convergence\u2013timescale scaling",
      "no decay over 2\u201324 ns windows; no extrapolated sampling length"),
     ("D4  Ordinal sensitivity model",
@@ -60,7 +60,7 @@ rows = [
     ("D5  Counterfactual sensitivity",
      "leave-one-out \u22120.63\u2026+0.63; single-point exclusion flips sign"),
     ("D6  Chemical-state audit",
-     "corrections move \u03c1 \u22120.67 \u2192 \u22120.05; state vs noise unresolved"),
+     "state corrections flip \u03c1 (\u22120.87\u2026+0.36); state vs noise unresolved"),
 ]
 x0, wd = 0.5, 99.0
 ytop, rh = 78.5, 10.7  # 2026-10-13: rh 9.2 -> 10.7 — absorbs the stale 13.4-unit chasm above the verdict; section gap now ≈ heading gap

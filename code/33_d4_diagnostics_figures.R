@@ -40,14 +40,12 @@ signal <- max(gaps)
 d[, xpos := as.numeric(system) - 0.5]
 p <- ggplot(d, aes(x = xpos, y = c3_span_sd)) +
   geom_hline(yintercept = signal, linetype = "dashed", color = "#9D2933", linewidth = 0.7) +
-  annotate("text", x = -0.015, y = 4.2, label = "separations 2.6-5.3",
-           color = "#9D2933", size = 3.0, family = "Arial", angle = 90, hjust = 0, vjust = 0.5) +
+  annotate("text", x = 4.85, y = 19.35, label = "separations 2.6-5.3",
+           color = "#9D2933", size = 3.0, family = "Arial", hjust = 1, vjust = 1) +
   geom_col(aes(fill = state), alpha = 0.85, width = 0.62) +
   scale_fill_manual(values = c("neutral" = "#3D6BA8", "protonated (+1)" = "#C23531"), name = NULL) +
-  theme(legend.position = c(0.80, 0.96), legend.text = element_text(size = 8),
-        legend.key.size = unit(0.28, "cm"), legend.background = element_blank(),
-        legend.key = element_rect(fill = "transparent")) +
-  scale_y_continuous(limits = c(0, 18), expand = expansion(mult = c(0, 0.02))) +
+
+  scale_y_continuous(limits = c(0, 19.6), expand = expansion(mult = c(0, 0.02))) +
   scale_x_continuous(breaks = seq_along(levels(d$system)) - 0.5,
                      labels = levels(d$system),
                      limits = c(-0.12, 4.88),
@@ -58,6 +56,12 @@ p <- ggplot(d, aes(x = xpos, y = c3_span_sd)) +
         axis.title = element_text(size = 8),
         plot.title = element_text(size = 9, face = "bold"),
         axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "inside", legend.position.inside = c(0.015, 0.985),
+        legend.justification = c(0, 1),
+        legend.text = element_text(size = 8),
+        legend.key.size = unit(0.28, "cm"),
+        legend.background = element_blank(),
+        legend.key = element_rect(fill = "transparent"),
         aspect.ratio = 0.9)
 ggsave("results/figures/Fig_D4_WindowNoise.pdf", p, device = cairo_pdf, width = 140/25.4, height = 101.8/25.4, pointsize = 8)
 cat("Saved: Fig_D4_WindowNoise.pdf\n")

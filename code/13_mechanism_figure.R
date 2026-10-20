@@ -140,7 +140,7 @@ p_a <- ggplot(s1_all, aes(x = RC, y = PMF_norm, color = label)) +
   geom_line(linewidth = 0.5) +
   scale_color_manual(values = setNames(sys_meta$color, sys_meta$label)) +
   labs(x = "HD-ART Distance (Å)", y = "Free Energy (kcal/mol)",
-       title = "A  S1: CAT-only HD-ART Free Energy Landscape") +
+       title = "A  S1: CAT-only\nHD-ART free-energy landscape") +
   theme_f2 +
   theme(legend.position = "bottom", legend.title = element_blank(),
         legend.margin = ggplot2::margin(0, 0, 1, 0, unit = "pt"),
@@ -173,7 +173,7 @@ p_b <- ggplot(bar_data, aes(x = label, y = well_depth, fill = system)) +
   labs(x = NULL, y = "span (kcal/mol)",
        title = "B  HD-ART Energy Landscape:\nDNA-free vs DNA-bound") +
   theme_f2 +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 7),
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
         legend.position = "bottom", legend.title = element_blank(),
         legend.margin = ggplot2::margin(0, 0, 1, 0, unit = "pt"),
         legend.box.spacing = grid::unit(2, "pt"))

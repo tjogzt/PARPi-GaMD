@@ -93,12 +93,12 @@ pC <- ggplot(c7g, aes(delta_kcal, detect_rate, color = sigma_lab, linetype = sig
   guides(color = guide_legend(nrow = 1), linetype = guide_legend(nrow = 1)) +
   coord_cartesian(ylim = c(0, 1), xlim = c(0, 50)) +
   annotate("label", x = 6.2, y = 0.55, label = "this study's separations\n(2.6\u20135.3 kcal/mol)",
-           size = 2.6, family = "Arial", lineheight = 0.9, hjust = 0, label.size = 0.12,
+           size = 3.0, family = "Arial", lineheight = 0.9, hjust = 0, label.size = 0.12,
            label.padding = unit(0.08, "lines"), fill = "white", alpha = 0.85) +
   labs(x = "planted separation between adjacent ranks (kcal/mol)",
        y = "detection rate (p < 0.05)",
        title = "C  Positive control: planted-association recovery (tie-aware; 1,500 worlds/cell)",
-       subtitle = "open circles: extended grid at the panel separations (2.6/3.3/5.3 kcal/mol; 3,000 worlds/cell)") +
+       subtitle = "open circles: extended grid (2.6/3.3/5.3 kcal/mol; 3,000 worlds/cell)") +
   theme_bw(base_size = 8, base_family = "Arial") +
   theme(panel.grid.minor = element_blank(),
         legend.position = "bottom", legend.direction = "horizontal",
@@ -107,7 +107,7 @@ pC <- ggplot(c7g, aes(delta_kcal, detect_rate, color = sigma_lab, linetype = sig
         legend.key = element_rect(fill = "transparent"),
         axis.text = element_text(size = 9), axis.title = element_text(size = 9),
         plot.title = element_text(size = 10),
-        plot.subtitle = element_text(size = 6.6, colour = "grey25"),
+        plot.subtitle = element_text(size = 8, colour = "grey25"),
         panel.border = element_blank(),
         axis.line = element_line(color = "black", linewidth = 0.5))
 

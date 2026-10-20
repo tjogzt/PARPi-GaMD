@@ -74,16 +74,15 @@ pa <- ggplot(d, aes(rank, cv1, colour = panel)) +
                      labels = c("1\n(weakest)", "2.5", "3", "4", "5\n(most potent)")) +
   scale_y_continuous(limits = c(17, 59.5)) +
   labs(x = "Trapping rank", y = "S2 CV1 span, C3 (kcal/mol)",
-       title = "A  CV1 span vs trapping rank (harmonized)",
-       subtitle = "\u03c1 (p): neutral \u22120.15 (.833) \u00b7 nira+1 +0.36 (.633)\nruca+1 \u22120.15 (.833) \u00b7 all+1 \u22120.67 (.267)") +
+       title = "A  CV1 span vs trapping rank (harmonized)") +
   theme_bw(base_size = 8, base_family = "Arial") +
   theme(panel.grid.minor = element_blank(), panel.grid.major.x = element_blank(),
         legend.position = "inside", legend.position.inside = c(0.02, 0.98),
-        legend.justification = c(0, 1), legend.text = element_text(size = 7),
+        legend.justification = c(0, 1), legend.text = element_text(size = 8),
+        axis.text = element_text(size = 8),
         legend.key.size = unit(0.26, "cm"),
         legend.background = element_rect(fill = alpha("white", 0.85), colour = NA),
         plot.title = element_text(size = 9, face = "bold"),
-        plot.subtitle = element_text(size = 6.2, colour = "grey25", lineheight = 1.05),
         plot.margin = margin(4, 6, 4, 4, "pt"))
 
 pb <- ggplot(d, aes(rank, ratio, colour = panel)) +
@@ -93,16 +92,15 @@ pb <- ggplot(d, aes(rank, ratio, colour = panel)) +
   scale_x_continuous(limits = c(0.55, 5.45), breaks = c(1, 2.5, 3, 4, 5),
                      labels = c("1\n(weakest)", "2.5", "3", "4", "5\n(most potent)")) +
   labs(x = "Trapping rank", y = "Span ratio, S1 / S2 CV2 (log scale)",
-       title = "B  Span ratio vs trapping rank (harmonized)",
-       subtitle = "\u03c1 (p): neutral \u22120.41 (.500) \u00b7 nira+1 +0.05 (1.000)\nruca+1 \u22120.41 (.500) \u00b7 all+1 +0.05 (1.000)") +
+       title = "B  Span ratio vs trapping rank (harmonized)") +
   theme_bw(base_size = 8, base_family = "Arial") +
   theme(panel.grid.minor = element_blank(), panel.grid.major.x = element_blank(),
         legend.position = "inside", legend.position.inside = c(0.02, 0.98),
-        legend.justification = c(0, 1), legend.text = element_text(size = 7),
+        legend.justification = c(0, 1), legend.text = element_text(size = 8),
+        axis.text = element_text(size = 8),
         legend.key.size = unit(0.26, "cm"),
         legend.background = element_rect(fill = alpha("white", 0.85), colour = NA),
         plot.title = element_text(size = 9, face = "bold"),
-        plot.subtitle = element_text(size = 6.2, colour = "grey25", lineheight = 1.05),
         plot.margin = margin(4, 6, 4, 4, "pt"))
 
 # panel C heatmap: collapse S1 (estimator-independent) to one row
@@ -121,18 +119,18 @@ mk$panel <- recode_panel(mk$panel)
 pc <- ggplot(mk, aes(panel, row, fill = rho)) +
   geom_tile(colour = "white", linewidth = 0.6) +
   geom_text(aes(label = sprintf("%+.2f", rho),
-                colour = abs(rho) > 0.55), size = 2.6, family = "Arial") +
+                colour = abs(rho) > 0.55), size = 3.0, family = "Arial") +
   scale_colour_manual(values = c(`TRUE` = "white", `FALSE` = "grey15"), guide = "none") +
   scale_fill_gradient2(low = "#3D6BA8", mid = "#F7F7F7", high = "#C23531",
                        midpoint = 0, limits = c(-1, 1), name = expression(rho)) +
   labs(x = NULL, y = NULL, title = "C  Estimator--state matrix (harmonized)") +
   theme_bw(base_size = 8, base_family = "Arial") +
   theme(panel.grid = element_blank(),
-        axis.text.x = element_text(size = 7.5),
-        axis.text.y = element_text(size = 7.2),
+        axis.text.x = element_text(size = 8),
+        axis.text.y = element_text(size = 8),
         plot.title = element_text(size = 9, face = "bold"),
         legend.key.height = unit(0.9, "cm"), legend.key.width = unit(0.28, "cm"),
-        legend.text = element_text(size = 7),
+        legend.text = element_text(size = 8),
         plot.margin = margin(4, 6, 4, 4, "pt"))
 
 fig <- (pa | pb) / pc + plot_layout(heights = c(1.08, 1.30))
