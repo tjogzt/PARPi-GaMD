@@ -10,7 +10,7 @@ Rebuilt from the scratch generator toc_v4/v6 with corrections:
   * "Bayesian ordinal" -> "Ordinal sensitivity" (R6d terminology: the model is an
     ordinal sensitivity model; Bayesian framing withdrawn)
   * stale correlation "-0.82" -> current neutral-panel "-0.67" (R6 freeze)
-  * left label kept as "six-diagnostic framework, applied uniformly" (R6 positioning:
+  * left label kept as "six-diagnostic audit workflow" (R6 positioning:
     not pre-specified / not a registered plan)
   * 2026-10-13: type scale set to 8-11 pt at the base design grid (base type was
     3.4-3.9 pt and illegible; wording and numerals untouched, only line breaks).
@@ -27,7 +27,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
 
-S = 1.5                      # single proportional scale for canvas + geometry + strokes + type
+S = 1.0                      # official ACS TOC size (3.25 x 1.75 in); single proportional scale
 BW, BH = 975, 525            # base design grid (px at 300 dpi = 3.25 x 1.75 in)
 W0, H0 = round(BW * S), round(BH * S)
 DPI = 300.0
@@ -51,17 +51,15 @@ for r, (ya, yb) in enumerate(rows):
         ax.text(PX(xa + 88), PY((ya + yb) / 2), labels[r][c], ha="center", va="center",
                 fontsize=8.0*S, color=gray, family="Arial", linespacing=1.25)
 
-# -- center column --
-ax.text(PX(500), PY(150), "n = 5\nassociation", ha="center", va="center",
-        fontsize=8.0*S, color=gray, family="Arial", linespacing=1.3)
-ax.text(PX(500), PY(227), "\u03c1 = \u22120.67", ha="center", va="center",
-        fontsize=11.0*S, color=red, family="Arial")
-ax.add_patch(FancyArrowPatch((PX(478), PY(305)), (PX(562), PY(305)), arrowstyle="-|>",
+# -- center column (no coefficients: four audit layers -> verdict) --
+ax.text(PX(500), PY(105), "n = 5\nassociation", ha="center", va="center",
+        fontsize=8.0*S, color=gray, family="Arial", linespacing=1.25)
+ax.text(PX(500), PY(232), "state\nestimator\nsampling\nrank", ha="center", va="center",
+        fontsize=8.0*S, color=red, family="Arial", linespacing=1.25)
+ax.add_patch(FancyArrowPatch((PX(500), PY(300)), (PX(500), PY(352)), arrowstyle="-|>",
              mutation_scale=8*S, lw=2.0*S, color="#555555"))
-ax.text(PX(500), PY(362), "\u03c1 = \u22120.21", ha="center", va="center",
-        fontsize=11.0*S, color=blue, family="Arial")
-ax.text(PX(500), PY(435), "after chemical-\nstate audit", ha="center", va="center",
-        fontsize=8.0*S, color=gray, family="Arial", linespacing=1.3)
+ax.text(PX(500), PY(430), "audit before\ninference", ha="center", va="center",
+        fontsize=8.0*S, color=blue, family="Arial", linespacing=1.3)
 
 # -- right red box --
 ax.add_patch(FancyBboxPatch((PX(630), PY(293)), PX(335), PX(203),
@@ -72,13 +70,13 @@ ax.text(PX(797.5), PY(222), "reliability audit of\nenhanced-sampling\nassociatio
         ha="center", va="center", fontsize=8.0*S, color="white", family="Arial", linespacing=1.3)
 
 # -- lower right --
-ax.text(PX(797.5), PY(340), "PARP1 GaMD panel |\nten conditions", ha="center", va="center",
+ax.text(PX(797.5), PY(340), "PARP1 GaMD panel\nten conditions", ha="center", va="center",
         fontsize=8.0*S, color=gray, family="Arial", linespacing=1.3)
-ax.text(PX(797.5), PY(430), "complete open\nworkflow", ha="center", va="center",
+ax.text(PX(797.5), PY(430), "reproducible\naudit workflow", ha="center", va="center",
         fontsize=8.0*S, color=gray, family="Arial", linespacing=1.3)
 
 # -- top-left label --
-ax.text(PX(10), PY(29), "six-diagnostic framework, applied uniformly", ha="left", va="center",
+ax.text(PX(10), PY(29), "six-diagnostic audit workflow", ha="left", va="center",
         fontsize=8.0*S, color=blue, family="Arial")
 
 fig.savefig("figures/TOC_Graphic_jcim.png", dpi=DPI)

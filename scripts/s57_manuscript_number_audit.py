@@ -94,7 +94,10 @@ for r in csv.DictReader(open(DATA / "analysis/r6/r6c_estimatrix.csv")):
     except ValueError:
         estim[(r["panel"], r["metric"], r["estimator"])] = None
 
-lat = list(csv.DictReader(open(DATA / "analysis/r6/r9_state_lattice.csv")))
+lat = list(csv.DictReader(open(DATA / "analysis/r6/s63_harmonized_lattice.csv")))
+for _r in lat:
+    _r.setdefault("panel", _r.get("state"))
+    _r["p"] = _r.get("p", _r.get("p_exact"))
 win = {(r["tag"], int(r["window_ns"])): float(r["c3_span_sd"])
        for r in csv.DictReader(open(DATA / "analysis/r6/r6c_window_timescale.csv"))}
 s10 = list(csv.DictReader(open(DATA / "analysis/s10/s10_crossseed_summary.csv")))
@@ -297,16 +300,16 @@ r_neg = [float(r["rho"]) for r in lat if r["metric"] == "S2CV1"]
 r_s1 = [float(r["rho"]) for r in lat if r["metric"] == "S1"]
 r_rt = [float(r["rho"]) for r in lat if r["metric"] == "ratio"]
 ps = [float(r["p"]) for r in lat]
-rec("A", "lattice S2CV1 neg range", abs(min(r_neg) + 0.667) < 0.006 and abs(max(r_neg) + 0.051) < 0.006,
-    f"{min(r_neg):.3f}..{max(r_neg):.3f} (claimed -0.67..-0.05)")
+rec("A", "lattice S2CV1 range", abs(min(r_neg) + 0.872) < 0.006 and abs(max(r_neg) - 0.359) < 0.006,
+    f"{min(r_neg):.3f}..{max(r_neg):.3f} (claimed -0.87..+0.36)")
 rec("A", "lattice S1 pos range", abs(min(r_s1) - 0.308) < 0.006 and abs(max(r_s1) - 0.616) < 0.006,
     f"{min(r_s1):.3f}..{max(r_s1):.3f} (claimed +0.31..+0.62)")
 rec("A", "lattice ratio sign change", min(r_rt) < 0 < max(r_rt),
     f"ratio {min(r_rt):.3f}..{max(r_rt):.3f}")
-rec("A", "lattice p floor", abs(min(ps) - 0.133) < 0.006, f"min p {min(ps):.3f} (claimed >=0.133)")
+rec("A", "lattice p floor", abs(min(ps) - 0.067) < 0.006, f"min p {min(ps):.3f} (claimed >=0.067)")
 best = max(lat, key=lambda r: abs(float(r["rho"])))
-rec("A", "lattice strongest", abs(float(best["rho"]) - 0.821) < 0.006,
-    f"{best['panel']}/{best['metric']} {best['rho']}/{best['p']} (claimed +0.82/0.133)")
+rec("A", "lattice strongest", abs(float(best["rho"]) + 0.872) < 0.006,
+    f"{best['panel']}/{best['metric']} {best['rho']}/{best['p']} (claimed -0.87/0.067)")
 
 # --------------------------------------------- p_min enumeration
 seq = [5, 4, 2.5, 2.5, 1]
@@ -427,25 +430,25 @@ rec("A", "estimatrix cells", not mbad, str(mbad[:4]) or "14/14")
 tex_checks = [
     ("abstract harmonized rho", ms, "$\\rho = -0.15$ (exact $p = 0.833$"),
     ("abstract convention-dependent", ms, "both sign and magnitude are convention-dependent"),
-    ("abstract audit rho", ms, "$\\rho = -0.21$ ($p = 0.767$)"),
+    ("abstract audit rho", ms, "$\\rho = -0.15$ (exact $p = 0.833$, $100/120$)"),
     ("abstract pmin", ms, "four of 120 data permutations"),
     ("abstract window band", ms, "4.6--18.4~kcal/mol"),
     ("abstract separation band", ms, "2.6--5.3~kcal/mol"),
-    ("four-panel ratio", ms, "span ratio ranging from $-0.10$ to $+0.31$ ($p \\geq 0.667$)"),
+    ("four-panel ratio", ms, "harmonized span ratio ranges from $-0.41$ to $+0.46$ ($p \\geq 0.433$)"),
     ("alt ordering", ms, "$\\rho = -0.45$ (exact two-tailed $p = 0.600$)"),
     ("four-panel S1", ms, "$+0.31$ to $+0.62$; $p \\geq 0.300$"),
     ("lattice sign", ms, "change sign with the panel"),
-    ("lattice p floor", ms, "all $p \\geq 0.133$"),
-    ("lattice strongest", ms, "for the S2 CV2 span under veliparib protonation alone"),
-    ("estimatrix q90", ms, "$-0.36$ ($p = 0.633$) for the 5--95\\% quantile"),
-    ("estimatrix t95", ms, "$-0.21$ ($p = 0.767$) for the 95\\% truncated range"),
-    ("estimatrix ratio", ms, "$-0.21$ to $+0.46$ ($p \\geq 0.433$)"),
+    ("lattice p floor", ms, "all $p \\geq 0.067$"),
+    ("lattice strongest", ms, "$\\rho = -0.87$ for veliparib protonation alone"),
+    ("estimatrix q90", ms, "$-0.82$ ($p = 0.133$) for the 5--95\\% quantile"),
+    ("estimatrix t95", ms, "$-0.67$ ($p = 0.267$) for the 95\\% truncated range"),
+    ("estimatrix ratio", ms, "ranges from $+0.05$ ($p = 1.000$) to $+0.46$ ($p = 0.433$)"),
     ("S10 gap", si, "15.28 versus 14.73~kcal/mol"),
     ("S10 pct phrase", si + ms, "35--45\\% of the respective means"),
     ("power curve", ms, "serves as the corresponding power curve"),
     ("S17 caption", si, "Table S17: Cross-seed stability"),
-    ("pc 32pct", ms, "recovery reaches 32\\% at the largest within-band separations"),
-    ("pc sigma8", ms, "$\\sigma \\geq 8$~kcal/mol"),
+    ("pc 32pct", ms, "recovery spans 16--50\\% across the same separations"),
+    ("pc sigma8", ms, "8--21\\% at $\\sigma = 8$~kcal/mol"),
     ("pc sigma4.6", ms, "$\\sigma = 4.6$~kcal/mol"),
     ("frames 25858", si, "25{,}858"),
     ("frames 521", si, "521 records"),
@@ -461,7 +464,7 @@ tex_checks = [
     ("S2 extension rows", si, "Fluzoparib$^{\\dagger}$"),
     ("SI extension order", si, "pamiparib $16.3 \\pm 5.9$, and senaparib $12.5 \\pm 4.7$"),
     ("cover positive control", cv, "planted-association positive controls"),
-    ("cover 62-check", cv, "62 checks, all passing"),
+    ("cover 107-check", cv, "107 assertions, all passing"),
     ("direction instability", ms, "the sign is not a stable property of the data"),
     ("cadence flip", ms, "18.4~kcal/mol at its native 1-ps cadence but 30.5~kcal/mol"),
     ("cadence rho +0.21", ms, "becomes $+0.21$ ($p = 0.767$)"),
@@ -478,7 +481,7 @@ tex_checks = [
     ("SI provenance map", si, "Headline-number provenance"),
     ("SI seeds s7 s49", si, "independent-seed replicates (seeds s7 and s49"),
     ("SI window band extension", si, "5.75~kcal/mol for veliparib"),
-    ("cover softened", cv, "can certify a true rank association"),
+    ("cover softened", cv, "illustrate the power of the exact rank test under the specified synthetic noise models"),
     ("old posterior gone", ms, "producing a posterior probability for the direction"),
     ("old reliably gone", cv, "reliably certifies"),
     ("ratio pm gone", ms, "$1.16 \\pm 0.53$"),
@@ -487,12 +490,12 @@ tex_checks = [
     ("harmonized protonated rho", ms, "gives $\\rho = -0.67$ ($p = 0.267$, $32/120$)"),
     ("unidentifiable sentence", ms, "at this design it is unidentifiable"),
     ("limitations harmonized", ms, "re-analysed under a common 50-ps cadence"),
-    ("fig3 archival note", ms, "Panels A--C use the archival convention (Table~S5)"),
+    ("fig3 archival note", ms, "The archival-cadence version is retained as Figure~S14."),
     ("SI table S18", si, "Table S18: Harmonized-convention S2 CV1 spans"),
-    ("SI fig S14", si, "Figure S14: Harmonized-convention association"),
+    ("SI fig S14", si, "Figure S14: Archival-convention state panels and estimator matrix"),
     ("SI 82.2 diagnosis", si, "removing those two frames raises the recomputed span to 137.7"),
     ("SI q90 t95", si, "quantile spans (q90 36.9, t95 43.6"),
-    ("SI s62 provenance", si, "harmonized re-analysis (Table~S18, Figure~S14)"),
+    ("SI s62 provenance", si, "harmonized re-analysis (Tables~S18--S19, Figure~3, archival Figure~S14)"),
     ("cover harmonized", cv, "$\\rho = -0.15$ (exact $p = 0.833$)"),
 ]
 for cid, tex, s in tex_checks:

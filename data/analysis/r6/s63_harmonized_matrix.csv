@@ -1,0 +1,49 @@
+panel,metric,estimator,rho,p_exact,cnt120
+neutral,S2CV1,mm,-0.154,0.8333,100
+neutral,S2CV1,q90,-0.564,0.3667,44
+neutral,S2CV1,t95,-0.154,0.8333,100
+neutral,S2CV2,mm,0.821,0.1333,16
+neutral,S2CV2,q90,0.103,0.9000,108
+neutral,S2CV2,t95,0.564,0.3667,44
+neutral,S1,mm,0.308,0.6667,80
+neutral,S1,q90,0.308,0.6667,80
+neutral,S1,t95,0.308,0.6667,80
+neutral,ratio,mm,-0.41,0.5000,60
+neutral,ratio,q90,-0.103,0.9000,108
+neutral,ratio,t95,-0.103,0.9000,108
+niraparib-protonated,S2CV1,mm,0.359,0.6333,76
+niraparib-protonated,S2CV1,q90,-0.205,0.7667,92
+niraparib-protonated,S2CV1,t95,0.359,0.6333,76
+niraparib-protonated,S2CV2,mm,0.359,0.6333,76
+niraparib-protonated,S2CV2,q90,0.103,0.9000,108
+niraparib-protonated,S2CV2,t95,0.103,0.9000,108
+niraparib-protonated,S1,mm,0.462,0.4333,52
+niraparib-protonated,S1,q90,0.462,0.4333,52
+niraparib-protonated,S1,t95,0.462,0.4333,52
+niraparib-protonated,ratio,mm,0.051,1.0000,120
+niraparib-protonated,ratio,q90,0.051,1.0000,120
+niraparib-protonated,ratio,t95,0.051,1.0000,120
+rucaparib-protonated,S2CV1,mm,-0.154,0.8333,100
+rucaparib-protonated,S2CV1,q90,-0.564,0.3667,44
+rucaparib-protonated,S2CV1,t95,-0.154,0.8333,100
+rucaparib-protonated,S2CV2,mm,0.564,0.3667,44
+rucaparib-protonated,S2CV2,q90,0.103,0.9000,108
+rucaparib-protonated,S2CV2,t95,0.564,0.3667,44
+rucaparib-protonated,S1,mm,0.308,0.6667,80
+rucaparib-protonated,S1,q90,0.308,0.6667,80
+rucaparib-protonated,S1,t95,0.308,0.6667,80
+rucaparib-protonated,ratio,mm,-0.41,0.5000,60
+rucaparib-protonated,ratio,q90,-0.103,0.9000,108
+rucaparib-protonated,ratio,t95,-0.103,0.9000,108
+fully protonated,S2CV1,mm,-0.667,0.2667,32
+fully protonated,S2CV1,q90,-0.821,0.1333,16
+fully protonated,S2CV1,t95,-0.667,0.2667,32
+fully protonated,S2CV2,mm,0.103,0.9000,108
+fully protonated,S2CV2,q90,0.103,0.9000,108
+fully protonated,S2CV2,t95,0.103,0.9000,108
+fully protonated,S1,mm,0.616,0.3000,36
+fully protonated,S1,q90,0.616,0.3000,36
+fully protonated,S1,t95,0.616,0.3000,36
+fully protonated,ratio,mm,0.051,1.0000,120
+fully protonated,ratio,q90,0.462,0.4333,52
+fully protonated,ratio,t95,0.462,0.4333,52
