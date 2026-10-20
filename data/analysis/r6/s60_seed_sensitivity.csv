@@ -1,0 +1,7 @@
+variant,rho,p_exact,cnt120
+neutral: seed42 26.9 (published),-0.667,32,0.26666666666666666
+neutral: 3-seed mean 33.0,-0.051,120,1.0
+neutral: 3-seed median 26.9,-0.667,32,0.26666666666666666
+audit: seed42 34.1 (published),-0.205,92,0.7666666666666667
+audit: 3-seed mean 55.2,-0.051,120,1.0
+audit: 3-seed median 49.3,-0.051,120,1.0

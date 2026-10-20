@@ -1,0 +1,41 @@
+encoding,state_bitmask,rho,p_exact,cnt120
+main (tala>nira>ola~ruca>veli),000,-0.667,0.26666666666666666,32
+main (tala>nira>ola~ruca>veli),001,-0.359,0.6333333333333333,76
+main (tala>nira>ola~ruca>veli),010,-0.667,0.26666666666666666,32
+main (tala>nira>ola~ruca>veli),011,-0.359,0.6333333333333333,76
+main (tala>nira>ola~ruca>veli),100,-0.051,1.0,120
+main (tala>nira>ola~ruca>veli),101,-0.051,1.0,120
+main (tala>nira>ola~ruca>veli),110,-0.205,0.7666666666666667,92
+main (tala>nira>ola~ruca>veli),111,-0.205,0.7666666666666667,92
+Pommier (nira~ola~ruca tied),000,-0.447,0.6,72
+Pommier (nira~ola~ruca tied),001,-0.224,1.0,120
+Pommier (nira~ola~ruca tied),010,-0.447,0.6,72
+Pommier (nira~ola~ruca tied),011,-0.224,1.0,120
+Pommier (nira~ola~ruca tied),100,-0.224,1.0,120
+Pommier (nira~ola~ruca tied),101,-0.224,1.0,120
+Pommier (nira~ola~ruca tied),110,-0.224,1.0,120
+Pommier (nira~ola~ruca tied),111,-0.224,1.0,120
+ola>ruca split,000,-0.6,0.35,42
+ola>ruca split,001,-0.3,0.6833333333333333,82
+ola>ruca split,010,-0.7,0.23333333333333334,28
+ola>ruca split,011,-0.4,0.5166666666666667,62
+ola>ruca split,100,0.0,1.0,120
+ola>ruca split,101,0.0,1.0,120
+ola>ruca split,110,-0.3,0.6833333333333333,82
+ola>ruca split,111,-0.3,0.6833333333333333,82
+ruca>ola split,000,-0.7,0.23333333333333334,28
+ruca>ola split,001,-0.4,0.5166666666666667,62
+ruca>ola split,010,-0.6,0.35,42
+ruca>ola split,011,-0.3,0.6833333333333333,82
+ruca>ola split,100,-0.1,0.95,114
+ruca>ola split,101,-0.1,0.95,114
+ruca>ola split,110,-0.1,0.95,114
+ruca>ola split,111,-0.1,0.95,114
+nira~ola tied,000,-0.462,0.43333333333333335,52
+nira~ola tied,001,-0.205,0.7666666666666667,92
+nira~ola tied,010,-0.616,0.3,36
+nira~ola tied,011,-0.359,0.6333333333333333,76
+nira~ola tied,100,-0.051,1.0,120
+nira~ola tied,101,-0.051,1.0,120
+nira~ola tied,110,-0.359,0.6333333333333333,76
+nira~ola tied,111,-0.359,0.6333333333333333,76

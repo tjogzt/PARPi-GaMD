@@ -1,0 +1,14 @@
+system,convention,n_frames,C3_span,provenance
+APO,published (Table S5),,19.5,table
+APO,"archive, production, 1-ps?",12001,18.44,recomputed
+talazoparib,published (Table S5),,22.9,table
+talazoparib,"archive, production, 1 ps",14001,18.37,recomputed
+talazoparib,"archive, production, 50 ps",281,30.53,recomputed
+talazoparib,"archive, full run, 1 ps",25858,-,rebuild (different CV extraction; not comparable)
+rucaparib,published (Table S5),,28.7,table
+rucaparib,"archive, production, 50 ps",521,27.28,recomputed
+veliparib,published / archive (50 ps),517,28.11,match
+niraparib,published / archive (50 ps),521,26.93,match
+olaparib,published / archive (50 ps),521,28.76,match
+nira/prot,published / archive (50 ps),521,34.11,match
+ruca/prot,published / archive (50 ps),521,48.74,match

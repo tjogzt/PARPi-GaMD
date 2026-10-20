@@ -1,0 +1,5 @@
+panel,P_rho_lt0,q025,median,q975,n_boot
+neutral (all five),0.9575,-0.8208,-0.5643,0.0526,400
+niraparib-protonated,0.9300,-0.7207,-0.2052,0.2078,400
+rucaparib-protonated,0.9750,-0.8208,-0.5643,-0.0487,400
+audit-partial (veli neutral; no prot frames),0.9625,-0.6669,-0.3591,0.1052,400

@@ -461,9 +461,30 @@ tex_checks = [
     ("SI extension order", si, "pamiparib $16.3 \\pm 5.9$, and senaparib $12.5 \\pm 4.7$"),
     ("cover positive control", cv, "planted-association positive controls"),
     ("cover 62-check", cv, "62 checks, all passing"),
+    ("direction instability", ms, "the sign is not a stable property of the data"),
+    ("cadence flip", ms, "18.4~kcal/mol at its native 1-ps cadence but 30.5~kcal/mol"),
+    ("cadence rho +0.21", ms, "becomes $+0.21$ ($p = 0.767$)"),
+    ("cadence rho +0.46", ms, "audit-corrected panel $+0.46$ ($p = 0.433$)"),
+    ("seed-mean sensitivity", ms, "three-seed mean for niraparib"),
+    ("rank-encoding audit", ms, "ranges from $-0.70$ to $0.00$ with exact $p \\geq 0.233$"),
+    ("non-inferential AZD", ms, "a non-inferential scenario"),
+    ("pmin fraction 32/120", ms, "32/120"),
+    ("pmin fraction 92/120", ms, "92/120"),
+    ("band median wording", ms, "the band median, and the 95\\% interval"),
+    ("bootstrap sentence", ms, "$P(\\rho<0) = 0.96$"),
+    ("SI bootstrap 0.958", si, "0.958"),
+    ("SI archive reconciliation", si, "Archive reconciliation (Table~S5)"),
+    ("SI provenance map", si, "Headline-number provenance"),
+    ("SI seeds s7 s49", si, "independent-seed replicates (seeds s7 and s49"),
+    ("SI window band extension", si, "5.75~kcal/mol for veliparib"),
+    ("cover softened", cv, "can certify a true rank association"),
+    ("old posterior gone", ms, "producing a posterior probability for the direction"),
+    ("old reliably gone", cv, "reliably certifies"),
+    ("ratio pm gone", ms, "$1.16 \\pm 0.53$"),
 ]
 for cid, tex, s in tex_checks:
-    neg = cid in ("AZD misref gone", "old two-protonated gone")
+    neg = cid in ("AZD misref gone", "old two-protonated gone", "old posterior gone",
+                   "old reliably gone", "ratio pm gone")
     rec("C", cid, (s not in tex) if neg else (s in tex), s[:60])
 
 # --------------------------------------------- positive control cells
