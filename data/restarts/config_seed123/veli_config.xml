@@ -43,7 +43,7 @@
     </input-files>
 
     <outputs>
-        <directory>/root/autodl-tmp/PARPi_design/runs_multiseed/veli_s2/gamd_out</directory>
+        <directory>/root/autodl-tmp/PARPi_design/runs_multiseed/veli_s2/gamd_out_seed123</directory>
         <overwrite-output>True</overwrite-output>
         <reporting>
             <energy><interval>25000</interval></energy>
