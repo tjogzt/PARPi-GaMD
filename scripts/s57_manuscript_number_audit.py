@@ -311,6 +311,35 @@ best = max(lat, key=lambda r: abs(float(r["rho"])))
 rec("A", "lattice strongest", abs(float(best["rho"]) + 0.872) < 0.006,
     f"{best['panel']}/{best['metric']} {best['rho']}/{best['p']} (claimed -0.87/0.067)")
 
+# --------------------------------------------- multiseed spans (s66)
+ms66 = list(csv.DictReader(open(DATA / "analysis/r6/s66_multiseed_spans.csv")))
+_ms63 = list(csv.DictReader(open(DATA / "analysis/r6/s63_harmonized_spans.csv")))
+def _sp(system, seed, win="prod14", est="mm"):
+    if seed == "published":
+        key = "tala" if system == "talazoparib" else "veli"
+        return float([r for r in _ms63 if r["system"] == key and r["metric"] == "CV1"
+                      and r["estimator"] == est][0]["span_kcal"])
+    return float([r for r in ms66 if r["system"] == system and r["seed"] == seed
+                  and r["window"] == win and r["estimator"] == est][0]["span_kcal"])
+_t = [_sp("talazoparib", "published"), _sp("talazoparib", "seed7"),
+      _sp("talazoparib", "seed123")]
+_v = [_sp("veliparib", "published"), _sp("veliparib", "seed7"),
+      _sp("veliparib", "seed123")]
+from statistics import mean as _mean, stdev as _sd
+rec("A", "s66 tala seeds", abs(_sp("talazoparib", "seed7") - 34.57) < 0.02
+    and abs(_sp("talazoparib", "seed123") - 41.73) < 0.02,
+    f"seed7 {_sp('talazoparib','seed7'):.2f}, seed123 {_sp('talazoparib','seed123'):.2f} (claimed 34.6/41.7)")
+rec("A", "s66 veli seeds", abs(_sp("veliparib", "seed7") - 41.85) < 0.02
+    and abs(_sp("veliparib", "seed123") - 24.00) < 0.02,
+    f"seed7 {_sp('veliparib','seed7'):.2f}, seed123 {_sp('veliparib','seed123'):.2f} (claimed 41.8/24.0)")
+rec("A", "s66 tala mean sd", abs(_mean(_t) - 35.61) < 0.02 and abs(_sd(_t) - 5.67) < 0.02,
+    f"{_mean(_t):.2f} +/- {_sd(_t):.2f} (claimed 35.6 +/- 5.7)")
+rec("A", "s66 veli mean sd", abs(_mean(_v) - 29.57) < 0.02 and abs(_sd(_v) - 10.65) < 0.02,
+    f"{_mean(_v):.2f} +/- {_sd(_v):.2f} (claimed 29.6 +/- 10.6)")
+_ap = rho_p([_mean(_t), 18.68, 35.97, 31.32, _mean(_v)], Y)
+rec("B", "s66 seed-mean rho", abs(_ap[0] - 0.103) < 0.01 and round(_ap[1] * 120) == 108,
+    f"rho {_ap[0]}, p {_ap[1]:.3f} ({round(_ap[1]*120)}/120; claimed +0.103, 108/120)")
+
 # --------------------------------------------- p_min enumeration
 seq = [5, 4, 2.5, 2.5, 1]
 perms_rank = {tuple(midrank(p)) for p in itertools.permutations(seq)}
@@ -497,6 +526,15 @@ tex_checks = [
     ("SI q90 t95", si, "quantile spans (q90 36.9, t95 43.6"),
     ("SI s62 provenance", si, "harmonized re-analysis (Tables~S18--S19, Figure~3, archival Figure~S14)"),
     ("cover harmonized", cv, "$\\rho = -0.15$ (exact $p = 0.833$)"),
+    ("seed-mean all available", ms, "$+0.10$ ($p = 0.900$, $108/120$)"),
+    ("seed scatter reverses", ms, "seed scatter alone reverses the sign"),
+    ("S20 reference", ms, "(Table~S20)"),
+    ("SI table S20", si, "Table S20: Cross-seed spans for talazoparib and veliparib"),
+    ("S18 all-seed mean row", si, "Neutral, all available 3-seed means"),
+    ("S20 veli mean sd", si, "29.6 $\\pm$ 10.6"),
+    ("S20 tala mean sd", si, "35.6 $\\pm$ 5.7"),
+    ("SI ola ruca single", si, "Olaparib and rucaparib enter as single"),
+
 ]
 for cid, tex, s in tex_checks:
     neg = cid in ("AZD misref gone", "old two-protonated gone", "old posterior gone",
