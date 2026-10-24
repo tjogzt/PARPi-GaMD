@@ -78,7 +78,7 @@ draw_panels <- function() {
   # (2026-10-15) ylab moved ~0.85 margin lines further out: at mgp[1]=1.6 the
   # "Spearman rho" label touched the tick numbers (bbox overlap 1.8-5.5 pt).
   par(mgp = c(2.45, 0.5, 0))
-  plot(NA, xlim = c(5.5, 27.5), ylim = c(-1.05, 0.72), xlab = "production length (ns)", ylab = "Spearman rho", axes = FALSE)
+  plot(NA, xlim = c(5.5, 27.5), ylim = c(-1.05, 0.72), xlab = "", ylab = "Spearman rho", axes = FALSE)
   abline(h = 0, col = "#CCCCCC", lwd = 0.8)
   abline(h = -0.975, col = "#888888", lty = 2, lwd = 0.9)
   lines(tr$T_ns, tr$rho, col = CINNABAR, lwd = 1.2)
@@ -91,6 +91,7 @@ draw_panels <- function() {
   axis(1, at = c(8, 10, 14, 19.3, 23, 26), labels = FALSE)
   text(c(8, 10, 14, 19.3, 23, 26), par("usr")[3], labels = c("8", "10", "14", "19.3", "23", "26"),
        pos = 1, offset = 0.45, cex = 1.15, xpd = NA); axis(2, at = c(-1.0, -0.5, 0, 0.5))
+  mtext("production length (ns)", side = 1, line = 1.6, cex = 0.84)
   text(8.2, -0.87, "p<0.05 needs |rho| >= 0.975", adj = 0, cex = 1.23, col = "#666666")
   mtext("C", side = 3, at = 5.7, line = 0.6, adj = 0, font = 2, cex = 0.92)
   mtext("association vs length", side = 3, at = 9.0, line = 0.6, adj = 0, cex = 0.82)
