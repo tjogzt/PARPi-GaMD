@@ -68,13 +68,13 @@ draw_all <- function() {
   layout(matrix(c(1, 1, 2, 3), nrow = 2, byrow = TRUE), heights = c(1.12, 1))
 
   ## ---- Panel A: S1 PMF overlay ----
-  par(mar = c(3.6, 3.1, 1.8, 0.7))
+  par(mar = c(4.2, 3.1, 1.8, 0.7))
   plot(0, 0, type = "n", xlim = c(22.4, 26.6), ylim = c(0, 58), axes = FALSE,
        xlab = "", ylab = "")
   axis(1, at = 23:26, cex.axis = 11/12); axis(2, at = seq(0, 50, 10), cex.axis = 11/12)
   for (l in ligs) { p <- pmfs[[l]]; p$y <- p$y - min(p$y)
     lines(p$x, p$y, col = cols[l], lwd = 1.1) }
-  mtext("C3 distance (\u00C5)", 1, line = 1.9, cex = 9/12)
+  mtext("HD\u2013ART Distance (\u00C5)", 1, line = 2.1, cex = 9/12)
   mtext("PMF (kcal/mol)", 2, line = 2.2, cex = 9/12)
   usr <- par("usr")
   mtext("A", 3, at = usr[1], adj = 0, line = 0.55, font = 2, cex = 10/12)
@@ -83,7 +83,7 @@ draw_all <- function() {
   mtext("S1 PMF (C3, 200 ns)", 3, line = 0.55, adj = 0.5, cex = 9/12, col = "grey30")
 
   ## ---- Panel B: wells bars + seven-system reference band ----
-  par(mar = c(3.0, 3.1, 2.6, 0.7))
+  par(mar = c(4.6, 3.1, 2.6, 0.7))
   gx <- c(1.05, 2.55, 4.05)
   plot(0, 0, type = "n", xlim = c(0.1, 5.0), ylim = c(0, 61), axes = FALSE,
        xlab = "", ylab = "")
@@ -104,9 +104,9 @@ draw_all <- function() {
   }
   axis(2, at = seq(0, 60, 10), cex.axis = 11/12)
   axis(1, at = gx, labels = FALSE, tick = FALSE)
-  mtext(c("Fluzoparib", "Pamiparib", "Senaparib"), 1, at = gx, line = 1.4, cex = 11/12)
+  mtext(c("Fluzoparib", "Pamiparib", "Senaparib"), 1, at = gx, line = 1.8, cex = 11/12)
   mtext(c("S1", "S2", "S1", "S2", "S1", "S2"), 1,
-        at = as.vector(rbind(gx - 0.38, gx + 0.38)), line = 0.25, cex = 9/12, col = "grey35")
+        at = as.vector(rbind(gx - 0.38, gx + 0.38)), line = 0.55, cex = 9/12, col = "grey35")
   mtext("Span (kcal/mol)", 2, line = 2.2, cex = 9/12)
   usr <- par("usr")
   mtext("B", 3, at = usr[1], adj = 0, line = 0.55, font = 2, cex = 10/12)
@@ -119,7 +119,7 @@ draw_all <- function() {
   text(0.25, 51.0, "band: 7-system S1 range", adj = 0, cex = 1.0, col = "grey30")
 
   ## ---- Panel C: convergence + 22 ns truncation ----
-  par(mar = c(2.7, 3.1, 2.6, 0.7))
+  par(mar = c(4.2, 3.1, 2.6, 0.7))
   plot(0, 0, type = "n", xlim = c(0, 205), ylim = c(38, 92), axes = FALSE,
        xlab = "", ylab = "")
   axis(1, cex.axis = 11/12); axis(2, at = seq(40, 80, 20), cex.axis = 11/12)
@@ -132,14 +132,14 @@ draw_all <- function() {
   abline(v = 22, col = "grey35", lty = 2, lwd = 0.8)
   legend("topright", legend = ligs, col = cols[ligs], lwd = 1.4, bty = "n",
          cex = 1.0, inset = c(0.01, 0.02))
-  mtext("Production time (ns)", 1, line = 1.9, cex = 9/12)
+  mtext("Production time (ns)", 1, line = 2.0, cex = 9/12)
   mtext("Cumulative S1 span (C3)", 2, line = 2.2, cex = 9/12)
   usr <- par("usr")
   mtext("C", 3, at = usr[1], adj = 0, line = 0.55, font = 2, cex = 10/12)
   mtext("S1 convergence & sensitivity", 3, line = 0.55, adj = 0.5, cex = 9/12, col = "grey30")
 }
 
-cairo_pdf(OUT, width = 178/25.4, height = 126/25.4,
+cairo_pdf(OUT, width = 178/25.4, height = 136/25.4,
           pointsize = 8, family = "Arial")
 draw_all(); invisible(dev.off())
 
