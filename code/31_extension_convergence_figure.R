@@ -68,7 +68,7 @@ draw_all <- function() {
   layout(matrix(c(1, 1, 2, 3), nrow = 2, byrow = TRUE), heights = c(1.12, 1))
 
   ## ---- Panel A: S1 PMF overlay ----
-  par(mar = c(4.2, 3.1, 1.8, 0.7))
+  par(mar = c(4.2, 4.6, 2.6, 0.7))
   plot(0, 0, type = "n", xlim = c(22.4, 26.6), ylim = c(0, 58), axes = FALSE,
        xlab = "", ylab = "")
   axis(1, at = 23:26, cex.axis = 11/12); axis(2, at = seq(0, 50, 10), cex.axis = 11/12)
@@ -83,7 +83,7 @@ draw_all <- function() {
   mtext("S1 PMF (C3, 200 ns)", 3, line = 0.55, adj = 0.5, cex = 9/12, col = "grey30")
 
   ## ---- Panel B: wells bars + seven-system reference band ----
-  par(mar = c(4.6, 3.1, 2.6, 0.7))
+  par(mar = c(4.6, 4.6, 2.6, 0.7))
   gx <- c(1.05, 2.55, 4.05)
   plot(0, 0, type = "n", xlim = c(0.1, 5.0), ylim = c(0, 61), axes = FALSE,
        xlab = "", ylab = "")
@@ -119,7 +119,7 @@ draw_all <- function() {
   text(0.25, 51.0, "band: 7-system S1 range", adj = 0, cex = 1.0, col = "grey30")
 
   ## ---- Panel C: convergence + 22 ns truncation ----
-  par(mar = c(4.2, 3.1, 2.6, 0.7))
+  par(mar = c(4.2, 3.8, 2.6, 0.7))
   plot(0, 0, type = "n", xlim = c(0, 205), ylim = c(38, 92), axes = FALSE,
        xlab = "", ylab = "")
   axis(1, cex.axis = 11/12); axis(2, at = seq(40, 80, 20), cex.axis = 11/12)
