@@ -33,7 +33,7 @@ pA <- ggplot(d, aes(L_ns, window_sd_mean)) +
        title = "A  Window noise vs length:\nknown-truth processes") +
   theme_bw(base_size = 8, base_family = "Arial") +
   theme(panel.grid.minor = element_blank(),
-        legend.position = c(0.97, 1.00), legend.justification = c(1, 1),
+        legend.position = c(0.97, 1.04), legend.justification = c(1, 1),
         legend.background = element_blank(),
         legend.key = element_rect(fill = "transparent"),
         legend.key.size = unit(0.3, "cm"), legend.text = element_text(size = 9),
@@ -53,8 +53,8 @@ pB <- ggplot(b, aes(est, mean, fill = kind)) +
   geom_col(position = position_dodge(width = 0.7), width = 0.62) +
   geom_text(aes(label = sprintf("%.2f", mean)), position = position_dodge(width = 0.7),
             vjust = -0.6, size = 3.2, family = "Arial") +
-  annotate("text", x = 1, y = 6.15, label = "+11.4%", size = 3.2, family = "Arial", fontface = "bold") +
-  annotate("text", x = 2, y = 4.15, label = "+2.3%", size = 3.2, family = "Arial", fontface = "bold") +
+  annotate("text", x = 1, y = 6.30, label = "+11.4%", size = 3.2, family = "Arial", fontface = "bold") +
+  annotate("text", x = 2, y = 4.30, label = "+2.3%", size = 3.2, family = "Arial", fontface = "bold") +
   scale_fill_manual(values = c("baseline" = "grey55", "spiked" = "#C23531"), name = NULL) +
   coord_cartesian(ylim = c(0, 6.6)) +
   labs(x = NULL, y = "Mean span (\u03c3 units, 200 replicates)",
@@ -92,7 +92,7 @@ pC <- ggplot(c7g, aes(delta_kcal, detect_rate, color = sigma_lab, linetype = sig
   scale_linetype_manual(values = sig_ltys, name = NULL) +
   guides(color = guide_legend(nrow = 2, byrow = TRUE), linetype = guide_legend(nrow = 2, byrow = TRUE)) +
   coord_cartesian(ylim = c(0, 1), xlim = c(0, 50)) +
-  annotate("label", x = 9.5, y = 0.86, label = "this study's separations\n(2.6\u20135.3 kcal/mol)",
+  annotate("label", x = 30, y = 0.50, label = "this study's separations\n(2.6\u20135.3 kcal/mol)",
            size = 3.0, family = "Arial", lineheight = 0.9, hjust = 0, label.size = 0.12,
            label.padding = unit(0.08, "lines"), fill = "white", alpha = 0.85) +
   labs(x = "planted separation between adjacent ranks (kcal/mol)",
@@ -112,8 +112,8 @@ pC <- ggplot(c7g, aes(delta_kcal, detect_rate, color = sigma_lab, linetype = sig
         panel.border = element_blank(),
         axis.line = element_line(color = "black", linewidth = 0.5))
 
-p <- (pA | pB) / pC
-cairo_pdf("figures/pdf/Fig_SI_ToyBenchmark.pdf", width = 170/25.4, height = 114.5/25.4, pointsize = 8)
+p <- (pA | pB) / pC + plot_layout(heights = c(1, 1.07))
+cairo_pdf("figures/pdf/Fig_SI_ToyBenchmark.pdf", width = 170/25.4, height = 116/25.4, pointsize = 8)
 print(p)
 invisible(dev.off())
 cat("Saved: figures/pdf/Fig_SI_ToyBenchmark.pdf\n")
