@@ -1,0 +1,9 @@
+metric,panel,rho,p_exact,cnt120
+C2,neutral,-0.051,1.0,120
+C2,fully_protonated,-0.616,0.3,36
+C3,neutral,-0.154,0.833,100
+C3,fully_protonated,-0.667,0.267,32
+q90,neutral,-0.564,0.367,44
+q90,fully_protonated,-0.821,0.133,16
+t95,neutral,-0.154,0.833,100
+t95,fully_protonated,-0.667,0.267,32

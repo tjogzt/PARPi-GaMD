@@ -51,28 +51,28 @@ for r, (ya, yb) in enumerate(rows):
         ax.text(PX(xa + 88), PY((ya + yb) / 2), labels[r][c], ha="center", va="center",
                 fontsize=8.0*S, color=gray, family="Arial", linespacing=1.25)
 
-# -- center column (no coefficients: four audit layers -> verdict) --
-ax.text(PX(500), PY(105), "n = 5\nassociation", ha="center", va="center",
-        fontsize=8.0*S, color=gray, family="Arial", linespacing=1.25)
-ax.text(PX(500), PY(232), "state\nestimator\nsampling\nrank", ha="center", va="center",
+# -- center column: process only, no sample size and no result numbers --
+ax.text(PX(500), PY(90), "pre-publication\naudit", ha="center", va="center",
+        fontsize=8.0*S, color=blue, family="Arial", linespacing=1.3)
+ax.text(PX(500), PY(240), "state\nestimator\nsampling\nrank", ha="center", va="center",
         fontsize=8.0*S, color=red, family="Arial", linespacing=1.25)
 ax.add_patch(FancyArrowPatch((PX(500), PY(300)), (PX(500), PY(352)), arrowstyle="-|>",
              mutation_scale=8*S, lw=2.0*S, color="#555555"))
-ax.text(PX(500), PY(430), "audit before\ninference", ha="center", va="center",
+ax.text(PX(500), PY(410), "audit before\ninference", ha="center", va="center",
         fontsize=8.0*S, color=blue, family="Arial", linespacing=1.3)
 
-# -- right red box --
+# -- right box: method deliverable, not a study verdict --
 ax.add_patch(FancyBboxPatch((PX(630), PY(293)), PX(335), PX(203),
              boxstyle=f"round,pad=0,rounding_size={0.05*S}", fc=red, ec="none"))
-ax.text(PX(797.5), PY(128), "not established", ha="center", va="center",
-        fontsize=9.5*S, color="white", family="Arial", fontweight="bold")
-ax.text(PX(797.5), PY(222), "reliability audit of\nenhanced-sampling\nassociations",
+ax.text(PX(797.5), PY(128), "auditable\nevidence chain", ha="center", va="center",
+        fontsize=9.5*S, color="white", family="Arial", fontweight="bold", linespacing=1.2)
+ax.text(PX(797.5), PY(222), "reusable workflow for\nenhanced-sampling\nassociation claims",
         ha="center", va="center", fontsize=8.0*S, color="white", family="Arial", linespacing=1.3)
 
-# -- lower right --
-ax.text(PX(797.5), PY(340), "PARP1 GaMD panel\nten conditions", ha="center", va="center",
+# -- lower right: subject only --
+ax.text(PX(797.5), PY(340), "PARP1 GaMD\ncase study", ha="center", va="center",
         fontsize=8.0*S, color=gray, family="Arial", linespacing=1.3)
-ax.text(PX(797.5), PY(430), "reproducible\naudit workflow", ha="center", va="center",
+ax.text(PX(797.5), PY(430), "open, reproducible\nworkflow", ha="center", va="center",
         fontsize=8.0*S, color=gray, family="Arial", linespacing=1.3)
 
 # -- top-left label --

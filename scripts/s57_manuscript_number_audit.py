@@ -455,10 +455,47 @@ for cid, key, exp in matrix_claims:
         mbad.append(f"{cid} {got} vs {exp}")
 rec("A", "estimatrix cells", not mbad, str(mbad[:4]) or "14/14")
 
+# --------------------------------------------- C2 panel sensitivity (A tier)
+c2path = DATA / "analysis/r6/s67_c2_panel_association.csv"
+if c2path.exists():
+    c2rows = list(csv.DictReader(open(c2path)))
+    c2 = {(r["panel"], r["metric"]): (float(r["rho"]), float(r["p_exact"]), int(r["cnt120"])) for r in c2rows}
+    want = {
+        ("neutral", "C2"): (-0.051, 1.000, 120),
+        ("neutral", "C3"): (-0.154, 0.833, 100),
+        ("fully_protonated", "C2"): (-0.616, 0.300, 36),
+        ("fully_protonated", "C3"): (-0.667, 0.267, 32),
+    }
+    bad = [(k, c2.get(k), v) for k, v in want.items() if k not in c2 or abs(c2[k][0]-v[0]) > 0.006 or abs(c2[k][1]-v[1]) > 0.006 or c2[k][2] != v[2]]
+    rec("A", "C2/C3 panel sensitivity", not bad, str(bad) or "4/4 cells")
+else:
+    rec("A", "C2/C3 panel sensitivity", False, f"missing {c2path}")
+
+# --------------------------------------------- trajectory QC (A tier)
+qpath = DATA / "analysis/s68_trajectory_qc.csv"
+if qpath.exists():
+    qrows = list(csv.DictReader(open(qpath)))
+    qsys = sorted(set(r["system"] for r in qrows))
+    qbad = []
+    for s in qsys:
+        x = [r for r in qrows if r["system"] == s]
+        if len(x) < 250:
+            qbad.append(f"{s}: {len(x)} rows")
+        if max(float(r["time_ns"]) for r in x) < 25.9:
+            qbad.append(f"{s}: tmax")
+        for z in ("zn1", "zn2", "zn3"):
+            v = [float(r[z + "_min"]) for r in x]
+            if min(v) < 1.7 or max(v) > 2.2:
+                qbad.append(f"{s}/{z}: {min(v):.2f}-{max(v):.2f}")
+    rec("A", "trajectory QC coverage", len(qsys) == 8 and not qbad,
+        str(qbad[:4]) or f"8 systems, {len(qrows)} rows")
+else:
+    rec("A", "trajectory QC coverage", False, f"missing {qpath}")
+
 # --------------------------------------------- tex presence (C tier)
 tex_checks = [
     ("abstract harmonized rho", ms, "$\\rho = -0.15$ (exact $p = 0.833$"),
-    ("abstract convention-dependent", ms, "both sign and magnitude are convention-dependent"),
+    ("abstract primary null", ms, "no cell reaches nominal significance"),
     ("abstract audit rho", ms, "$\\rho = -0.15$ (exact $p = 0.833$, $100/120$)"),
     ("abstract pmin", ms, "four of 120 data permutations"),
     ("abstract window band", ms, "4.6--18.4~kcal/mol"),
@@ -466,7 +503,7 @@ tex_checks = [
     ("four-panel ratio", ms, "harmonized span ratio ranges from $-0.41$ to $+0.46$ ($p \\geq 0.433$)"),
     ("alt ordering", ms, "$\\rho = -0.45$ (exact two-tailed $p = 0.600$)"),
     ("four-panel S1", ms, "$+0.31$ to $+0.62$; $p \\geq 0.300$"),
-    ("lattice sign", ms, "change sign with the panel"),
+    ("lattice sign", ms, "only the span-ratio estimate changes sign with the panel"),
     ("lattice p floor", ms, "all $p \\geq 0.067$"),
     ("lattice strongest", ms, "$\\rho = -0.87$ for veliparib protonation alone"),
     ("estimatrix q90", ms, "$-0.82$ ($p = 0.133$) for the 5--95\\% quantile"),
@@ -493,13 +530,28 @@ tex_checks = [
     ("S2 extension rows", si, "Fluzoparib$^{\\dagger}$"),
     ("SI extension order", si, "pamiparib $16.3 \\pm 5.9$, and senaparib $12.5 \\pm 4.7$"),
     ("cover positive control", cv, "planted-association positive controls"),
-    ("cover 107-check", cv, "120 assertions, all passing"),
+    ("cover 107-check", cv, "142 assertions, all passing"),
     ("direction instability", ms, "the sign is not a stable property of the data"),
     ("cadence flip", ms, "18.4~kcal/mol at its native 1-ps cadence but 30.5~kcal/mol"),
     ("cadence rho +0.21", ms, "becomes $+0.21$ ($p = 0.767$)"),
     ("cadence rho +0.46", ms, "audit-corrected panel $+0.46$ ($p = 0.433$)"),
     ("seed-mean sensitivity", ms, "three-seed mean for niraparib"),
     ("rank-encoding audit", ms, "ranges from $-0.70$ to $0.00$ with exact $p \\geq 0.233$"),
+    ("rank-encoding convention", ms, "40 archival-convention combinations"),
+    ("p threshold split", ms, "the complete 32-cell harmonized lattice all exact $p \\geq 0.067$"),
+    ("C2 neutral rho", ms, "$\\rho = -0.05$ (exact $p = 1.000$) for the neutral panel"),
+    ("C2 protonated rho", ms, "$\\rho = -0.62$ ($p = 0.300$) for the fully protonated panel"),
+    ("48/40 matrix note", ms, "the matrix displays 48 cells (40 distinct"),
+    ("Table 1 analysis window", ms, "\\textbf{Analysis window (S1/S2)}"),
+    ("abstract archival label", ms, "while in the archival panel the measured 2-ns window variability"),
+    ("window harmonized band", ms, "4.9--20.8~kcal/mol (Table~S18)"),
+    ("SI S1 veliparib note", si, "its harmonized 2-ns window dispersions (4.9 and 20.8~kcal/mol)"),
+    ("SI supporting references", si, "Supporting references"),
+    ("S15/S16 cited", ms, "Figures~S15 and~S16"),
+    ("SI S15 caption", si, "Figure S15: Per-frame collective-variable"),
+    ("SI S16 caption", si, "Figure S16: Zn coordination stability"),
+    ("SI S15/S16 list", si, "S16 & Zn--S$\\gamma$ coordination stability"),
+    ("cover positive scope", cv, "The work is submitted as an Article because it reports a generalizable audit methodology"),
     ("non-inferential AZD", ms, "a non-inferential scenario"),
     ("pmin fraction 32/120", ms, "32/120"),
     ("pmin fraction 92/120", ms, "92/120"),
@@ -525,7 +577,7 @@ tex_checks = [
     ("SI 82.2 diagnosis", si, "removing those two frames raises the recomputed span to 137.7"),
     ("SI q90 t95", si, "quantile spans (q90 36.9, t95 43.6"),
     ("SI s62 provenance", si, "harmonized re-analysis (Tables~S18--S19, Figure~3, archival Figure~S14)"),
-    ("cover harmonized", cv, "$\\rho = -0.15$ (exact $p = 0.833$)"),
+    ("cover harmonized", cv, "$\\rho = +0.21$ (exact $p = 0.767$)"),
     ("seed-mean all available", ms, "$+0.10$ ($p = 0.900$, $108/120$)"),
     ("seed scatter reverses", ms, "seed scatter alone reverses the sign"),
     ("S20 reference", ms, "(Table~S20)"),
@@ -534,11 +586,16 @@ tex_checks = [
     ("S20 veli mean sd", si, "29.6 $\\pm$ 10.6"),
     ("S20 tala mean sd", si, "35.6 $\\pm$ 5.7"),
     ("SI ola ruca single", si, "Olaparib and rucaparib enter as single"),
+    ("cover self-undermining gone", cv, "we would welcome editorial guidance"),
+    ("primary subsection", ms, "Protocol-fixed estimand and primary association"),
+    ("primary C2q90 neutral", ms, "$\\rho = +0.205$ (exact $p = 0.767$) in the neutral panel"),
+    ("primary C2q90 protonated", ms, "$\\rho = -0.051$ (exact $p = 1.000$) in the fully protonated panel"),
+    ("SI Table S21 caption", si, "Table S21: Estimand-lock table"),
 
 ]
 for cid, tex, s in tex_checks:
     neg = cid in ("AZD misref gone", "old two-protonated gone", "old posterior gone",
-                   "old reliably gone", "ratio pm gone")
+                   "old reliably gone", "ratio pm gone", "cover self-undermining gone")
     rec("C", cid, (s not in tex) if neg else (s in tex), s[:60])
 
 # --------------------------------------------- positive control cells
