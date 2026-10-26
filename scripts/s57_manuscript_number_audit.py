@@ -530,7 +530,7 @@ tex_checks = [
     ("S2 extension rows", si, "Fluzoparib$^{\\dagger}$"),
     ("SI extension order", si, "pamiparib $16.3 \\pm 5.9$, and senaparib $12.5 \\pm 4.7$"),
     ("cover positive control", cv, "planted-association positive controls"),
-    ("cover 107-check", cv, "142 assertions, all passing"),
+    ("cover 107-check", cv, "145 assertions, all passing"),
     ("direction instability", ms, "the sign is not a stable property of the data"),
     ("cadence flip", ms, "18.4~kcal/mol at its native 1-ps cadence but 30.5~kcal/mol"),
     ("cadence rho +0.21", ms, "becomes $+0.21$ ($p = 0.767$)"),
@@ -591,6 +591,9 @@ tex_checks = [
     ("primary C2q90 neutral", ms, "$\\rho = +0.205$ (exact $p = 0.767$) in the neutral panel"),
     ("primary C2q90 protonated", ms, "$\\rho = -0.051$ (exact $p = 1.000$) in the fully protonated panel"),
     ("SI Table S21 caption", si, "Table S21: Estimand-lock table"),
+    ("SI Table S22 caption", si, "Table S22: Window sensitivity"),
+    ("late window text", ms, "An independent 26-ns talazoparib seed (2026)"),
+    ("late window neutral", ms, "correlation is $+0.667$ (exact $p = 0.267$)"),
 
 ]
 for cid, tex, s in tex_checks:
