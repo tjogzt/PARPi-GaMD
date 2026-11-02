@@ -3,6 +3,15 @@
 talazoparib S2 from the original 83-GB output.dcd and quantify the cadence /
 production-window conventions (reviewer statistical batch, item 7).
 
+Provenance note (P1 reconciliation): two talazoparib 1-ps numbers circulate
+and are not interchangeable.  The *original-archive production* segment gives
+C3 = 18.37 kcal/mol (s61_archive_reconciliation.csv); the *rebuilt full-run*
+series gives C3 = 37.48 kcal/mol (s59_talazoparib_cadence.csv) because it was
+extracted with a different CV1 implementation and spans the full 26 ns.  The
+rebuilt series is used only for the cadence/resampling comparison within s59
+and is marked "not comparable" in s61; the harmonized panel uses the 50-ps
+decimation of the original archive as documented in the Methods.
+
 Steps
   1. stream output.dcd (26,000 frames; step = 500*k, dt = 2 fs), computing
      CV1 = |COM(protein CA) - COM(DNA heavy)| exactly as s31_archive_frame_cvs.py

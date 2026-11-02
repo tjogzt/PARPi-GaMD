@@ -95,7 +95,7 @@ SYSTEMS = [
     ("sys2_rucaparib", 50, 20.1),
     ("sys2_ruca_prot", 50, 48.7),
     ("orig_s2_talazoparib", 1, 22.9),
-    ("orig_s2_veliparib", 1, 28.1),
+    ("orig_s2_veliparib", 50, 28.1),
 ]
 
 summary = []

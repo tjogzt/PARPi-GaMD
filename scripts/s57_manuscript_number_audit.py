@@ -300,16 +300,17 @@ r_neg = [float(r["rho"]) for r in lat if r["metric"] == "S2CV1"]
 r_s1 = [float(r["rho"]) for r in lat if r["metric"] == "S1"]
 r_rt = [float(r["rho"]) for r in lat if r["metric"] == "ratio"]
 ps = [float(r["p"]) for r in lat]
-rec("A", "lattice S2CV1 range", abs(min(r_neg) + 0.872) < 0.006 and abs(max(r_neg) - 0.359) < 0.006,
-    f"{min(r_neg):.3f}..{max(r_neg):.3f} (claimed -0.87..+0.36)")
+rec("A", "lattice S2CV1 range", abs(min(r_neg) + 0.154) < 0.006 and abs(max(r_neg) - 0.359) < 0.006,
+    f"{min(r_neg):.3f}..{max(r_neg):.3f} (claimed -0.15..+0.36)")
 rec("A", "lattice S1 pos range", abs(min(r_s1) - 0.308) < 0.006 and abs(max(r_s1) - 0.616) < 0.006,
     f"{min(r_s1):.3f}..{max(r_s1):.3f} (claimed +0.31..+0.62)")
 rec("A", "lattice ratio sign change", min(r_rt) < 0 < max(r_rt),
     f"ratio {min(r_rt):.3f}..{max(r_rt):.3f}")
-rec("A", "lattice p floor", abs(min(ps) - 0.067) < 0.006, f"min p {min(ps):.3f} (claimed >=0.067)")
+rec("A", "lattice p floor", abs(min(ps) - 0.133) < 0.006, f"min p {min(ps):.3f} (claimed >=0.133)")
 best = max(lat, key=lambda r: abs(float(r["rho"])))
-rec("A", "lattice strongest", abs(float(best["rho"]) + 0.872) < 0.006,
-    f"{best['panel']}/{best['metric']} {best['rho']}/{best['p']} (claimed -0.87/0.067)")
+rec("A", "lattice strongest", abs(float(best["rho"]) - 0.821) < 0.006
+    and abs(float(best["p"]) - 0.133) < 0.006,
+    f"{best['panel']}/{best['metric']} {best['rho']}/{best['p']} (claimed +0.82/0.133)")
 
 # --------------------------------------------- multiseed spans (s66)
 ms66 = list(csv.DictReader(open(DATA / "analysis/r6/s66_multiseed_spans.csv")))
@@ -463,8 +464,8 @@ if c2path.exists():
     want = {
         ("neutral", "C2"): (-0.051, 1.000, 120),
         ("neutral", "C3"): (-0.154, 0.833, 100),
-        ("fully_protonated", "C2"): (-0.616, 0.300, 36),
-        ("fully_protonated", "C3"): (-0.667, 0.267, 32),
+        ("fully_protonated", "C2"): (0.103, 0.900, 108),
+        ("fully_protonated", "C3"): (0.205, 0.767, 92),
     }
     bad = [(k, c2.get(k), v) for k, v in want.items() if k not in c2 or abs(c2[k][0]-v[0]) > 0.006 or abs(c2[k][1]-v[1]) > 0.006 or c2[k][2] != v[2]]
     rec("A", "C2/C3 panel sensitivity", not bad, str(bad) or "4/4 cells")
@@ -495,7 +496,7 @@ else:
 # --------------------------------------------- tex presence (C tier)
 tex_checks = [
     ("abstract harmonized rho", ms, "$\\rho = -0.15$ (exact $p = 0.833$"),
-    ("abstract primary null", ms, "no cell reaches nominal significance"),
+    ("abstract primary null", ms, "no first-window cell reaches nominal significance"),
     ("abstract audit rho", ms, "$\\rho = -0.15$ (exact $p = 0.833$, $100/120$)"),
     ("abstract pmin", ms, "four of 120 data permutations"),
     ("abstract window band", ms, "4.6--18.4~kcal/mol"),
@@ -504,10 +505,10 @@ tex_checks = [
     ("alt ordering", ms, "$\\rho = -0.45$ (exact two-tailed $p = 0.600$)"),
     ("four-panel S1", ms, "$+0.31$ to $+0.62$; $p \\geq 0.300$"),
     ("lattice sign", ms, "only the span-ratio estimate changes sign with the panel"),
-    ("lattice p floor", ms, "all $p \\geq 0.067$"),
-    ("lattice strongest", ms, "$\\rho = -0.87$ for veliparib protonation alone"),
-    ("estimatrix q90", ms, "$-0.82$ ($p = 0.133$) for the 5--95\\% quantile"),
-    ("estimatrix t95", ms, "$-0.67$ ($p = 0.267$) for the 95\\% truncated range"),
+    ("lattice p floor", ms, "all $p \\geq 0.133$"),
+    ("lattice strongest", ms, "$\\rho = +0.82$ for the S2 CV2 span under neutral or veliparib-protonated states, $p = 0.133$"),
+    ("estimatrix CV1 t95", ms, "$+0.205$ ($p = 0.767$) for the 95\\% truncated range"),
+    ("estimatrix CV2 all", ms, "The S2 CV2 metric gives $+0.10$ ($p = 0.900$) for all three span estimators"),
     ("estimatrix ratio", ms, "ranges from $+0.05$ ($p = 1.000$) to $+0.46$ ($p = 0.433$)"),
     ("S10 gap", si, "15.28 versus 14.73~kcal/mol"),
     ("S10 pct phrase", si + ms, "35--45\\% of the respective means"),
@@ -530,7 +531,7 @@ tex_checks = [
     ("S2 extension rows", si, "Fluzoparib$^{\\dagger}$"),
     ("SI extension order", si, "pamiparib $16.3 \\pm 5.9$, and senaparib $12.5 \\pm 4.7$"),
     ("cover positive control", cv, "planted-association positive controls"),
-    ("cover 107-check", cv, "145 assertions, all passing"),
+    ("cover 162-check", cv, "162 assertions, all passing"),
     ("direction instability", ms, "the sign is not a stable property of the data"),
     ("cadence flip", ms, "18.4~kcal/mol at its native 1-ps cadence but 30.5~kcal/mol"),
     ("cadence rho +0.21", ms, "becomes $+0.21$ ($p = 0.767$)"),
@@ -538,14 +539,14 @@ tex_checks = [
     ("seed-mean sensitivity", ms, "three-seed mean for niraparib"),
     ("rank-encoding audit", ms, "ranges from $-0.70$ to $0.00$ with exact $p \\geq 0.233$"),
     ("rank-encoding convention", ms, "40 archival-convention combinations"),
-    ("p threshold split", ms, "the complete 32-cell harmonized lattice all exact $p \\geq 0.067$"),
+    ("p threshold split", ms, "the complete 32-cell harmonized lattice all exact $p \\geq 0.133$"),
     ("C2 neutral rho", ms, "$\\rho = -0.05$ (exact $p = 1.000$) for the neutral panel"),
-    ("C2 protonated rho", ms, "$\\rho = -0.62$ ($p = 0.300$) for the fully protonated panel"),
+    ("C2 protonated rho", ms, "$\\rho = +0.10$ ($p = 0.900$) for the state-corrected panel"),
     ("48/40 matrix note", ms, "the matrix displays 48 cells (40 distinct"),
     ("Table 1 analysis window", ms, "\\textbf{Analysis window (S1/S2)}"),
     ("abstract archival label", ms, "while in the archival panel the measured 2-ns window variability"),
-    ("window harmonized band", ms, "4.9--20.8~kcal/mol (Table~S18)"),
-    ("SI S1 veliparib note", si, "its harmonized 2-ns window dispersions (4.9 and 20.8~kcal/mol)"),
+    ("window harmonized band", ms, "4.9--19.9~kcal/mol (Table~S18)"),
+    ("SI S1 veliparib note", si, "its harmonized 2-ns window dispersions (4.9 and 19.9~kcal/mol)"),
     ("SI supporting references", si, "Supporting references"),
     ("S15/S16 cited", ms, "Figures~S15 and~S16"),
     ("SI S15 caption", si, "Figure S15: Per-frame collective-variable"),
@@ -556,8 +557,8 @@ tex_checks = [
     ("pmin fraction 32/120", ms, "32/120"),
     ("pmin fraction 92/120", ms, "92/120"),
     ("band median wording", ms, "the band median, and the 95\\% interval"),
-    ("bootstrap sentence", ms, "$P(\\rho<0) = 0.96$"),
-    ("SI bootstrap 0.958", si, "0.958"),
+    ("bootstrap sentence", ms, "$P(\\rho<0) = 0.95$"),
+    ("SI bootstrap 0.953", si, "0.953"),
     ("SI archive reconciliation", si, "Archive reconciliation (Table~S5)"),
     ("SI provenance map", si, "Headline-number provenance"),
     ("SI seeds s7 s49", si, "independent-seed replicates (seeds s7 and s49"),
@@ -568,8 +569,8 @@ tex_checks = [
     ("ratio pm gone", ms, "$1.16 \\pm 0.53$"),
     ("harmonized spans sentence", ms, "30.5 (talazoparib), 18.7 (niraparib), 36.0 (olaparib)"),
     ("harmonized neutral rho", ms, "$\\rho = -0.15$ (exact $p = 0.833$, $100/120$)"),
-    ("harmonized protonated rho", ms, "gives $\\rho = -0.67$ ($p = 0.267$, $32/120$)"),
-    ("unidentifiable sentence", ms, "at this design it is unidentifiable"),
+    ("harmonized protonated rho", ms, "gives $\\rho = +0.205$ ($p = 0.767$, $92/120$)"),
+    ("unidentifiable sentence", ms, "the association cannot be resolved below $|\\rho| \\approx 0.9$"),
     ("limitations harmonized", ms, "re-analysed under a common 50-ps cadence"),
     ("fig3 archival note", ms, "The archival-cadence version is retained as Figure~S14."),
     ("SI table S18", si, "Table S18: Harmonized-convention S2 CV1 spans"),
@@ -587,13 +588,30 @@ tex_checks = [
     ("S20 tala mean sd", si, "35.6 $\\pm$ 5.7"),
     ("SI ola ruca single", si, "Olaparib and rucaparib enter as single"),
     ("cover self-undermining gone", cv, "we would welcome editorial guidance"),
-    ("primary subsection", ms, "Protocol-fixed estimand and primary association"),
+    ("primary subsection", ms, "Revision-primary estimand and primary association"),
     ("primary C2q90 neutral", ms, "$\\rho = +0.205$ (exact $p = 0.767$) in the neutral panel"),
-    ("primary C2q90 protonated", ms, "$\\rho = -0.051$ (exact $p = 1.000$) in the fully protonated panel"),
+    ("primary C2q90 protonated", ms, "$\\rho = +0.410$ (exact $p = 0.500$) in the state-corrected panel"),
     ("SI Table S21 caption", si, "Table S21: Estimand-lock table"),
     ("SI Table S22 caption", si, "Table S22: Window sensitivity"),
     ("late window text", ms, "An independent 26-ns talazoparib seed (2026)"),
     ("late window neutral", ms, "correlation is $+0.667$ (exact $p = 0.267$)"),
+    ("SI Table S23 caption", si, "Table S23: Structural QC"),
+    ("SI Figure S17 caption", si, "Figure S17: Structural QC"),
+    ("structural QC text", ms, "HD/ART RMSF tracks the original closely (3.76/3.82"),
+    ("title diagnostic protocol", ms, "A Diagnostic Protocol and a PARP1 GaMD Case"),
+    ("state-corrected definition", ms, "niraparib, rucaparib, and veliparib protonated; talazoparib and olaparib neutral"),
+    ("design resolution", ms, "excludes only $|\\rho| \\gtrsim 0.9$"),
+    ("CV2 descriptor discussion", ms, "Descriptor choice alone therefore changes both the sign and the magnitude"),
+    ("DCCM seed-specific", ms, "coupling profile is seed-specific"),
+    ("Zn transient coordination", ms, "transient loss of one or more coordinating atoms"),
+    ("within-seed contrast", ms, "C2/q90 11.40$\\to$12.44"),
+    ("phenotype rank swap", ms, "swapping niraparib and olaparib changes C2/q90"),
+    ("paired difference criterion", ms, "$\\sqrt{2}$ times the per-system SD"),
+    ("seed C2q90 combinations", ms, "between $+0.05$ and $+0.67$ in the neutral panel"),
+    ("SI support weighting", si, "population-weighted 5--95\\% interval"),
+    ("SI s74 provenance", si, "s74\\_seed\\_c2\\_sensitivity.py"),
+    ("toolkit reference", ms, "tools/audit\\_assoc/"),
+    ("toolkit SI", si, "Four toolkit artifacts"),
 
 ]
 for cid, tex, s in tex_checks:

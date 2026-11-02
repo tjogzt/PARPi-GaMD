@@ -52,7 +52,7 @@ rows = [
     ("D1  Windowed estimator variance",
      "variability vs separations (2.6\u20135.3 kcal/mol); no stable order at 26 ns"),
     ("D2  Estimator\u2013consistency matrix",
-     "no cell significant (all p \u2265 0.133, 48 cells); sign unstable"),
+     "no first-window cell provides evidence\n(all p \u2265 0.133, 48 cells); sign unstable"),
     ("D3  Convergence\u2013timescale scaling",
      "no decay over 2\u201324 ns windows; no extrapolated sampling length"),
     ("D4  Ordinal sensitivity model",
@@ -60,7 +60,7 @@ rows = [
     ("D5  Counterfactual sensitivity",
      "leave-one-out \u22120.63\u2026+0.63; single-point exclusion flips sign"),
     ("D6  Chemical-state audit",
-     "state corrections flip \u03c1 (\u22120.87\u2026+0.36); state vs noise unresolved"),
+     "state corrections move \u03c1 (\u22120.15\u2026+0.36); state vs noise unresolved"),
 ]
 x0, wd = 0.5, 99.0
 ytop, rh = 78.5, 10.7  # 2026-10-13: rh 9.2 -> 10.7 — absorbs the stale 13.4-unit chasm above the verdict; section gap now ≈ heading gap
@@ -76,7 +76,7 @@ for i, (name, verdict) in enumerate(rows):
 
 # ---- final verdict band ----
 box(0.5, 1.5, 99.0, 9.0,
-    "Verdict:  no robust association between the computed spans and trapping , not established under any\nchemically defensible ligand-state panel.  The output of this work is the audit workflow itself.",
+    "Verdict:  no statistically supported evidence of a robust span\u2013trapping association; not established\nunder any chemically defensible ligand-state panel.  The output of this work is the audit workflow itself.",
     fc="#FBEDEB", ec=C_RED, fs=8.6, weight="bold", tc="#7A0F0B")
 
 fig.savefig("figures/pdf/Fig6_Evidence_Summary.pdf")

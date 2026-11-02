@@ -26,6 +26,8 @@ from pathlib import Path
 
 import numpy as np
 
+from production_mask import mask_production, assert_veli_prot
+
 ROOT = Path(__file__).resolve().parents[1]
 DATA = Path(os.environ.get("DATA_ROOT", "/Volumes/tjogzt4T/PARPi_data"))
 spec = importlib.util.spec_from_file_location(
@@ -67,6 +69,7 @@ def _read_table(f):
 def load_arch(name, cvcol="cv1_prot_dna_com"):
     with gzip.open(ROOT / "data/per_frame" / f"{name}_frames.csv.gz", "rt") as f:
         cols, arr = _read_table(f)
+    arr, _ = mask_production(name, cols, arr)
     return arr[:, cols.index(cvcol)], arr[:, cols.index("dV_D")]
 
 
@@ -79,6 +82,9 @@ def extract_veli_prot():
                 body = f.read()
                 delim = "," if "," in body.split("\n", 1)[0] else None
                 arr = np.loadtxt(io.StringIO(body), delimiter=delim)
+                cols = hdr.split(",")
+                arr, _ = mask_production("veli_prot_s2", cols, arr)
+                assert_veli_prot(len(arr))
                 return arr[:, 3], arr[:, 4], arr[:, 2]
     import MDAnalysis as mda
     d = DATA / "veli_prot/sys2_veliparib_prot"
@@ -104,7 +110,12 @@ def extract_veli_prot():
         for r in rows:
             f.write(f"{r[0]},{r[1]},{r[2]:.6f},{r[3]:.6f},{r[4]:.6f}\n")
     arr = np.array([[r[2], r[3], r[4]] for r in rows])
-    return arr[:, 1], arr[:, 2], arr[:, 0]
+    arr = np.column_stack([np.array([r[1] for r in rows]), arr])
+    arr, _ = mask_production("veli_prot_s2",
+                             ["step_ps", "dV_D", "cv1_prot_dna_com",
+                              "cv2_hd_art_com"], arr)
+    assert_veli_prot(len(arr))
+    return arr[:, 2], arr[:, 3], arr[:, 1]
 
 
 def midrank(v):

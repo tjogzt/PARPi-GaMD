@@ -21,6 +21,8 @@ from pathlib import Path
 
 import numpy as np
 
+from production_mask import mask_production, assert_veli_prot
+
 ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location(
     "pyrew1d", ROOT / "tools/PyReweighting/PyReweighting-1D.py")
@@ -49,7 +51,11 @@ def load(name, stride):
         cols = f.readline().strip().split(",")
         rows = [ln.replace(",", " ").split() for ln in f if ln.strip()]
     arr = np.asarray(rows, float)
-    return arr[::stride, cols.index("cv1_prot_dna_com")], arr[::stride, cols.index("dV_D")]
+    arr, _ = mask_production(name, cols, arr)
+    if name == "veli_prot_s2":
+        assert_veli_prot(len(arr))
+    arr = arr[::stride]
+    return arr[:, cols.index("cv1_prot_dna_com")], arr[:, cols.index("dV_D")]
 
 
 def spans(cv, dv):

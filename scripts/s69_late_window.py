@@ -1,12 +1,26 @@
 #!/usr/bin/env python3
 """s69_late_window.py — estimand/window lock for the major revision.
 
+SUPERSEDED for the late-window numbers by s72_tala_late_window.py, which uses
+the same seed-2026 input and is the provenance of Table S22 / the late-window
+text.  This script is retained for provenance and for its first/late/last
+estimator inventory; do not cite its span values as current.
+
 Computes C1/C2/C3, q90 and t95 spans for three windows:
   first14  : frames   0-279 (14 ns)
   late14_26: frames 280-519 (12 ns)
   last10   : final 200 frames (10 ns)
 for the eight S2 systems in the neutral/fully-protonated association panels,
 and evaluates tie-aware exact Spearman associations for C2, q90 and C3.
+
+P0 fix (2026-11-01): the archived 26-ns talazoparib trajectory
+(``orig_s2_talazoparib_full``) was rebuilt with a different CV1 extraction and
+cannot enter a panel with the other systems (s61_archive_reconciliation.csv).
+Its production segment is also only 14 ns, so it has no late window. This
+script therefore uses the independent seed-2026 26-ns run
+(``tala_s2_26ns_frames.csv``, production mask step >= 6.0e6, 520 frames),
+the same input as s72_tala_late_window.py. Every archive is production-masked
+before window slicing.
 
 Outputs:
   data/analysis/r6/s69_late_window_spans.csv
@@ -23,6 +37,8 @@ from pathlib import Path
 
 import numpy as np
 
+from production_mask import mask_production, assert_veli_prot
+
 ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location(
     "pyrew1d", ROOT / "tools/PyReweighting/PyReweighting-1D.py")
@@ -34,24 +50,35 @@ DISC, EMAX, CUT, T = 0.1, 20.0, 2, 300.0
 OUT_SPANS = ROOT / "data/analysis/r6/s69_late_window_spans.csv"
 OUT_ASSOC = ROOT / "data/analysis/r6/s69_late_window_assoc.csv"
 
+# name -> (file stem, production-mask flag, gzip?)
 FILES = {
-    "talazoparib": ("orig_s2_talazoparib_full", 50),
-    "niraparib": ("sys2_niraparib", 1),
-    "olaparib": ("sys2_olaparib", 1),
-    "rucaparib": ("sys2_rucaparib", 1),
-    "veliparib": ("orig_s2_veliparib", 1),
-    "niraparib_prot": ("sys2_nira_prot", 1),
-    "rucaparib_prot": ("sys2_ruca_prot", 1),
-    "veliparib_prot": ("veli_prot_s2", 1),
+    "talazoparib": ("tala_s2_26ns_frames.csv", True, False),
+    "niraparib": ("sys2_niraparib_frames.csv.gz", False, True),
+    "olaparib": ("sys2_olaparib_frames.csv.gz", False, True),
+    "rucaparib": ("sys2_rucaparib_frames.csv.gz", False, True),
+    "veliparib": ("orig_s2_veliparib_frames.csv.gz", False, True),
+    "niraparib_prot": ("sys2_nira_prot_frames.csv.gz", False, True),
+    "rucaparib_prot": ("sys2_ruca_prot_frames.csv.gz", False, True),
+    "veliparib_prot": ("veli_prot_s2_frames.csv.gz", True, True),
 }
 
 
-def load(name, stride):
-    with gzip.open(ROOT / "data/per_frame" / f"{name}_frames.csv.gz", "rt") as f:
+def load(stem, prod_mask, gz):
+    path = ROOT / "data/per_frame" / stem
+    op = gzip.open if gz else open
+    with op(path, "rt") as f:
         cols = f.readline().strip().split(",")
         rows = [ln.replace(",", " ").split() for ln in f if ln.strip()]
     arr = np.asarray(rows, float)
-    return arr[::stride, cols.index("cv1_prot_dna_com")], arr[::stride, cols.index("dV_D")]
+    name = stem.replace("_frames.csv.gz", "").replace("_frames.csv", "")
+    arr, _ = mask_production(name, cols, arr)
+    if name == "veli_prot_s2":
+        assert_veli_prot(len(arr))
+    if prod_mask:
+        step_col = "step" if "step" in cols else "step_ps"
+        arr = arr[arr[:, cols.index(step_col)] >= 6_000_000]
+    cv_col = "cv1_prot_dna_com" if "cv1_prot_dna_com" in cols else "cv1"
+    return arr[:, cols.index(cv_col)], arr[:, cols.index("dV_D")]
 
 
 def spans(cv, dv):

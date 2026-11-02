@@ -46,7 +46,7 @@ FILES = {
     "veliparib": ("orig_s2_veliparib_frames.csv.gz", False, True),
     "niraparib_prot": ("sys2_nira_prot_frames.csv.gz", False, True),
     "rucaparib_prot": ("sys2_ruca_prot_frames.csv.gz", False, True),
-    "veliparib_prot": ("veli_prot_s2_frames.csv.gz", False, True),
+    "veliparib_prot": ("veli_prot_s2_frames.csv.gz", True, True),
 }
 
 
@@ -58,7 +58,10 @@ def load(stem, prod_mask, gz):
         rows = [ln.replace(",", " ").split() for ln in f if ln.strip()]
     arr = np.asarray(rows, float)
     if prod_mask:
-        arr = arr[arr[:, header.index("step")] >= 6_000_000]
+        step_col = "step" if "step" in header else "step_ps"
+        arr = arr[arr[:, header.index(step_col)] >= 6_000_000]
+        if stem.startswith("veli_prot_s2"):
+            assert len(arr) == 521, f"veli_prot production frames = {len(arr)}"
     cv_col = "cv1_prot_dna_com" if "cv1_prot_dna_com" in header else "cv1"
     return arr[:520, header.index(cv_col)], arr[:520, header.index("dV_D")]
 
@@ -130,8 +133,9 @@ def main():
     for s, (cv, dv) in series.items():
         for wn, fn in windows.items():
             a, b = fn(len(cv))
-            sp = spans(cv[a:b], dv[a:b])
-            rows.append((s, wn, b - a, sp["C2"], sp["C2_q90"], sp["C3"],
+            segment = cv[a:b]
+            sp = spans(segment, dv[a:b])
+            rows.append((s, wn, len(segment), sp["C2"], sp["C2_q90"], sp["C3"],
                          sp["C3_q90"], sp["C1"], sp["t95"]))
             print(f"{s:16s} {wn:9s} {b-a:3d} {sp['C2']:7.2f} {sp['C2_q90']:7.2f} "
                   f"{sp['C3']:7.2f} {sp['C3_q90']:7.2f}", flush=True)

@@ -37,6 +37,8 @@ from pathlib import Path
 
 import numpy as np
 
+from production_mask import mask_production, assert_veli_prot
+
 ROOT = Path(__file__).resolve().parents[1]
 DATA = Path(os.environ.get("DATA_ROOT", "/Volumes/tjogzt4T/PARPi_data"))
 spec = importlib.util.spec_from_file_location(
@@ -78,17 +80,22 @@ def spans(cv, dv):
 def load_arch(name):
     with gzip.open(ROOT / "data/per_frame" / f"{name}_frames.csv.gz", "rt") as f:
         cols = f.readline().strip().split(",")
-        arr = np.loadtxt(f)
+        body = f.read()
+    first = body.split("\n", 1)[0]
+    delim = "," if "," in first else None
+    arr = np.loadtxt(io.StringIO(body), delimiter=delim)
+    arr, _ = mask_production(name, cols, arr)
     return arr[:, cols.index("cv1_prot_dna_com")], arr[:, cols.index("dV_D")]
 
 
 def extract_veli_prot():
-    import MDAnalysis as mda
     d = DATA / "veli_prot/sys2_veliparib_prot"
     out_csv = ROOT / "data/per_frame/veli_prot_s2_frames.csv.gz"
     if out_csv.exists():
         cv, dv = load_arch("veli_prot_s2")
+        assert_veli_prot(len(cv))
         return cv, dv
+    import MDAnalysis as mda
     u = mda.Universe(str(d / "veliparib_best_prot.prmtop"), str(d / "output.dcd"))
     prot = u.select_atoms("protein and name CA")
     dna = u.select_atoms("(resname DA DT DG DC or resname DA5 DT5 DG5 DC5 or "
@@ -107,8 +114,11 @@ def extract_veli_prot():
         f.write("frame,step_ps,dV_D,cv1_prot_dna_com\n")
         for r in rows:
             f.write(f"{r[0]},{r[1]},{r[2]:.6f},{r[3]:.6f}\n")
-    arr = np.array([[r[2], r[3]] for r in rows])
-    return arr[:, 1], arr[:, 0]
+    arr = np.array([[r[1], r[2], r[3]] for r in rows], float)
+    arr, _ = mask_production("veli_prot_s2",
+                             ["step_ps", "dV_D", "cv1_prot_dna_com"], arr)
+    assert_veli_prot(len(arr))
+    return arr[:, 2], arr[:, 1]
 
 
 def midrank(v):

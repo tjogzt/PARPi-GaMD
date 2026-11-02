@@ -8,3 +8,12 @@ results/
 runs_s2/
 runs/
 Rplots.pdf
+
+# Large raw MD inputs / duplicated vendored engine for the 26-ns tala seed
+md/tala_26ns/tala.prmtop
+md/tala_26ns/tala_s2_equil12ns.rst7
+md/tala_26ns/tala_26ns_bundle.tar.gz
+md/tala_26ns/tools/
+
+# Local code-index cache
+.codegraph/

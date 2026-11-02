@@ -35,9 +35,9 @@ rucaparib-protonated,S1,t95,0.308,0.6667,80
 rucaparib-protonated,ratio,mm,-0.41,0.5000,60
 rucaparib-protonated,ratio,q90,-0.103,0.9000,108
 rucaparib-protonated,ratio,t95,-0.103,0.9000,108
-fully protonated,S2CV1,mm,-0.667,0.2667,32
-fully protonated,S2CV1,q90,-0.821,0.1333,16
-fully protonated,S2CV1,t95,-0.667,0.2667,32
+fully protonated,S2CV1,mm,0.205,0.7667,92
+fully protonated,S2CV1,q90,0.051,1.0000,120
+fully protonated,S2CV1,t95,0.205,0.7667,92
 fully protonated,S2CV2,mm,0.103,0.9000,108
 fully protonated,S2CV2,q90,0.103,0.9000,108
 fully protonated,S2CV2,t95,0.103,0.9000,108
@@ -46,4 +46,4 @@ fully protonated,S1,q90,0.616,0.3000,36
 fully protonated,S1,t95,0.616,0.3000,36
 fully protonated,ratio,mm,0.051,1.0000,120
 fully protonated,ratio,q90,0.462,0.4333,52
-fully protonated,ratio,t95,0.462,0.4333,52
+fully protonated,ratio,t95,0.051,1.0000,120

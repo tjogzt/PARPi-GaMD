@@ -17,6 +17,7 @@ Outputs:
   data/analysis/s73_tala26_structure_qc.csv
 """
 import csv
+import os
 import sys
 import warnings
 from pathlib import Path
@@ -26,12 +27,13 @@ import numpy as np
 
 warnings.filterwarnings("ignore")
 
-ROOT = Path("/Users/taozhu/clacky_workspace/PARPi_design/PARPi-GaMD")
+ROOT = Path(__file__).resolve().parents[1]
+DATA_ROOT = Path(os.environ.get("DATA_ROOT", "/Volumes/tjogzt4T/PARPi_data"))
 sys.path.insert(0, str(ROOT))
 from common.kabsch import kabsch_align  # noqa: E402
 
-PRMTOP = Path("/Volumes/tjogzt4T/PARPi_data/sys2_talazoparib/sys2_talazoparib.prmtop")
-DCD = Path("/Volumes/tjogzt4T/PARPi_data/extension/tala_s2_26ns/output.dcd")
+PRMTOP = DATA_ROOT / "sys2_talazoparib/sys2_talazoparib.prmtop"
+DCD = DATA_ROOT / "extension/tala_s2_26ns/output.dcd"
 OUTDIR = ROOT / "data/analysis"
 HD = (662, 787)
 ART = (788, 1014)
