@@ -1,21 +1,55 @@
 {
-  "title": "PARPi-GaMD v3.8 — auditing enhanced-sampling rank associations: code, data and figures",
+  "title": "PARPi-GaMD v3.9 — auditing enhanced-sampling rank associations: code, data and figures",
   "description": "<p>Replication package for a dual-system Gaussian accelerated molecular dynamics (GaMD) study of PARP1 inhibitors and a six-part audit of descriptor–phenotype rank associations. System S1 (catalytic domain only) quantifies the HD–ART sampled-range span; system S2 (near-full-length PARP1–DNA) quantifies protein–DNA and HD–ART collective variables, spanning ten inhibitors and a ligand-free control, extended by three audited protonation-state re-simulations (13 S1 and 13 S2 systems).</p><p>The audit covers windowed estimator variance, estimator-consistency matrices, convergence–timescale scaling, ordinal sensitivity, counterfactual sensitivity, and ligand chemical state, paired with a planted-association benchmark and a design-stage power table for the exact tie-aware permutation test. The headline result is negative and reported as such: under the revision-primary C2/5–95% quantile estimator the neutral panel gives rho = +0.21 (exact p = 0.767, n = 5) and the protonation-state-corrected panel gives rho = +0.41 (p = 0.500); the prior C3/min–max convention gives rho = -0.15 (p = 0.833) and +0.21 (p = 0.767). No first-window cell reaches nominal significance. At n = 5 with one tied rank pair, p < 0.05 requires |rho| >= 0.975 and power at rho = 0.8 is about 14%, so the design excludes only |rho| approximately 0.9 or larger.</p><p>The release contains the full analysis and figure code chains, the archived data layer (per-frame boost-energy series, reweighting weights, PMF curves, curated panel tables), a per-artifact manifest mapping manuscript numbers to generating scripts, and a dependency-free tie-aware rank-association toolkit (<code>tools/audit_assoc/</code>) with CLI, documented CSV schema, worked example, and unit tests. The manuscript number audit returns 162/162 checks from a clean checkout.</p><p>Limitations: the rank-association analyses use a five-inhibitor panel (exact permutation, n = 5); production trajectories are 2-ns-window limited by design; raw production trajectories (~1 TB) are not distributed, and the release contains the derived data layer plus the tooling that regenerates every manuscript value.</p>",
   "creators": [
-    {"name": "Sun, Qian", "affiliation": "Department of Obstetrics and Gynecology, Tongji Hospital, Tongji Medical College, Huazhong University of Science and Technology, Wuhan 430030, China"},
-    {"name": "Mo, Qingqing", "affiliation": "Department of Obstetrics and Gynecology, Tongji Hospital, Tongji Medical College, Huazhong University of Science and Technology, Wuhan 430030, China"},
-    {"name": "Chen, Pingbo", "affiliation": "Department of Obstetrics and Gynecology, Tongji Hospital, Tongji Medical College, Huazhong University of Science and Technology, Wuhan 430030, China"},
-    {"name": "Xu, Cheng", "affiliation": "Department of Obstetrics and Gynecology, Tongji Hospital, Tongji Medical College, Huazhong University of Science and Technology, Wuhan 430030, China"},
-    {"name": "Wang, Ya", "affiliation": "Department of Obstetrics and Gynecology, Tongji Hospital, Tongji Medical College, Huazhong University of Science and Technology, Wuhan 430030, China"},
-    {"name": "Hu, Ting", "affiliation": "Department of Obstetrics and Gynecology, Tongji Hospital, Tongji Medical College, Huazhong University of Science and Technology, Wuhan 430030, China"},
-    {"name": "Zhu, Tao", "affiliation": "Department of Obstetrics and Gynecology, Tongji Hospital, Tongji Medical College, Huazhong University of Science and Technology, Wuhan 430030, China", "orcid": "0009-0001-0779-2245"}
+    {
+      "name": "Sun, Qian",
+      "affiliation": "Department of Obstetrics and Gynecology, Tongji Hospital, Tongji Medical College, Huazhong University of Science and Technology, Wuhan 430030, China"
+    },
+    {
+      "name": "Mo, Qingqing",
+      "affiliation": "Department of Obstetrics and Gynecology, Tongji Hospital, Tongji Medical College, Huazhong University of Science and Technology, Wuhan 430030, China"
+    },
+    {
+      "name": "Chen, Pingbo",
+      "affiliation": "Department of Obstetrics and Gynecology, Tongji Hospital, Tongji Medical College, Huazhong University of Science and Technology, Wuhan 430030, China"
+    },
+    {
+      "name": "Xu, Cheng",
+      "affiliation": "Department of Obstetrics and Gynecology, Tongji Hospital, Tongji Medical College, Huazhong University of Science and Technology, Wuhan 430030, China"
+    },
+    {
+      "name": "Wang, Ya",
+      "affiliation": "Department of Obstetrics and Gynecology, Tongji Hospital, Tongji Medical College, Huazhong University of Science and Technology, Wuhan 430030, China"
+    },
+    {
+      "name": "Hu, Ting",
+      "affiliation": "Department of Obstetrics and Gynecology, Tongji Hospital, Tongji Medical College, Huazhong University of Science and Technology, Wuhan 430030, China"
+    },
+    {
+      "name": "Zhu, Tao",
+      "affiliation": "Department of Obstetrics and Gynecology, Tongji Hospital, Tongji Medical College, Huazhong University of Science and Technology, Wuhan 430030, China",
+      "orcid": "0009-0001-0779-2245"
+    }
   ],
-  "keywords": ["PARP1", "PARP inhibitors", "Gaussian accelerated molecular dynamics", "enhanced sampling", "allosteric regulation", "trapping", "reproducibility", "negative results", "molecular dynamics", "rank correlation", "small-sample statistics"],
+  "keywords": [
+    "PARP1",
+    "PARP inhibitors",
+    "Gaussian accelerated molecular dynamics",
+    "enhanced sampling",
+    "allosteric regulation",
+    "trapping",
+    "reproducibility",
+    "negative results",
+    "molecular dynamics",
+    "rank correlation",
+    "small-sample statistics"
+  ],
   "license": "MIT",
   "upload_type": "software",
   "access_right": "open",
   "language": "eng",
-  "version": "3.8",
+  "version": "3.9",
   "related_identifiers": [],
-  "notes": "v3.7 froze the data/script layer; v3.8 aligns the text-presence audit with the four-sentence journal abstract. The manuscript's conclusion is deliberately conservative ('not established'). Large raw MD inputs (prmtop/rst7/bundle) are excluded from the repository."
+  "notes": "v3.7 froze the data/script layer; v3.8 aligned the text-presence audit with the four-sentence journal abstract; v3.9 refreshes this deposit metadata. The manuscript's conclusion is deliberately conservative ('not established'). Large raw MD inputs (prmtop/rst7/bundle) are excluded from the repository."
 }
